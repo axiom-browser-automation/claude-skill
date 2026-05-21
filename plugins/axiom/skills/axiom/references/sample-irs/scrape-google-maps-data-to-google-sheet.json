@@ -1,0 +1,71 @@
+{
+  "_sourceCommit": "d1dd5f0502e22a3bb27bae358978e044fa8ff084",
+  "_sourceId": "axiom-scrape-google-maps-data-to-google-sheet",
+  "ir": {
+    "version": "0.1",
+    "name": "Scrape Google Maps Data To Google Sheet",
+    "initialPrompt": "Scrape Google Maps Data To Google Sheet",
+    "expectedOutput": "",
+    "context": {
+      "url": "",
+      "headless": false
+    },
+    "steps": [
+      {
+        "id": "step-1",
+        "kind": "action",
+        "action": "goto",
+        "value": "https://www.google.com/maps/place/Tandartsenpraktijk+Tand+74,+Vollon/@50.972401,4.4191996,11z/data=!4m10!1m2!2m1!1sdentist!3m6!1s0x47c15eee7ecb80dd:0xbd9b65d71ea9897a!8m2!3d50.972401!4d4.699351!15sCgdkZW50aXN0kgEHZGVudGlzdOABAA!16s%2Fg%2F11bzx3k8v7?entry=ttu&g_ep=EgoyMDI2MDEwNy4wIKXMDSoASAFQAw%3D%3D",
+        "assertions": []
+      },
+      {
+        "id": "step-2",
+        "kind": "action",
+        "action": "axiomWidget",
+        "machineName": "WidgetReadGoogleSheet",
+        "assertions": []
+      },
+      {
+        "id": "step-3",
+        "kind": "action",
+        "action": "axiomWidget",
+        "machineName": "WidgetBotCreate",
+        "assertions": []
+      },
+      {
+        "id": "step-4",
+        "kind": "action",
+        "action": "click",
+        "assertions": []
+      },
+      {
+        "id": "step-5",
+        "kind": "action",
+        "action": "axiomWidget",
+        "machineName": "WidgetDriverWait",
+        "assertions": []
+      },
+      {
+        "id": "step-6",
+        "kind": "action",
+        "action": "axiomWidget",
+        "machineName": "WidgetDriverSmartScraper",
+        "assertions": []
+      },
+      {
+        "id": "step-7",
+        "kind": "action",
+        "action": "axiomWidget",
+        "machineName": "WidgetWriteGoogleSheet",
+        "assertions": []
+      },
+      {
+        "id": "step-8",
+        "kind": "action",
+        "action": "axiomWidget",
+        "machineName": "WidgetBotComplete",
+        "assertions": []
+      }
+    ]
+  }
+}

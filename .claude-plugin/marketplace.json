@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "axiom-skills",
+  "description": "Axiom-built Claude Code plugins.",
+  "owner": {
+    "name": "Axiom.ai",
+    "email": "hello@axiom.ai"
+  },
+  "plugins": [
+    {
+      "name": "axiom",
+      "description": "Build Axiom automations from natural language — no-code AutomationTemplate JSON or runnable @axiom_ai/api Node scripts. Walks new users through account signup and API key minting.",
+      "author": {
+        "name": "Axiom.ai",
+        "email": "hello@axiom.ai"
+      },
+      "category": "automation",
+      "source": "./plugins/axiom"
+    }
+  ]
+}

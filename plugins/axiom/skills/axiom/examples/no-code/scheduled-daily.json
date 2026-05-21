@@ -1,0 +1,66 @@
+{
+  "id": 0,
+  "openWidgetIndex": -1,
+  "name": "Daily scrape at 9am",
+  "templateId": 0,
+  "triggers": [
+    {
+      "name": "Every day at 9am",
+      "status": "active",
+      "type": "recursive",
+      "time_criteria": 86400,
+      "interval_type": "seconds",
+      "starting_time": "2026-05-21 09:00:00+00"
+    }
+  ],
+  "share_status": false,
+  "share_link": "",
+  "stored_cookies": [],
+  "data": {
+    "allowConcurrencyDesktop": true,
+    "builderTemplateId": 0,
+    "context": [{"context": "url", "url": "https://example.com/dashboard"}],
+    "disallowConcurrencyCloud": false,
+    "form": [
+      {
+        "machine_name": "WidgetDriverGoto",
+        "name": "Go to page",
+        "stepNumber": "1",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "name": "URL",
+            "type": "token",
+            "value": "https://example.com/dashboard"
+          }
+        ]
+      },
+      {
+        "machine_name": "WidgetDriverSaveHTML",
+        "name": "Save page HTML",
+        "stepNumber": "2",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "name": "Filename",
+            "type": "token",
+            "value": "dashboard.html"
+          }
+        ]
+      }
+    ],
+    "headless": true,
+    "incognitoMode": false,
+    "injector": {"injector": "dom", "magic_btn_status": true, "selector": ""},
+    "mode": "browser",
+    "storeCookies": false,
+    "templateId": 0,
+    "templateItem": {"name": "Daily scrape at 9am", "description": "Scheduled axiom — runs every day at 9am, saves a snapshot."},
+    "templateMode": false,
+    "templateStarted": false,
+    "tokens": null,
+    "viewport": null
+  }
+}

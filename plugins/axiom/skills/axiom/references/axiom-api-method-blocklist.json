@@ -1,0 +1,12 @@
+{
+  "_sourceFile": "axiom-api/src/axiom-api.js",
+  "_description": "Methods Claude must NOT emit. step() is the internal dispatcher all named methods route through — emit the named method instead. _-prefixed methods are private implementation details.",
+  "internal_dispatcher": [
+    "step"
+  ],
+  "private": [
+    "_sleep",
+    "_pollStepResult",
+    "_shouldFallBackToPolling"
+  ]
+}

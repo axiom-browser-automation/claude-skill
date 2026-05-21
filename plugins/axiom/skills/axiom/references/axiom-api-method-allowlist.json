@@ -1,0 +1,34 @@
+{
+  "_sourceFile": "axiom-api/src/axiom-api.js",
+  "_description": "User-facing methods on the AxiomApi instance. Coded scripts may only call these. Internal/private methods are in axiom-api-method-blocklist.json.",
+  "lifecycle": [
+    "browserOpen",
+    "browserClose"
+  ],
+  "navigation": [
+    "goto",
+    "switchBrowserTab"
+  ],
+  "interaction": [
+    "click",
+    "clickMultiple",
+    "clickEngagementButton",
+    "hover",
+    "clickAndDrag",
+    "enterText",
+    "pressKeys",
+    "selectList",
+    "datePicker"
+  ],
+  "data": [
+    "scrape",
+    "scrapeMetadata",
+    "getClipboardContents"
+  ],
+  "ai_and_utility": [
+    "integrateAI",
+    "solveCaptcha",
+    "wait",
+    "restartBrowser"
+  ]
+}

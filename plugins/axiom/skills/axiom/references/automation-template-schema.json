@@ -1,0 +1,542 @@
+{
+  "_sourceCommit": "d1dd5f0502e22a3bb27bae358978e044fa8ff084",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://axiom.ai/schemas/automation-template.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "openWidgetIndex",
+    "name",
+    "templateId",
+    "triggers",
+    "share_status",
+    "share_link",
+    "data",
+    "stored_cookies"
+  ],
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "openWidgetIndex": {
+      "type": "number"
+    },
+    "name": {
+      "type": "string"
+    },
+    "templateId": {
+      "type": "number"
+    },
+    "triggers": {
+      "type": "array"
+    },
+    "share_status": {
+      "type": "boolean"
+    },
+    "share_link": {
+      "type": "string"
+    },
+    "machine_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "errors": {
+      "type": "array"
+    },
+    "color": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "creator_id": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "stored_cookies": {
+      "type": "array"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowConcurrencyDesktop",
+        "builderTemplateId",
+        "context",
+        "disallowConcurrencyCloud",
+        "form",
+        "headless",
+        "incognitoMode",
+        "injector",
+        "mode",
+        "storeCookies",
+        "templateId",
+        "templateItem",
+        "templateMode",
+        "templateStarted",
+        "tokens",
+        "viewport"
+      ],
+      "properties": {
+        "allowConcurrencyDesktop": {
+          "type": "boolean"
+        },
+        "builderTemplateId": {
+          "type": "number"
+        },
+        "context": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "context",
+              "url"
+            ],
+            "properties": {
+              "context": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "disallowConcurrencyCloud": {
+          "type": "boolean"
+        },
+        "form": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/widget"
+          }
+        },
+        "headless": {
+          "type": "boolean"
+        },
+        "incognitoMode": {
+          "type": "boolean"
+        },
+        "continueOnError": {
+          "type": "boolean"
+        },
+        "iframesAllowed": {
+          "type": "boolean"
+        },
+        "disablePageChangeMonitoring": {
+          "type": "boolean"
+        },
+        "injector": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "injector",
+            "magic_btn_status",
+            "selector"
+          ],
+          "properties": {
+            "injector": {
+              "type": "string"
+            },
+            "magic_btn_status": {
+              "type": "boolean"
+            },
+            "selector": {
+              "type": "string"
+            }
+          }
+        },
+        "maximumRuntime": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "mode": {
+          "type": "string"
+        },
+        "noOutput": {
+          "type": "boolean"
+        },
+        "notifications": {
+          "type": [
+            "boolean",
+            "object"
+          ],
+          "additionalProperties": true
+        },
+        "storeCookies": {
+          "type": "boolean"
+        },
+        "useLocalTimezone": {
+          "type": "boolean"
+        },
+        "timezone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "proxyServer": {
+          "type": [
+            "array",
+            "string",
+            "null"
+          ]
+        },
+        "proxyAuth": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": true
+        },
+        "extensionToLoad": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "executablePath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "userDataDir": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attachToExistingChrome": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "blockResources": {
+          "type": "boolean"
+        },
+        "blockedResources": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": true
+        },
+        "templateId": {
+          "type": "number"
+        },
+        "templateItem": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "description"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          }
+        },
+        "templateMode": {
+          "type": "boolean"
+        },
+        "templateStarted": {
+          "type": "boolean"
+        },
+        "tokens": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "viewport": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "widget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "machine_name",
+        "name",
+        "params",
+        "stepNumber"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "hasErrors": {
+          "type": "boolean"
+        },
+        "isLooping": {
+          "type": "boolean"
+        },
+        "afterLoopUpdate": {
+          "type": "boolean"
+        },
+        "machine_name": {
+          "type": "string",
+          "enum": [
+            "WidgetAI",
+            "WidgetAlwaysJump",
+            "WidgetBotComplete",
+            "WidgetBotCreate",
+            "WidgetCatch",
+            "WidgetChatGPT",
+            "WidgetChatGPTGenerateText",
+            "WidgetClearGoogleSheet",
+            "WidgetClickEngagementButton",
+            "WidgetCode",
+            "WidgetContinue",
+            "WidgetCountRows",
+            "WidgetCreateFormattedSheet",
+            "WidgetCreateGoogleSheet",
+            "WidgetCurrentDateTime",
+            "WidgetCurrentUrl",
+            "WidgetDatePicker",
+            "WidgetDeleteRowsFromGoogleSheet",
+            "WidgetDisplayMessage",
+            "WidgetDriverBack",
+            "WidgetDriverClearCookies",
+            "WidgetDriverClick",
+            "WidgetDriverClickMultiple",
+            "WidgetDriverClipboardContents",
+            "WidgetDriverCloseTab",
+            "WidgetDriverCode",
+            "WidgetDriverCurrentUrl",
+            "WidgetDriverDownload",
+            "WidgetDriverDownloadFiles",
+            "WidgetDriverDownloadFromUrl",
+            "WidgetDriverDownloadToGoogleDrive",
+            "WidgetDriverEnterText",
+            "WidgetDriverExportCSV",
+            "WidgetDriverFileUpload",
+            "WidgetDriverGoto",
+            "WidgetDriverKeyDown",
+            "WidgetDriverMouseClickDrag",
+            "WidgetDriverPassword",
+            "WidgetDriverSaveHTML",
+            "WidgetDriverSaveScreenshot",
+            "WidgetDriverSaveScreenshotToGoogleDrive",
+            "WidgetDriverScrapeLinks",
+            "WidgetDriverScrapeMetadata",
+            "WidgetDriverSelectList",
+            "WidgetDriverSmartScraper",
+            "WidgetDriverSolveCaptcha",
+            "WidgetDriverSwitchBrowserTab",
+            "WidgetDriverUploadFromGoogleDrive",
+            "WidgetDriverWait",
+            "WidgetElse",
+            "WidgetEndLoop",
+            "WidgetEndRun",
+            "WidgetErrorMetadata",
+            "WidgetExportCSV",
+            "WidgetFilterAppend",
+            "WidgetFilterDataList",
+            "WidgetFilterMerge",
+            "WidgetFilterRemoveDuplicates",
+            "WidgetFilterRemoveWord",
+            "WidgetFilterReplace",
+            "WidgetFilterSplitName",
+            "WidgetFilterStripHtml",
+            "WidgetFilterTranspose",
+            "WidgetFilterWord",
+            "WidgetFindRowGoogleSheet",
+            "WidgetGoogleDriveFolder",
+            "WidgetHoverEvent",
+            "WidgetIf",
+            "WidgetIfEnd",
+            "WidgetImportCSV",
+            "WidgetInstructions",
+            "WidgetJump",
+            "WidgetNavigate",
+            "WidgetRadomPassword",
+            "WidgetRandomWait",
+            "WidgetReadAirtable",
+            "WidgetReadExcelSheet",
+            "WidgetReadFileFromGoogleDrive",
+            "WidgetReadGoogleSheet",
+            "WidgetReadLocalFile",
+            "WidgetRestApi",
+            "WidgetRestartBrowser",
+            "WidgetRunAxiom",
+            "WidgetScrapeLinks",
+            "WidgetSelectRandomRows",
+            "WidgetSendEmail",
+            "WidgetSmartScraper",
+            "WidgetSplitByCharacter",
+            "WidgetTry",
+            "WidgetTryCatchEnd",
+            "WidgetWebhookReceive",
+            "WidgetWriteAirtable",
+            "WidgetWriteExcelSheet",
+            "WidgetWriteGoogleSheet",
+            "TemplateLoopThroughData",
+            "SocialMediaTemplates",
+            "SwitchToScrapeFlow"
+          ]
+        },
+        "metadata": {
+          "type": "string"
+        },
+        "method": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "browser": {
+              "type": "string"
+            },
+            "driver": {
+              "type": "string"
+            }
+          }
+        },
+        "modes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "browser",
+              "driver"
+            ]
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "original_name": {
+          "type": "string"
+        },
+        "params": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/param"
+          }
+        },
+        "stepNumber": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "param": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "collapsible",
+        "configurable",
+        "name",
+        "type",
+        "value"
+      ],
+      "properties": {
+        "collapsible": {
+          "type": "number"
+        },
+        "configurable": {
+          "type": "boolean"
+        },
+        "default_value": {},
+        "description": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "help": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "image": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "token",
+            "token_list",
+            "merge_token",
+            "merge_token_list",
+            "bot_token",
+            "write_google_sheet_token",
+            "write_csv_data_token",
+            "write_excel_sheet_token",
+            "multiple_urls",
+            "smart_selector",
+            "selector_single",
+            "scraper_max_results",
+            "scraper_settings",
+            "pause_time",
+            "delay",
+            "store_cookie",
+            "special_character",
+            "current_url",
+            "spreadsheet_picker",
+            "sheet_name_dropdown",
+            "first_cell",
+            "last_cell",
+            "optional",
+            "long_text_required",
+            "select_key",
+            "scraper_settings",
+            "google_sheet_write_options",
+            "radio_value_input_option",
+            "multiple_urls",
+            "selector_single"
+          ]
+        },
+        "value": {},
+        "maxTokens": {
+          "type": "number"
+        },
+        "tokenType": {
+          "type": "string",
+          "enum": [
+            "",
+            "merge_token",
+            "bot_token",
+            "write_google_sheet_token",
+            "write_csv_data_token",
+            "write_excel_sheet_token"
+          ]
+        }
+      }
+    }
+  }
+}

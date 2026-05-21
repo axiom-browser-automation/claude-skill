@@ -1,0 +1,2253 @@
+{
+  "_sourceCommit": "2da74d6530f1dec2c5e52fdd5ee190a65154f4cb",
+  "_note": "Catalog of vendored axiom.ai user-facing docs. To pick relevant reading for a task: 1. Skim the `categories` array — each entry's `key` is the directory path. 2. Within a category, scan the `entries` array — each has a `title` and `description`. 3. Read 3-6 files whose descriptions match the user's prompt before composing an artifact. The .md files preserve the source's Nuxt Content frontmatter and `::ComponentName{}` shortcodes — read them as prose.",
+  "totalDocs": 332,
+  "categories": [
+    {
+      "key": ".",
+      "description": "",
+      "count": 2,
+      "entries": [
+        {
+          "path": "support.md",
+          "title": "Get support",
+          "description": "Reach out for help with an axiom.ai automation through the customer support form, the Reddit community, or a dedicated Slack channel.",
+          "order": 4
+        },
+        {
+          "path": "index.md",
+          "title": "Documentation",
+          "description": "Transform yourself into a browser automation expert with axiom.ai's offical documentaion."
+        }
+      ]
+    },
+    {
+      "key": "account",
+      "description": "Create an account to get 120 minutes of free runtime, manage account settings from the dashboard, and manage your subscription, billing, and invoices.",
+      "count": 4,
+      "entries": [
+        {
+          "path": "account/account.md",
+          "title": "Manage your account",
+          "description": "Update your axiom.ai email, password, company information, country, and team membership, or delete your account permanently.",
+          "order": 1
+        },
+        {
+          "path": "account/subscription.md",
+          "title": "Manage your subscription",
+          "description": "Change plan, update payment method and billing details, and download invoices from the Stripe payment portal connected to your axiom.ai account.",
+          "order": 2
+        },
+        {
+          "path": "account/create-account.md",
+          "title": "Create an account",
+          "description": "Create an axiom.ai account with Google or an email address to get 120 minutes of free runtime to start building automations.",
+          "order": 5
+        },
+        {
+          "path": "account/index.md",
+          "title": "Account",
+          "description": "Create an account to get 120 minutes of free runtime, manage account settings from the dashboard, and manage your subscription, billing, and invoices.",
+          "order": 6
+        }
+      ]
+    },
+    {
+      "key": "code-tool",
+      "description": "",
+      "count": 7,
+      "entries": [
+        {
+          "path": "code-tool/dashboard.md",
+          "title": "Dashboard",
+          "description": "Navigate the Code Tool dashboard, including Home, run reports, the Playground, settings, theme, and remaining runtime.",
+          "order": 1
+        },
+        {
+          "path": "code-tool/index.md",
+          "title": "Code Tool",
+          "description": "",
+          "order": 2
+        },
+        {
+          "path": "code-tool/playground.md",
+          "title": "Playground",
+          "description": "The Playground lets you test scripts and watch them run in a hosted browser, without setting up a local Node.js environment.",
+          "order": 2
+        },
+        {
+          "path": "code-tool/create-scripts.md",
+          "title": "Create scripts",
+          "description": "Write Puppeteer scripts in your local environment and connect them to axiom.ai's hosted browser using your API key.",
+          "order": 3
+        },
+        {
+          "path": "code-tool/running-scripts.md",
+          "title": "Run scripts",
+          "description": "Run Code Tool scripts from your own development environment using Node.js, or test them in the axiom.ai Playground without any local setup.",
+          "order": 4
+        },
+        {
+          "path": "code-tool/run-reports.md",
+          "title": "Run reports",
+          "description": "View in-progress and completed Code Tool runs, watch live runs, check durations, and inspect errors and run details from the dashboard.",
+          "order": 5
+        },
+        {
+          "path": "code-tool/token-generation.md",
+          "title": "Generate an API key",
+          "description": "Generate the API key used to authenticate Code Tool scripts to axiom.ai's hosted browser, with guidance on storing it securely.",
+          "order": 6
+        }
+      ]
+    },
+    {
+      "key": "code-tool/samples",
+      "description": "Sample Puppeteer scripts you can run in the axiom.ai Playground or adapt for your own automations, covering navigation and data entry.",
+      "count": 3,
+      "entries": [
+        {
+          "path": "code-tool/samples/navigate-to-page.md",
+          "title": "Navigate to a page",
+          "description": "Sample Puppeteer script for the axiom.ai Code Tool that connects to the hosted browser, opens a page, waits, and closes the browser cleanly.",
+          "order": 1
+        },
+        {
+          "path": "code-tool/samples/data-entry.md",
+          "title": "Enter data into a page",
+          "description": "Sample Puppeteer script for the axiom.ai Code Tool that connects to the hosted browser, fills a search field on Google, waits, and closes cleanly.",
+          "order": 2
+        },
+        {
+          "path": "code-tool/samples/index.md",
+          "title": "Sample scripts",
+          "description": "Sample Puppeteer scripts you can run in the axiom.ai Playground or adapt for your own automations, covering navigation and data entry.",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "key": "developer-hub",
+      "description": "Use axiom.ai as a developer platform with the API, the Code Tool, and custom JavaScript steps inside no-code automations, plus guides and troubleshooting.",
+      "count": 1,
+      "entries": [
+        {
+          "path": "developer-hub/index.md",
+          "title": "Developer Hub",
+          "description": "Use axiom.ai as a developer platform with the API, the Code Tool, and custom JavaScript steps inside no-code automations, plus guides and troubleshooting.",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/api",
+      "description": "Three API surfaces with one key. Trigger pre-built automations over REST, connect Puppeteer or Playwright over CDP, or call high-level browser steps from Node.",
+      "count": 4,
+      "entries": [
+        {
+          "path": "developer-hub/api/index.md",
+          "title": "API",
+          "description": "Three API surfaces with one key. Trigger pre-built automations over REST, connect Puppeteer or Playwright over CDP, or call high-level browser steps from Node.",
+          "order": 1
+        },
+        {
+          "path": "developer-hub/api/quickstart.md",
+          "title": "Quickstart",
+          "description": "Trigger a pre-built No-Code Tool automation with cURL, or drive a cloud browser from your own code with Puppeteer.",
+          "order": 2
+        },
+        {
+          "path": "developer-hub/api/authentication.md",
+          "title": "Authentication",
+          "description": "Generate an axiom.ai API key from the Chrome extension or Code Tool and use it to authenticate every API request.",
+          "order": 3
+        },
+        {
+          "path": "developer-hub/api/programmatic-signup.md",
+          "title": "Programmatic signup",
+          "description": "Three-call REST flow for code that needs to sign up its own user, log in, and mint an API key — useful for agents, Claude skills, and headless onboarding.",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/api/cdp",
+      "description": "Drive a cloud browser from your own code over a Chrome DevTools Protocol WebSocket. Works with Puppeteer, Playwright, raw CDP libraries, or anything else that speaks the protocol.",
+      "count": 1,
+      "entries": [
+        {
+          "path": "developer-hub/api/cdp/index.md",
+          "title": "Connect over CDP",
+          "description": "Drive a cloud browser from your own code over a Chrome DevTools Protocol WebSocket. Works with Puppeteer, Playwright, raw CDP libraries, or anything else that speaks the protocol.",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/api/mcp",
+      "description": "Drive axiom.ai from Claude, Cursor, or any MCP client. The axiom.ai desktop app ships with a built-in MCP server; alternatively, build your own in Python or TypeScript.",
+      "count": 5,
+      "entries": [
+        {
+          "path": "developer-hub/api/mcp/desktop-app-server.md",
+          "title": "Desktop app MCP server",
+          "description": "The axiom.ai desktop app ships with a built-in MCP server. Toggle it on, paste your API key, and Claude Desktop, Claude Code, Cursor, or any MCP client can trigger axiom.ai automations and step functions in conversation.",
+          "order": 1
+        },
+        {
+          "path": "developer-hub/api/mcp/build-your-own-server-python.md",
+          "title": "Build your own server (Python)",
+          "description": "Build a minimal Model Context Protocol server in Python that exposes axiom.ai automation triggers as tools for any MCP client.",
+          "order": 2
+        },
+        {
+          "path": "developer-hub/api/mcp/build-your-own-typescript.md",
+          "title": "Build your own server (TypeScript)",
+          "description": "Build a minimal Model Context Protocol server in Node and TypeScript that exposes axiom.ai automation triggers as tools for any MCP client.",
+          "order": 3
+        },
+        {
+          "path": "developer-hub/api/mcp/register-with-claude.md",
+          "title": "Register with Claude clients",
+          "description": "Configure Claude Desktop, Claude Code, Cursor, and Cowork to load your custom axiom.ai MCP server.",
+          "order": 4
+        },
+        {
+          "path": "developer-hub/api/mcp/index.md",
+          "title": "MCP",
+          "description": "Drive axiom.ai from Claude, Cursor, or any MCP client. The axiom.ai desktop app ships with a built-in MCP server; alternatively, build your own in Python or TypeScript.",
+          "order": 7
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/api/reference",
+      "description": "Lookup tables for every axiom.ai API endpoint, every error response, and the data payload schema used by triggers.",
+      "count": 5,
+      "entries": [
+        {
+          "path": "developer-hub/api/reference/endpoints.md",
+          "title": "Endpoints",
+          "description": "Every axiom.ai API endpoint at a glance, with method, path, required parameters, and links to full reference pages.",
+          "order": 1
+        },
+        {
+          "path": "developer-hub/api/reference/errorcodes.md",
+          "title": "Error codes",
+          "description": "Every axiom.ai API error response, what it means, and how to resolve it.",
+          "order": 2
+        },
+        {
+          "path": "developer-hub/api/reference/responses.md",
+          "title": "API responses",
+          "description": "Every JSON response shape returned by the axiom.ai API, including success, queued, and error variants.",
+          "order": 2
+        },
+        {
+          "path": "developer-hub/api/reference/data-payload.md",
+          "title": "Data payload format",
+          "description": "Schema reference for the 3-D data array passed in axiom.ai automation triggers.",
+          "order": 3
+        },
+        {
+          "path": "developer-hub/api/reference/index.md",
+          "title": "Reference",
+          "description": "Lookup tables for every axiom.ai API endpoint, every error response, and the data payload schema used by triggers.",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/api/run-automations",
+      "description": "Trigger pre-built No-Code Tool automations, pass input data, poll for results, and stop runs from outside the Chrome extension.",
+      "count": 8,
+      "entries": [
+        {
+          "path": "developer-hub/api/run-automations/index.md",
+          "title": "Run automations",
+          "description": "Trigger pre-built No-Code Tool automations, pass input data, poll for results, and stop runs from outside the Chrome extension.",
+          "order": 1
+        },
+        {
+          "path": "developer-hub/api/run-automations/trigger-an-automation.md",
+          "title": "Trigger an automation",
+          "description": "Start a saved No-Code Tool automation in the cloud by name, with optional input data passed in the request body.",
+          "order": 2
+        },
+        {
+          "path": "developer-hub/api/run-automations/pass-input-data.md",
+          "title": "Pass input data",
+          "description": "Send dynamic input into a No-Code Tool automation when triggering it via the API, using the table-shaped data payload.",
+          "order": 3
+        },
+        {
+          "path": "developer-hub/api/run-automations/check-run-status.md",
+          "title": "Check run status",
+          "description": "Poll the axiom.ai API for the current status of an automation by name and retrieve any data it wrote out.",
+          "order": 4
+        },
+        {
+          "path": "developer-hub/api/run-automations/run-reports.md",
+          "title": "List run reports",
+          "description": "Fetch a list of recent automation runs on your account, each with its status, description, and timestamps.",
+          "order": 4
+        },
+        {
+          "path": "developer-hub/api/run-automations/list-automations.md",
+          "title": "List automations",
+          "description": "Fetch the names of every saved No-Code Tool automation on your account, useful for building UIs or validating an automation name before triggering it.",
+          "order": 5
+        },
+        {
+          "path": "developer-hub/api/run-automations/stop-a-run.md",
+          "title": "Stop a run",
+          "description": "Cancel a triggered automation that's still running in the cloud, freeing the concurrency slot for other runs.",
+          "order": 5
+        },
+        {
+          "path": "developer-hub/api/run-automations/webhooks-from-a-step.md",
+          "title": "Webhooks from a step",
+          "description": "Use webhook steps inside an automation to push data to external services or trigger an automation from inbound webhooks.",
+          "order": 6
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/api/step-functions",
+      "description": "Drive a cloud browser session step by step (goto, click, enter text, wait, scrape) choosing each action based on what the previous one returned.",
+      "count": 22,
+      "entries": [
+        {
+          "path": "developer-hub/api/step-functions/start-a-session .md",
+          "title": "Start a session",
+          "description": "Install axiom-api, instantiate the AxiomApi class with your API key, then open a cloud browser session.",
+          "order": 2
+        },
+        {
+          "path": "developer-hub/api/step-functions/goto.md",
+          "title": "Go to URL",
+          "description": "Send the cloud browser session to a URL using axiom.goto() and wait for the page to load.",
+          "order": 3
+        },
+        {
+          "path": "developer-hub/api/step-functions/click.md",
+          "title": "Click",
+          "description": "Click a button, link, or any other element in a cloud browser session by passing a CSS selector to axiom.click().",
+          "order": 4
+        },
+        {
+          "path": "developer-hub/api/step-functions/enter-text.md",
+          "title": "Enter text",
+          "description": "Enter text into an input, textarea, or other focusable element in a cloud browser session using axiom.enterText().",
+          "order": 5
+        },
+        {
+          "path": "developer-hub/api/step-functions/click-multiple.md",
+          "title": "Click multiple",
+          "description": "Click every element matching a CSS selector, up to a maximum, using axiom.clickMultiple().",
+          "order": 6
+        },
+        {
+          "path": "developer-hub/api/step-functions/index.md",
+          "title": "Step functions",
+          "description": "Drive a cloud browser session step by step (goto, click, enter text, wait, scrape) choosing each action based on what the previous one returned.",
+          "order": 6
+        },
+        {
+          "path": "developer-hub/api/step-functions/click-engagement-button.md",
+          "title": "Click engagement button",
+          "description": "Click a like, follow, subscribe, or similar toggle only when it isn't already in the target state, using axiom.clickEngagementButton().",
+          "order": 7
+        },
+        {
+          "path": "developer-hub/api/step-functions/hover.md",
+          "title": "Hover",
+          "description": "Move the mouse over an element to trigger hover-only UI (dropdown menus, tooltips, lazy-loaded content) using axiom.hover().",
+          "order": 8
+        },
+        {
+          "path": "developer-hub/api/step-functions/click-and-drag.md",
+          "title": "Click and drag",
+          "description": "Press the mouse at one coordinate, drag to another, and release using axiom.clickAndDrag(). Useful for sliders, range pickers, drag-and-drop UIs, and slider captchas.",
+          "order": 9
+        },
+        {
+          "path": "developer-hub/api/step-functions/press-keys.md",
+          "title": "Press keys",
+          "description": "Send keyboard key presses (Enter, Tab, arrow keys, modifier combinations) to the currently focused element using axiom.pressKeys().",
+          "order": 10
+        },
+        {
+          "path": "developer-hub/api/step-functions/select-list.md",
+          "title": "Select list",
+          "description": "Pick an option in a native HTML <select> element by visible text using axiom.selectList().",
+          "order": 11
+        },
+        {
+          "path": "developer-hub/api/step-functions/date-picker.md",
+          "title": "Date picker",
+          "description": "Navigate a calendar widget month by month and pick a target day using axiom.datePicker().",
+          "order": 12
+        },
+        {
+          "path": "developer-hub/api/step-functions/switch-browser-tab.md",
+          "title": "Switch browser tab",
+          "description": "Switch the cloud browser session's focus to another tab using axiom.switchBrowserTab().",
+          "order": 13
+        },
+        {
+          "path": "developer-hub/api/step-functions/get-clipboard-contents.md",
+          "title": "Get clipboard contents",
+          "description": "Read the contents of the cloud browser's clipboard, useful for pages that put their copy output on the clipboard rather than in the DOM.",
+          "order": 14
+        },
+        {
+          "path": "developer-hub/api/step-functions/scrape.md",
+          "title": "Scrape",
+          "description": "Smart-scrape a list of records from one or more pages, with optional pagination and a maximum-results cap, using axiom.scrape().",
+          "order": 15
+        },
+        {
+          "path": "developer-hub/api/step-functions/scrape-metadata.md",
+          "title": "Scrape metadata",
+          "description": "Extract page-level metadata (title, analytics IDs, schema.org structured data, or any meta-tag content) using axiom.scrapeMetadata().",
+          "order": 16
+        },
+        {
+          "path": "developer-hub/api/step-functions/integrate-ai.md",
+          "title": "Integrate AI",
+          "description": "Run an LLM call inline within a step-function session for prompt completion, classification, or extraction using axiom.integrateAI().",
+          "order": 17
+        },
+        {
+          "path": "developer-hub/api/step-functions/solve-captcha.md",
+          "title": "Solve captcha",
+          "description": "Send the current page's captcha to a third-party solver and submit the result using axiom.solveCaptcha().",
+          "order": 18
+        },
+        {
+          "path": "developer-hub/api/step-functions/wait.md",
+          "title": "Wait",
+          "description": "Pause the session for a fixed duration on the pod, keeping the session alive while you wait for content to render or for a server-side process to finish.",
+          "order": 19
+        },
+        {
+          "path": "developer-hub/api/step-functions/restart-browser.md",
+          "title": "Restart browser",
+          "description": "Restart the cloud browser within the current session to recover from a wedged state without losing the session itself, using axiom.restartBrowser().",
+          "order": 20
+        },
+        {
+          "path": "developer-hub/api/step-functions/close-a-session.md",
+          "title": "Close a session",
+          "description": "Close the cloud browser session to free its resources and stop consuming runtime quota.",
+          "order": 25
+        },
+        {
+          "path": "developer-hub/api/step-functions/step-function-vs-no-code-step.md",
+          "title": "Step function vs No-Code step",
+          "description": "Find the axiom-api method equivalent of every No-Code Tool step, useful when porting a visual automation to code.",
+          "order": 30
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/api/usage-and-limits",
+      "description": "Check remaining runtime, understand queueing and concurrency, and stay within rate limits when calling the axiom.ai API.",
+      "count": 4,
+      "entries": [
+        {
+          "path": "developer-hub/api/usage-and-limits/remaining-runtime.md",
+          "title": "Check remaining runtime",
+          "description": "Query the axiom.ai API for your account's cloud runtime allowance, used minutes, and remaining minutes for the current billing period.",
+          "order": 2
+        },
+        {
+          "path": "developer-hub/api/usage-and-limits/queue-and-concurrency.md",
+          "title": "Queue and concurrency",
+          "description": "Understand how axiom.ai handles concurrent cloud runs, when triggers get queued, and how the queue clears.",
+          "order": 3
+        },
+        {
+          "path": "developer-hub/api/usage-and-limits/index.md",
+          "title": "Usage and limits",
+          "description": "Check remaining runtime, understand queueing and concurrency, and stay within rate limits when calling the axiom.ai API.",
+          "order": 4
+        },
+        {
+          "path": "developer-hub/api/usage-and-limits/rate-limits.md",
+          "title": "Rate limits",
+          "description": "The axiom.ai API allows 100 calls per minute per API key. Calls past that limit return a 429 error and the requested automation does not run.",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/deep-dives",
+      "description": "In-depth articles on the tools and concepts behind axiom.ai, including Chromium, Puppeteer, cookie handling, data handling, and the structure of an exported automation.",
+      "count": 5,
+      "entries": [
+        {
+          "path": "developer-hub/deep-dives/chromium.md",
+          "title": "Chromium",
+          "description": "A deep dive into Chromium, how its multi-process architecture and V8 engine affect performance, and how axiom.ai uses Chromium to run automations.",
+          "order": 1
+        },
+        {
+          "path": "developer-hub/deep-dives/axiom-structure.md",
+          "title": "Automation JSON structure",
+          "description": "Reference for the JSON structure of an exported axiom.ai automation, covering identifiers, step data, parameters, settings, and notification fields.",
+          "order": 2
+        },
+        {
+          "path": "developer-hub/deep-dives/cookies.md",
+          "title": "Cookies in axiom.ai",
+          "description": "A deep dive into how axiom.ai stores cookies for automations, how cookies behave when an automation is duplicated, and why resyncing is sometimes required.",
+          "order": 3
+        },
+        {
+          "path": "developer-hub/deep-dives/index.md",
+          "title": "Deep dives",
+          "description": "In-depth articles on the tools and concepts behind axiom.ai, including Chromium, Puppeteer, cookie handling, data handling, and the structure of an exported automation.",
+          "order": 3
+        },
+        {
+          "path": "developer-hub/deep-dives/data-handling.md",
+          "title": "Data handling",
+          "description": "A deep dive into what data axiom.ai stores, what stays in your environment, how desktop and cloud runs differ, and how to use axiom.ai safely with sensitive data.",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/snippets",
+      "description": "Tried-and-tested JavaScript and Puppeteer snippets for the Write javascript step, plus guidance on when to use the Run in app option.",
+      "count": 1,
+      "entries": [
+        {
+          "path": "developer-hub/snippets/index.md",
+          "title": "Code snippets",
+          "description": "Tried-and-tested JavaScript and Puppeteer snippets for the Write javascript step, plus guidance on when to use the Run in app option.",
+          "order": 2
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/snippets/javascript",
+      "description": "Ready-to-use JavaScript snippets for the Write javascript step, organised by category covering data, interaction, navigation, network, and scraping.",
+      "count": 7,
+      "entries": [
+        {
+          "path": "developer-hub/snippets/javascript/data.md",
+          "title": "Data snippets",
+          "description": "JavaScript snippets for manipulating data in axiom.ai automations, including dates, timestamps, constants, CSV exports, and regex transformations.",
+          "order": 1
+        },
+        {
+          "path": "developer-hub/snippets/javascript/index.md",
+          "title": "JavaScript snippets",
+          "description": "Ready-to-use JavaScript snippets for the Write javascript step, organised by category covering data, interaction, navigation, network, and scraping.",
+          "order": 1
+        },
+        {
+          "path": "developer-hub/snippets/javascript/interaction.md",
+          "title": "Interaction snippets",
+          "description": "JavaScript snippets for interacting with page elements in axiom.ai automations, including clicks, dropdowns, text entry, Shadow DOM access, and event listeners.",
+          "order": 2
+        },
+        {
+          "path": "developer-hub/snippets/javascript/navigation.md",
+          "title": "Navigation snippets",
+          "description": "JavaScript snippets for moving through browser history in axiom.ai automations, including going back one or several pages.",
+          "order": 3
+        },
+        {
+          "path": "developer-hub/snippets/javascript/network.md",
+          "title": "Network snippets",
+          "description": "JavaScript snippets for inspecting and capturing network activity in axiom.ai automations using the Performance API.",
+          "order": 4
+        },
+        {
+          "path": "developer-hub/snippets/javascript/page-manipulation.md",
+          "title": "Page manipulation snippets",
+          "description": "JavaScript snippets for manipulating the current page during an axiom.ai automation, including hiding elements that block other interactions.",
+          "order": 5
+        },
+        {
+          "path": "developer-hub/snippets/javascript/scrape.md",
+          "title": "Scrape snippets",
+          "description": "JavaScript snippets for scraping data in axiom.ai automations, including HTML tables, element attributes, page body, and meta tags.",
+          "order": 6
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/snippets/puppeteer",
+      "description": "Ready-to-use Puppeteer snippets for the Write javascript step in axiom.ai, organised into interaction and network categories.",
+      "count": 3,
+      "entries": [
+        {
+          "path": "developer-hub/snippets/puppeteer/interaction.md",
+          "title": "Interaction snippets",
+          "description": "Puppeteer snippets for interacting with page elements in axiom.ai automations, including scrolling and filtering elements with the locator API.",
+          "order": 1
+        },
+        {
+          "path": "developer-hub/snippets/puppeteer/index.md",
+          "title": "Puppeteer snippets",
+          "description": "Ready-to-use Puppeteer snippets for the Write javascript step in axiom.ai, organised into interaction and network categories.",
+          "order": 2
+        },
+        {
+          "path": "developer-hub/snippets/puppeteer/network.md",
+          "title": "Network snippets",
+          "description": "Puppeteer snippets for axiom.ai automations to intercept, log, or block network requests by URL, file extension, or resource type.",
+          "order": 2
+        }
+      ]
+    },
+    {
+      "key": "developer-hub/troubleshooting",
+      "description": "Debug and fix issues specific to the axiom.ai API and custom code, including JavaScript and Puppeteer steps, plus a reference of common API errors.",
+      "count": 3,
+      "entries": [
+        {
+          "path": "developer-hub/troubleshooting/debug.md",
+          "title": "Debug developer features",
+          "description": "Test the axiom.ai API with Postman or cURL, and debug custom code in Write javascript steps using console logs and conditional checks.",
+          "order": 1
+        },
+        {
+          "path": "developer-hub/troubleshooting/api.md",
+          "title": "API errors",
+          "description": "Errors returned by the axiom.ai API when triggering automations, including authentication failures, missing fields, and incorrect data formats.",
+          "order": 2
+        },
+        {
+          "path": "developer-hub/troubleshooting/index.md",
+          "title": "Developer troubleshooting",
+          "description": "Debug and fix issues specific to the axiom.ai API and custom code, including JavaScript and Puppeteer steps, plus a reference of common API errors.",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "key": "faq",
+      "description": "Answers to common questions about axiom.ai across general use, runtime and scheduling, subscriptions and accounts, the Builder, and third-party tools.",
+      "count": 6,
+      "entries": [
+        {
+          "path": "faq/no-code-builder.md",
+          "title": "Builder FAQ",
+          "description": "Answers to common questions about the axiom.ai No-Code Tool, including JavaScript support, captchas, login automation, loops, and Chrome extension automation.",
+          "order": 1
+        },
+        {
+          "path": "faq/general.md",
+          "title": "General FAQ",
+          "description": "Answers to common general questions about axiom.ai including affiliate program, API, desktop app, data handling, HIPAA compliance, and screen recording.",
+          "order": 2
+        },
+        {
+          "path": "faq/runtime-and-scheduling.md",
+          "title": "Runtime and scheduling FAQ",
+          "description": "Answers to common questions about runtime allowances, scheduling, automation speed, concurrency, queueing, and triggering automations from external tools.",
+          "order": 3
+        },
+        {
+          "path": "faq/subscriptions-and-accounts.md",
+          "title": "Subscriptions and accounts FAQ",
+          "description": "Answers to common questions about axiom.ai subscriptions, including free trials, cancellation, upgrades, downgrades, team accounts, and Stripe portal access.",
+          "order": 4
+        },
+        {
+          "path": "faq/index.md",
+          "title": "FAQ",
+          "description": "Answers to common questions about axiom.ai across general use, runtime and scheduling, subscriptions and accounts, the Builder, and third-party tools.",
+          "order": 5
+        },
+        {
+          "path": "faq/third-party.md",
+          "title": "Third-party tools FAQ",
+          "description": "Answers to common questions about using axiom.ai with third-party services, including Slack, that have specific browser or platform restrictions.",
+          "order": 5
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool",
+      "description": "Build browser automations visually with the axiom.ai Chrome extension — no coding required.",
+      "count": 1,
+      "entries": [
+        {
+          "path": "no-code-tool/index.md",
+          "title": "No-Code Tool",
+          "description": "Build browser automations visually with the axiom.ai Chrome extension — no coding required.",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/get-started",
+      "description": "Three short starting points for your first bot - scrape a page, fill a form, or loop through a list of URLs.",
+      "count": 5,
+      "entries": [
+        {
+          "path": "no-code-tool/get-started/scrape-to-sheet.md",
+          "title": "Scrape a page into a Google Sheet",
+          "description": "Pull structured data off any webpage and write it straight to a Google Sheet in five steps.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/get-started/form-filling.md",
+          "title": "Fill a form from a spreadsheet",
+          "description": "Read rows from a spreadsheet and, for each row, fill a form on a website.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/get-started/index.md",
+          "title": "Get started",
+          "description": "Three short starting points for your first bot - scrape a page, fill a form, or loop through a list of URLs.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/get-started/loop-urls.md",
+          "title": "Loop through a list of URLs",
+          "description": "Start with a list of URLs, visit each one, and do something on every page.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/get-started/webforms.md",
+          "title": "How to automate web forms",
+          "description": "Learn how to automate data entry into web forms by combining steps using the axiom.ai No-code tool."
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/how-it-works",
+      "description": "Learn how bots click, scrape, loop, branch on logic, handle logins, and run on a schedule in axiom.ai.",
+      "count": 8,
+      "entries": [
+        {
+          "path": "no-code-tool/how-it-works/index.md",
+          "title": "How it works",
+          "description": "Learn how bots click, scrape, loop, branch on logic, handle logins, and run on a schedule in axiom.ai.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/how-it-works/get-data.md",
+          "title": "Scrape data",
+          "description": "Extract data from any webpage using browser automation, then tune the scraper for speed and accuracy.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/how-it-works/loop.md",
+          "title": "Loop through data",
+          "description": "Repeat a set of steps for every row of data using Loop through data, or build conditional loops with Jump and Conditionally jump steps.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/how-it-works/logic.md",
+          "title": "Use logic",
+          "description": "Branch an automation based on data, loop until a condition is met, or stop a run early using If, Try / Catch, and jump steps.",
+          "order": 5
+        },
+        {
+          "path": "no-code-tool/how-it-works/integrate-ai.md",
+          "title": "Integrate AI",
+          "description": "Pass data to Claude, ChatGPT, or another LLM inside an automation to extract structured fields or generate new content.",
+          "order": 7
+        },
+        {
+          "path": "no-code-tool/how-it-works/javascript.md",
+          "title": "Run custom JavaScript",
+          "description": "Use the Write javascript step to run your own code inside an automation, transform data, call APIs, and reach parts of a page the no-code steps can't.",
+          "order": 9
+        },
+        {
+          "path": "no-code-tool/how-it-works/get-started.md",
+          "title": "Make automations with our no-code tool",
+          "description": "Learn how to start making your first bot to automate your tasks in the chrome browser."
+        },
+        {
+          "path": "no-code-tool/how-it-works/vps.md",
+          "title": "VPS Guide",
+          "description": "Learn how to use your own VPS server to schedule and run bots remotely."
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/how-it-works/browser-actions",
+      "description": "Tutorials for automating the most common browser actions, including clicks, text input, file uploads, downloads, tabs, and date pickers.",
+      "count": 20,
+      "entries": [
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/index.md",
+          "title": "Interact with the browser",
+          "description": "Tutorials for automating the most common browser actions, including clicks, text input, file uploads, downloads, tabs, and date pickers.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/clicks.md",
+          "title": "Automate a button click",
+          "description": "Click buttons in a web app using the Click element step, the Press key(s) step, or custom JavaScript.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/multi-click.md",
+          "title": "Click multiple buttons",
+          "description": "Click many buttons at once with Click multiple elements, loop through CSS selectors, or use jump steps to repeat a click.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/enter-text.md",
+          "title": "Enter text into an input field",
+          "description": "Use the Enter text step to type into form fields, with optional support for line breaks and dynamic data.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/wait.md",
+          "title": "Pause an automation",
+          "description": "Pause an automation to interact with the page, give content time to load, or mimic human-like timing.",
+          "order": 5
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/tabs.md",
+          "title": "Switch and close browser tabs",
+          "description": "Use the Switch browser tab and Close browser tab steps to interact with multiple tabs during a run.",
+          "order": 6
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/solve-captcha.md",
+          "title": "Solve a captcha",
+          "description": "Solve reCAPTCHA and similar challenges using the 2Captcha integration, manual interaction, or anti-bot blocking settings.",
+          "order": 7
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/social-media-buttons.md",
+          "title": "Click likes and follows",
+          "description": "Use the Click social media buttons step to like and follow posts, with detection so already-liked content isn't clicked twice.",
+          "order": 8
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/select-lists.md",
+          "title": "Use a select list",
+          "description": "Pick an option from a dropdown using the Select list step, or fall back to combinations of Click element with Enter text or Press key(s).",
+          "order": 9
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/rollover.md",
+          "title": "Trigger a rollover",
+          "description": "Trigger a mouseover event on a dropdown menu or other hover-activated element using the Rollover element step or JavaScript.",
+          "order": 10
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/radio-buttons.md",
+          "title": "Click a radio button",
+          "description": "Click radio buttons in a web form using the Click element step, with fallback methods for tricky cases.",
+          "order": 11
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/mouse-drag.md",
+          "title": "Drag the mouse",
+          "description": "Emulate a click-and-drag mouse interaction using start and end coordinates with the Mouse click and drag step.",
+          "order": 12
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/key-strokes.md",
+          "title": "Record keystrokes",
+          "description": "Record any single key or combination of keys using the Press key(s) step, then replay it during an automation.",
+          "order": 13
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/date-picker.md",
+          "title": "Use a date picker",
+          "description": "Pick dates from a calendar widget or text input using the Date picker step or the Enter text step.",
+          "order": 14
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/current-url.md",
+          "title": "Get the current URL",
+          "description": "Use the Get current URL step to capture the URL of the page the automation is on, for use in later steps.",
+          "order": 15
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/checkbox.md",
+          "title": "Tick a checkbox",
+          "description": "Tick checkboxes in a web form using the Click element step, with fallback methods for tricky cases.",
+          "order": 16
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/download-cloud.md",
+          "title": "Download files to Google Drive",
+          "description": "Use the Download a file to Google Drive step to save files from any webpage to a Google Drive folder, including looped downloads.",
+          "order": 17
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/download-local.md",
+          "title": "Download files to your computer",
+          "description": "Save files from any website to a local folder using the Download file, Download files, or Download file from URL steps.",
+          "order": 18
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/upload-cloud.md",
+          "title": "Upload files from Google Drive",
+          "description": "Use the Upload a file from Google Drive step to upload files from Google Drive to any web form, including looped uploads.",
+          "order": 19
+        },
+        {
+          "path": "no-code-tool/how-it-works/browser-actions/upload-local.md",
+          "title": "Upload files from your computer",
+          "description": "Use the Upload a file step to upload files from your local computer to any web form, with optional support for loops.",
+          "order": 20
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/how-it-works/data",
+      "description": "Import data from a CSV or Google Sheet, pass it between steps, and transform it along the way.",
+      "count": 5,
+      "entries": [
+        {
+          "path": "no-code-tool/how-it-works/data/import.md",
+          "title": "How to import data to use in your automation",
+          "description": "Learn how to import data from Google Sheets, CSVs, and web apps like Zapier, Make, Retool, and Airtable.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/how-it-works/data/export.md",
+          "title": "How to export data from axiom.ai",
+          "description": "Learn how to extract data from your automation into CSVs and Google Sheets, and even post to apps like Zapier, Retool, Airtable, and Make using our API and webhooks.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/how-it-works/data/index.md",
+          "title": "Work with data",
+          "description": "Import data from a CSV or Google Sheet, pass it between steps, and transform it along the way.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/how-it-works/data/transform.md",
+          "title": "Transforming data during the run",
+          "description": "Learn how to use a range of steps to help you transform your data, including appending, filtering, replacing, removing, and deduplication.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/how-it-works/data/dynamically_write.md",
+          "title": "How to write data to a specific row",
+          "description": "Learn how to select and write data to a specific row in a Google Sheet when automating the browser."
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/how-it-works/login",
+      "description": "Methods for keeping an automation signed in to the sites it visits, from session sharing to dedicated password managers.",
+      "count": 7,
+      "entries": [
+        {
+          "path": "no-code-tool/how-it-works/login/steps.md",
+          "title": "Log in using a Google Sheet",
+          "description": "Store usernames and passwords in a Google Sheet and read them into an automation at runtime to sign in to web apps.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/how-it-works/login/sessions.md",
+          "title": "Log in by sharing your session",
+          "description": "Store browser cookies in axiom.ai so an automation stays signed in to a web app on desktop and cloud runs.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/how-it-works/login/password-manager.md",
+          "title": "Log in using a password manager",
+          "description": "Store passwords in a dedicated password manager or vault and retrieve them at runtime using the axiom.ai webhook or JavaScript step.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/how-it-works/login/vps.md",
+          "title": "Log in using the VPS",
+          "description": "Store logins on your private axiom.ai VPS and run automations remotely with full scheduling support.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/how-it-works/login/2fa.md",
+          "title": "Log in with 2FA",
+          "description": "Run an automation on a site that requires two-factor authentication using the desktop app or a private VPS.",
+          "order": 5
+        },
+        {
+          "path": "no-code-tool/how-it-works/login/index.md",
+          "title": "Log in to sites",
+          "description": "Methods for keeping an automation signed in to the sites it visits, from session sharing to dedicated password managers.",
+          "order": 6
+        },
+        {
+          "path": "no-code-tool/how-it-works/login/secure.md",
+          "title": "Secure login automation",
+          "description": "Run login automations on a secured PC using the desktop app so no data ever leaves your network.",
+          "order": 6
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/how-it-works/schedule-and-run",
+      "description": "Run a bot manually, on a schedule, or trigger it from Zapier, Make, or a webhook.",
+      "count": 10,
+      "entries": [
+        {
+          "path": "no-code-tool/how-it-works/schedule-and-run/run.md",
+          "title": "Run your automation",
+          "description": "How to run or trigger automations from the desktop runner or in the cloud.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/how-it-works/schedule-and-run/stop-bot-runs.md",
+          "title": "Stop a running automation",
+          "description": "Best practices for building automations that run reliably over long periods.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/how-it-works/schedule-and-run/speed-up-run.md",
+          "title": "Speed up your automations",
+          "description": "Techniques to make your automations run faster and get results more quickly.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/how-it-works/schedule-and-run/long-bot-runs.md",
+          "title": "Structure automations for long runs",
+          "description": "Best practices for building automations that run reliably over long periods.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/how-it-works/schedule-and-run/advanced-running-methods.md",
+          "title": "Advanced running methods",
+          "description": "Run multiple automations concurrently, trigger from Zapier, or run Axiom across multiple computers.",
+          "order": 5
+        },
+        {
+          "path": "no-code-tool/how-it-works/schedule-and-run/automation.md",
+          "title": "Schedule an automation",
+          "description": "Run automations on a schedule in the cloud or on your local computer.",
+          "order": 6
+        },
+        {
+          "path": "no-code-tool/how-it-works/schedule-and-run/manage.md",
+          "title": "Manage scheduled automations",
+          "description": "Edit, pause, stop, or change the timezone of a scheduled automation from your dashboard.",
+          "order": 7
+        },
+        {
+          "path": "no-code-tool/how-it-works/schedule-and-run/other.md",
+          "title": "Schedule on a specific computer",
+          "description": "Run a scheduled automation on a specific PC when using Axiom across multiple computer.",
+          "order": 8
+        },
+        {
+          "path": "no-code-tool/how-it-works/schedule-and-run/login.md",
+          "title": "Login with a scheduled automation",
+          "description": "How to handle login when running a scheduled automation in the cloud.",
+          "order": 9
+        },
+        {
+          "path": "no-code-tool/how-it-works/schedule-and-run/index.md",
+          "title": "Run and schedule bots",
+          "description": "Run a bot manually, on a schedule, or trigger it from Zapier, Make, or a webhook.",
+          "order": 10
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/how-it-works/webhooks",
+      "description": "Trigger a bot from another app, or send data out to Zapier, Make, or any webhook URL when a run finishes.",
+      "count": 3,
+      "entries": [
+        {
+          "path": "no-code-tool/how-it-works/webhooks/export.md",
+          "title": "Import data with a webhook",
+          "description": "Externally trigger an axiom.ai automation and pass data into it with a webhook from Zapier, Make, or any other app.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/how-it-works/webhooks/import.md",
+          "title": "Import data with a webhook",
+          "description": "Externally trigger an axiom.ai automation and pass data into it with a webhook from Zapier, Make, or any other app.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/how-it-works/webhooks/index.md",
+          "title": "Send and receive webhooks",
+          "description": "Trigger a bot from another app, or send data out to Zapier, Make, or any webhook URL when a run finishes.",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/integrations",
+      "description": "Connect axiom.ai to Zapier, Make, n8n, Google Sheets, Excel, ChatGPT, Claude, Gemini, Sonar, 2Captcha, Puppeteer, and Relay.app to extend your automations.",
+      "count": 14,
+      "entries": [
+        {
+          "path": "no-code-tool/integrations/zapier.md",
+          "title": "Zapier",
+          "description": "Trigger Zaps from your axiom.ai automations and trigger axiom.ai automations from Zapier, with optional support for passing data between them.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/integrations/google-sheets.md",
+          "title": "Google Sheets",
+          "description": "Connect a Google Sheets account to axiom.ai to read, write, find, and delete rows from your sheets during an automation.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/integrations/chatgpt.md",
+          "title": "ChatGPT",
+          "description": "Connect ChatGPT (OpenAI) to your axiom.ai automations through the Integrate AI step. Generate text or extract structured data using your own OpenAI API key.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/integrations/2captcha.md",
+          "title": "2Captcha",
+          "description": "Use the Solve Captcha step to outsource reCAPTCHA challenges to 2Captcha, with optional support for other captcha types via JavaScript.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/integrations/index.md",
+          "title": "Integrations",
+          "description": "Connect axiom.ai to Zapier, Make, n8n, Google Sheets, Excel, ChatGPT, Claude, Gemini, Sonar, 2Captcha, Puppeteer, and Relay.app to extend your automations.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/integrations/puppeteer.md",
+          "title": "Puppeteer",
+          "description": "Call Puppeteer's page interaction methods from a Write javascript step to control the browser in ways the no-code steps can't.",
+          "order": 5
+        },
+        {
+          "path": "no-code-tool/integrations/make.md",
+          "title": "Make",
+          "description": "Trigger Make scenarios from axiom.ai automations and trigger axiom.ai automations from Make using webhooks and HTTP requests.",
+          "order": 6
+        },
+        {
+          "path": "no-code-tool/integrations/n8n.md",
+          "title": "n8n",
+          "description": "Trigger n8n workflows from axiom.ai and trigger axiom.ai automations from n8n using webhooks and HTTP requests.",
+          "order": 7
+        },
+        {
+          "path": "no-code-tool/integrations/excel.md",
+          "title": "Microsoft Excel",
+          "description": "Connect a Microsoft work or school account to axiom.ai to read data from and write data to Excel sheets in your automations.",
+          "order": 8
+        },
+        {
+          "path": "no-code-tool/integrations/relay-app.md",
+          "title": "Relay.app",
+          "description": "Trigger Relay.app workflows from axiom.ai automations and trigger axiom.ai automations from Relay.app, with built-in field mapping support.",
+          "order": 9
+        },
+        {
+          "path": "no-code-tool/integrations/claude.md",
+          "title": "Claude",
+          "description": "Connect Claude (Anthropic) to your axiom.ai automations through the Integrate AI step. Generate text or extract structured data using your own Anthropic API key.",
+          "order": 10
+        },
+        {
+          "path": "no-code-tool/integrations/gemini.md",
+          "title": "Gemini",
+          "description": "Connect Gemini (Google) to your axiom.ai automations through the Integrate AI step. Generate text or extract structured data using your own Google AI Studio API key.",
+          "order": 11
+        },
+        {
+          "path": "no-code-tool/integrations/sonar.md",
+          "title": "Sonar",
+          "description": "Connect Sonar (Perplexity) to your axiom.ai automations through the Integrate AI step. Generate text or extract structured data using your own Perplexity API key.",
+          "order": 12
+        },
+        {
+          "path": "no-code-tool/integrations/deepseek.md",
+          "title": "DeepSeek",
+          "description": "Connect DeepSeek to your axiom.ai automations through the Integrate AI step. Generate text or extract structured data using your own DeepSeek API key.",
+          "order": 13
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/reference",
+      "description": "To learn more about axiom.ai's steps, read our reference documention.",
+      "count": 1,
+      "entries": [
+        {
+          "path": "no-code-tool/reference/index.md",
+          "title": "Reference",
+          "description": "To learn more about axiom.ai's steps, read our reference documention.",
+          "order": 5
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/reference/settings",
+      "description": "Configure how each bot runs, handles errors, uses Chrome, and gets shared as a template.",
+      "count": 1,
+      "entries": [
+        {
+          "path": "no-code-tool/reference/settings/index.md",
+          "title": "Automation settings",
+          "description": "Configure how each bot runs, handles errors, uses Chrome, and gets shared as a template.",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/reference/settings/chrome",
+      "description": "Configure how axiom.ai launches Chrome or Chromium, including bot detection bypass, profiles, executable path, extensions, and incognito mode.",
+      "count": 6,
+      "entries": [
+        {
+          "path": "no-code-tool/reference/settings/chrome/bypass-bot-detection.md",
+          "title": "Bypass bot detection",
+          "description": "Get past Cloudflare and similar bot blockers by attaching axiom.ai to an existing Chrome window that has already passed the challenge.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/reference/settings/chrome/index.md",
+          "title": "Chrome",
+          "description": "Configure how axiom.ai launches Chrome or Chromium, including bot detection bypass, profiles, executable path, extensions, and incognito mode.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/reference/settings/chrome/executable-path.md",
+          "title": "Set executable path",
+          "description": "Point axiom.ai at your local Chrome installation so automations run in Chrome instead of the built-in Chromium browser.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/reference/settings/chrome/profile.md",
+          "title": "Set a custom Chromium profile",
+          "description": "Point axiom.ai at a custom Chromium profile so automations carry over browser settings, downloads behaviour, and other preferences.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/reference/settings/chrome/load-extension.md",
+          "title": "Load another extension",
+          "description": "Load a Chrome extension into the Chromium window axiom.ai uses, with one extension at a time and known limitations on interactivity.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/reference/settings/chrome/incognito.md",
+          "title": "Run in incognito mode",
+          "description": "Force axiom.ai to run an automation in a fresh incognito window with no stored cookies, useful when sessions need to start clean.",
+          "order": 5
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/reference/settings/error-handling",
+      "description": "Configure how an automation reacts to errors, slow-loading pages, and iframes using continue on error, page monitoring, and iframe support.",
+      "count": 4,
+      "entries": [
+        {
+          "path": "no-code-tool/reference/settings/error-handling/continue-on-error.md",
+          "title": "Continue on error",
+          "description": "Toggle Continue on error to keep an automation running past failures instead of stopping, with errors shown as warnings in run reports.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/reference/settings/error-handling/index.md",
+          "title": "Error handling",
+          "description": "Configure how an automation reacts to errors, slow-loading pages, and iframes using continue on error, page monitoring, and iframe support.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/reference/settings/error-handling/iframes.md",
+          "title": "Interact with iframes",
+          "description": "Enable iframe support so an automation can scrape and click inside embedded iframes, which axiom.ai ignores by default.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/reference/settings/error-handling/page-monitoring.md",
+          "title": "Disable page monitoring",
+          "description": "Disable page monitoring so axiom.ai stops waiting for page changes between steps, useful when monitoring slows automations significantly.",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/reference/settings/import-export",
+      "description": "Download an automation as a JSON file to share or back up, or import a previously downloaded automation into the Builder.",
+      "count": 2,
+      "entries": [
+        {
+          "path": "no-code-tool/reference/settings/import-export/index.md",
+          "title": "Import and export",
+          "description": "Download an automation as a JSON file to share or back up, or import a previously downloaded automation into the Builder.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/reference/settings/import-export/sharing.md",
+          "title": "Import or download an automation",
+          "description": "Import a previously downloaded automation as a JSON file, or download an automation as JSON to share or back up.",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/reference/settings/run-options",
+      "description": "Configure how an automation runs, including scheduling, proxies, timezone, max runtime, headless mode, notifications, and stored cookies.",
+      "count": 10,
+      "entries": [
+        {
+          "path": "no-code-tool/reference/settings/run-options/index.md",
+          "title": "Run options",
+          "description": "Configure how an automation runs, including scheduling, proxies, timezone, max runtime, headless mode, notifications, and stored cookies.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/reference/settings/run-options/schedule.md",
+          "title": "Schedule an automation",
+          "description": "Run an automation on a recurring schedule by setting a start date, time, and frequency, with optional JavaScript conditions for advanced patterns.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/reference/settings/run-options/proxy.md",
+          "title": "Use a proxy",
+          "description": "Route automation traffic through a proxy to bypass bot blocks or geo-restricted content, with guidance on parsing a proxy URL into the right fields.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/reference/settings/run-options/timezone.md",
+          "title": "Configure timezone",
+          "description": "Set the timezone used by scheduled cloud automations, instead of the default UTC.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/reference/settings/run-options/notifications.md",
+          "title": "Set up notifications",
+          "description": "Receive email or webhook notifications when an automation fails, finishes with warnings, or completes successfully.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/reference/settings/run-options/store-cookies.md",
+          "title": "Store cookies",
+          "description": "Share browser cookies and local storage with cloud runs so logged-in sessions are reused, with optional auto-detection of URLs from your automation.",
+          "order": 5
+        },
+        {
+          "path": "no-code-tool/reference/settings/run-options/max-runtime.md",
+          "title": "Set maximum runtime",
+          "description": "Set a maximum runtime so an automation stops automatically if it runs longer than expected.",
+          "order": 6
+        },
+        {
+          "path": "no-code-tool/reference/settings/run-options/headless.md",
+          "title": "Run headless",
+          "description": "Run an automation in headless mode so it executes in the background without opening a visible browser window.",
+          "order": 7
+        },
+        {
+          "path": "no-code-tool/reference/settings/run-options/concurrency.md",
+          "title": "Concurrency",
+          "description": "Allow more than one instance of an automation to run at the same time on the cloud or desktop, or keep them sequential when order matters.",
+          "order": 8
+        },
+        {
+          "path": "no-code-tool/reference/settings/run-options/block-resources.md",
+          "title": "Block resources",
+          "description": "Block images, fonts, scripts, and other webpage resources during a run to cut bandwidth and speed up automations.",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/reference/steps",
+      "description": "Every step available in axiom.ai's no-code browser automation builder, grouped by what it does.",
+      "count": 83,
+      "entries": [
+        {
+          "path": "no-code-tool/reference/steps/index.md",
+          "title": "Step index",
+          "description": "Every step available in axiom.ai's no-code browser automation builder, grouped by what it does.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/reference/steps/add-error-metadata.md",
+          "title": "Add error metadata step",
+          "description": "Insert debug or error messages. Use to test data output and check step results during automation runs.",
+          "docCategory": "Debug"
+        },
+        {
+          "path": "no-code-tool/reference/steps/add-row-numbers.md",
+          "title": "Add row numbers",
+          "description": "Add row numbers to your data so you can track, organise, and manipulate each row during your automation.",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/append-or-merge-data.md",
+          "title": "Append or Merge data step",
+          "description": "Join data from separate steps. Use to combine scraped data with data from a Google Sheet. Join single columns or entire datasets.",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/back.md",
+          "title": "Back step",
+          "description": "Go back to the previous tab. Return to an earlier page during an automation run.",
+          "docCategory": "Navigate"
+        },
+        {
+          "path": "no-code-tool/reference/steps/clear-cookies.md",
+          "title": "Clear cookies step",
+          "description": "Clear cookies during a run. Use to log out or fix login issues caused by corrupted cookies.",
+          "docCategory": "Other"
+        },
+        {
+          "path": "no-code-tool/reference/steps/clear-data-from-a-google-sheet.md",
+          "title": "Clear data from a Google Sheet step",
+          "description": "Clear data from your Google Sheet. Use to remove rows, columns, or entire ranges before writing new data.",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/click-element.md",
+          "title": "Click element step",
+          "description": "Replicate page clicks on links or buttons with the Click element step. Point and click to select the action you want to automate.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/click-multiple-elements.md",
+          "title": "Click multiple elements step",
+          "description": "Replicate multiple clicks on links or buttons with the Click element step. Point and click to select each action to automate.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/click-social-media-buttons.md",
+          "title": "Click social media buttons step",
+          "description": "Automate actions on social media such as like and follow. Set a value to ensure clicks do not unfollow or unlike.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/close-tab.md",
+          "title": "Close browser tab step",
+          "description": "Close tabs during runtime. Use to manage open pages and keep the automation focused on active tasks.",
+          "docCategory": "Navigate"
+        },
+        {
+          "path": "no-code-tool/reference/steps/Conditionall-jump-step.md",
+          "title": "Conditionally jump to another step",
+          "description": "Jump to a different step based on logic set. Use strings, numbers, or JavaScript to define your argument.",
+          "docCategory": "Control flow"
+        },
+        {
+          "path": "no-code-tool/reference/steps/continue-if-condition-met.md",
+          "title": "Continue only if a condition is met step",
+          "description": "Control bot runs with logic. Decide to continue or end based on argument constructed. Use data passed by other steps. Build argument with strings, numbers, or JavaScript.",
+          "docCategory": "Control flow"
+        },
+        {
+          "path": "no-code-tool/reference/steps/count-rows.md",
+          "title": "Count rows step",
+          "description": "Count number of rows in a Google Sheet. Returns a variable for use in steps like Read data from Google Sheet to control how many rows to loop through or how many steps to jump.",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/create-a-new-google-sheet.md",
+          "title": "Create a new Google Sheet step",
+          "description": "Create new Google Sheet on the fly during a bot run. Step returns the sheet value for use in other steps.",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/date-time.md",
+          "title": "Date and time step",
+          "description": "Use this step to return a date and time value as a token in your web automation.",
+          "docCategory": "Other"
+        },
+        {
+          "path": "no-code-tool/reference/steps/date-picker.md",
+          "title": "Date picker step",
+          "description": "A step designed to automate date pickers, commonly found in web forms. Select day, month, and year.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/delete-rows-from-a-google-sheet.md",
+          "title": "Delete rows from a Google Sheet step",
+          "description": "Delete rows from a Google Sheet. Use with Find rows in Google Sheet to locate and remove specific cells or rows.",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/display-a-message.md",
+          "title": "Display a message step",
+          "description": "Use Display message to open a dialog window in the browser. Pass data from other steps by inserting their tokens. Useful for debugging.",
+          "docCategory": "Debug"
+        },
+        {
+          "path": "no-code-tool/reference/steps/download-files-to-google-drive.md",
+          "title": "Download a file to Google Drive step",
+          "description": "Download files from a web page directly to your Google Drive. Use this step to download files when running bots in the cloud.",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/download-file-from-url.md",
+          "title": "Download file from URL step",
+          "description": "Use this step to automatically download a file from a specified URL to your computer.",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/download-file-step.md",
+          "title": "Download file step",
+          "description": "Download a file via the desktop app to the local drive where the app is installed.",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/download-files.md",
+          "title": "Download files step",
+          "description": "Download files via the desktop app to the local drive where the app is installed.",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/edit-row.md",
+          "title": "Edit Row step",
+          "description": "This step combines Find row and Write to Google Sheet. Use to locate a row and overwrite its data.",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/end-loop.md",
+          "title": "End loop",
+          "description": "Learn how to use the End loop step in your Axiom",
+          "docCategory": "Control flow"
+        },
+        {
+          "path": "no-code-tool/reference/steps/end-run.md",
+          "title": "End run",
+          "description": "Use this step to end a run. Stops all remaining steps in the automation.",
+          "docCategory": "Control flow"
+        },
+        {
+          "path": "no-code-tool/reference/steps/custom-data.md",
+          "title": "Enter custom data step",
+          "description": "Insert custom data returned for use in your automation. Used to store small amounts of data for use in your automations.",
+          "docCategory": "Debug"
+        },
+        {
+          "path": "no-code-tool/reference/steps/enter-text.md",
+          "title": "Enter text step",
+          "description": "Use this step to enter text into text fields found in web forms. Pass data from other steps into the Enter text step to automate data entry.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/export-csv-file.md",
+          "title": "Export to CSV step",
+          "description": "Export any data from Axiom in the form of a CSV. Use to download structured results for use outside the automation.",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/find-row.md",
+          "title": "Find Row step",
+          "description": "",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/generate-random-password.md",
+          "title": "Generate random password step",
+          "description": "Generate random password. Use in automations that require secure input like account creation or form filling.",
+          "docCategory": "Other"
+        },
+        {
+          "path": "no-code-tool/reference/steps/get-a-list-of-links-to-pages.md",
+          "title": "Get a list of links from a page step",
+          "description": "Scrape links from a webpage. Return results via a token for use in your automation.",
+          "docCategory": "Scrape"
+        },
+        {
+          "path": "no-code-tool/reference/steps/get-a-list-of-links-url.md",
+          "title": "Get a list of links from a URL step",
+          "description": "Scrape links from a URL. Return results via a token for use in your automation.",
+          "docCategory": "Scrape"
+        },
+        {
+          "path": "no-code-tool/reference/steps/current-url.md",
+          "title": "Get current bot URL step",
+          "description": "Fetch URL from the active tab during a bot run. Return it for use in your automation.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/Get-data-from-url.md",
+          "title": "Get data from a URL",
+          "description": "Scrape data from a URL including images, HTML, and text. Point and click to select the data you wish to extract.",
+          "docCategory": "Scrape"
+        },
+        {
+          "path": "no-code-tool/reference/steps/Get-data-from-website.md",
+          "title": "Get data from a webpage",
+          "description": "Scrape data from a webpage including images, HTML, and text. Point and click to select the data you wish to extract.",
+          "docCategory": "Scrape"
+        },
+        {
+          "path": "no-code-tool/reference/steps/go-to-page.md",
+          "title": "Go to page",
+          "description": "Load a web page. Pass tokens into this step to retrieve URLs from data sources like spreadsheets.",
+          "docCategory": "Navigate"
+        },
+        {
+          "path": "no-code-tool/reference/steps/if-condtion.md",
+          "title": "If a condition is true, run steps",
+          "description": "Execute a set of steps depending on an If condition. Pass data into this step to use when constructing your argument. IF Conditions can use text, numbers, or custom JavaScript.",
+          "docCategory": "Control flow"
+        },
+        {
+          "path": "no-code-tool/reference/steps/if-else-condition.md",
+          "title": "If Else condition step",
+          "description": "Execute a set of steps depending on an If Else condition. Pass data into this step to use when constructing your argument. IF Conditions can use text, numbers, or custom JavaScript.",
+          "docCategory": "Control flow"
+        },
+        {
+          "path": "no-code-tool/reference/steps/import-csv-file.md",
+          "title": "Import CSV File step",
+          "description": "Import data from a CSV. Pass to other steps via a token for use in your automation.",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/integrate-ai.md",
+          "title": "Integrate AI",
+          "description": "Interact with LLMs to extract data, generate text or make decisions. Supports either ChatGPT, Claude and others, requires an API key.",
+          "docCategory": "AI"
+        },
+        {
+          "path": "no-code-tool/reference/steps/interact-with-a-pages-interface.md",
+          "title": "Interact step",
+          "description": "This step is now defunct. Replaced by the Loop step.",
+          "docCategory": "Loop"
+        },
+        {
+          "path": "no-code-tool/reference/steps/join-different-data-sources.md",
+          "title": "Join different data sources based on matching columns step",
+          "description": "Merge data from multiple sources into a single dataset by matching columns. Used to combine data from large, database-style sets.",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/jump-step.md",
+          "title": "Jump to another step",
+          "description": "Automations run steps in sequence. Use this step to break that sequence and jump to a step outside the order.",
+          "docCategory": "Control flow"
+        },
+        {
+          "path": "no-code-tool/reference/steps/loop.md",
+          "title": "Loop step",
+          "description": "Loop through sub-steps inside a loop. Set data to loop through, such as URLs in a Google Sheet. Pass data into sub-steps using tokens.",
+          "docCategory": "Loop"
+        },
+        {
+          "path": "no-code-tool/reference/steps/mouse-click-and-drag.md",
+          "title": "Mouse click and drag",
+          "description": "Replicate dragging objects with a mouse by recording coordinates. Use to automate drag-and-drop actions on a page.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/move-a-google-sheet.md",
+          "title": "Move a Google Sheet to a new folder in Google Drive",
+          "description": "Used to move a Google Sheet within your Google Drive account.",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/press-key.md",
+          "title": "Press keys(s) step",
+          "description": "Record keyboard input. Include actions like pressing Return to submit a form or Tab to move between fields. Used to replay typed input as part of an automation.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/read-data-from-a-google-sheet-step.md",
+          "title": "Read data from a Google Sheet step",
+          "description": "Fetch data from a Google Sheet to use in your automation. Pass it into steps using tokens.",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/read-data-from-airtable.md",
+          "title": "Read data from Airtable",
+          "description": "Import data from Airtable into your automations.",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/read-data-from-excel.md",
+          "title": "Read data from Excel sheet step",
+          "description": "",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/read-file-from-google-drive.md",
+          "title": "Read file from Google Drive step",
+          "description": "",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/read-local-file.md",
+          "title": "Read local file step",
+          "description": "",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/receive-data-from-another-app.md",
+          "title": "Receive data from another app",
+          "description": "Use the 'receive data from another app' step to trigger your automation via our API and webhooks, an integration or a third-party service such as Postman, Power Automate, Google Apps Scripts and much more.",
+          "docCategory": "Webhook & API"
+        },
+        {
+          "path": "no-code-tool/reference/steps/remove-duplicates.md",
+          "title": "Remove duplicates step",
+          "description": "Check and remove duplicate data from sources such as Google Sheets or CSV files. Use to clean and prepare data before use.",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/remove-html-code.md",
+          "title": "Remove HTML code step",
+          "description": "Strip HTML from a data source, including data returned by Get data steps. Use to clean text before using it in your automation.",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/remove-results-that-contain-certain-words.md",
+          "title": "Remove results that contain certain words step",
+          "description": "Filter data by words they contain. Works with multiple sources including Google Sheets and Get data steps.",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/remove-results-which-do-not-contain-certain-words.md",
+          "title": "Remove results which do not contain certain words step",
+          "description": "Filter data by words they do not contain. Works with multiple sources including Google Sheets and Get data steps.",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/replace-text-step.md",
+          "title": "Replace text step",
+          "description": "Replace text from any of your data sources by inserting their token in this step. Leave blank to delete, or add text to replace with.",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/restart-browser.md",
+          "title": "Restart browser",
+          "description": "Learn how to use the Restart browser step in your Axiom",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/rollover-element.md",
+          "title": "Rollover element step",
+          "description": "Replicate hovering over HTML elements. Use when you need to reveal hidden data before scraping.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/run-another-axiom.md",
+          "title": "Run another Axiom step",
+          "description": "Run other Axioms from inside a single Axiom with this step. Use to chain automations or reuse existing bots.",
+          "docCategory": "Control flow"
+        },
+        {
+          "path": "no-code-tool/reference/steps/save-page-as-html.md",
+          "title": "Save page HTML step",
+          "description": "Save snapshots of a page’s HTML to your Google Drive. Use to archive content or review page structure later.",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/save-screenshot-locally.md",
+          "title": "Save screenshot locally step",
+          "description": "Save screenshots to your local Drive. Use to archive content or review page structure later.",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/save-screenshot-to-google-drive.md",
+          "title": "Save screenshot to Google Drive step",
+          "description": "Save screenshots to your gogole Drive. Use to archive content or review page structure later.",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/scrape-metadata.md",
+          "title": "Scrape metadata step",
+          "description": "",
+          "docCategory": "Scrape"
+        },
+        {
+          "path": "no-code-tool/reference/steps/select-list.md",
+          "title": "Select list step",
+          "description": "Automate interactions with select lists and dropdowns. Pass data into the step to dynamically select options.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/select-random-rows.md",
+          "title": "Select random rows step",
+          "description": "Randomly select a row from a Google Sheet. Use this step to pick a single entry for actions like testing, sampling, or random output.",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/send-an-email.md",
+          "title": "Send an email step",
+          "description": "Send an email. Use to share scraped data, distribute downloaded files, or confirm that an Axiom has completed.",
+          "docCategory": "Email"
+        },
+        {
+          "path": "no-code-tool/reference/steps/solve-captcha.md",
+          "title": "Solve Captcha step",
+          "description": "Use a third party to solve captchas encountered during your bot run.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/split-a-name-into-columns.md",
+          "title": "Split a name into columns step",
+          "description": "Extract first names, middle names, and surnames from scraped data. Pass in a token from your selected data source to use.",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/split-by-character.md",
+          "title": "Split by character step",
+          "description": "Extract data from large volumes of scraped text using the Split by character step. Use multiple steps if needed to remove text before the start and after the end.",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/swap-rows-and-columns.md",
+          "title": "Swap rows and columns step",
+          "description": "",
+          "docCategory": "Manipulate data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/Switch-browser-tab.md",
+          "title": "Switch browser tab step",
+          "description": "Use this step to switch active browser tabs during a run. Helps control which page the automation interacts with.",
+          "docCategory": "Navigate"
+        },
+        {
+          "path": "no-code-tool/reference/steps/trigger-webhook.md",
+          "title": "Trigger webhook step",
+          "description": "Post data to other web apps via webhook.",
+          "docCategory": "Webhook & API"
+        },
+        {
+          "path": "no-code-tool/reference/steps/try-catch.md",
+          "title": "Try catch",
+          "description": "Execute a different set of steps if an error is encountered during runtime. Use to handle errors.",
+          "docCategory": "Debug"
+        },
+        {
+          "path": "no-code-tool/reference/steps/upload-file-google-drive.md",
+          "title": "Upload a file from Google Drive step",
+          "description": "Upload files directly to a folder in your Google Drive.",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/upload-file.md",
+          "title": "Upload a file step",
+          "description": "Using the desktop app, upload files locally from the computer where the app is installed.",
+          "docCategory": "Files"
+        },
+        {
+          "path": "no-code-tool/reference/steps/wait.md",
+          "title": "Wait step",
+          "description": "Pause your automation to manually interact or wait for an event to conclude before continuing.",
+          "docCategory": "Interact"
+        },
+        {
+          "path": "no-code-tool/reference/steps/write-data-to-an-excel-sheet.md",
+          "title": "Write data to a Excel sheet step",
+          "description": "",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/write-data-to-a-google-sheet-step.md",
+          "title": "Write data to a Google Sheet step",
+          "description": "Output data from your automation to a Google Sheet.",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/write-data-to-airtable.md",
+          "title": "Write data to Airtable",
+          "description": "Export data to Airtable from your automations.",
+          "docCategory": "Read and write data"
+        },
+        {
+          "path": "no-code-tool/reference/steps/write-javascript.md",
+          "title": "Write javascript step",
+          "description": "Use JavaScript and Puppeteer in your no-code automation to extend functionality. Puppeteer library is already loaded, no need to include it.",
+          "docCategory": "Other"
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/release-notes",
+      "description": "See what's new in the latest axiom.ai release, plus the full archive of previous releases covering features, fixes, and improvements.",
+      "count": 29,
+      "entries": [
+        {
+          "path": "no-code-tool/release-notes/index.md",
+          "title": "Release notes",
+          "description": "See what's new in the latest axiom.ai release, plus the full archive of previous releases covering features, fixes, and improvements.",
+          "order": 7
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-20-0.md",
+          "title": "Affiliates, smarter queues, overwrite files, and a 4.0 teaser",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-8-0.md",
+          "title": "Axiom academy is live, smarter scraping, improved validation",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-4-8-0.md",
+          "title": "Axiom.ai v4.8",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-4-9-0.md",
+          "title": "Axiom.ai v4.9",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-7-0.md",
+          "title": "Better builder errors, webhook stability, test default data, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-17-0.md",
+          "title": "Better notifications, custom errors, iframe tools, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-6-0.md",
+          "title": "Better sheets integration, loop controls, and fixes",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-4-0-0.md",
+          "title": "Build smarter with nesting, chatgpt 4, and cloud sessions",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-15-0.md",
+          "title": "Custom scraper settings, new templates, and payment upgrade",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-11-0.md",
+          "title": "Dashboard redesign, better conditionals, stop remote bots, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-4-6-0.md",
+          "title": "Excel steps, folder sorting, GPT-4o smarts, end loop control, quick filters, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-4-1-0.md",
+          "title": "Guided templates, step help, datepickers, partial screenshots, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-22-0.md",
+          "title": "Last stop before 4.0, Scrape images, reorder columns, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-5-0.md",
+          "title": "Live data previews, easier navigation, new onboarding tools",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-4-4-0.md",
+          "title": "Live run status, step recommendations, keyboard shortcuts, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-19-0.md",
+          "title": "New debugger, generate text with chatgpt, save to drive, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-10-0.md",
+          "title": "New Make integration, better loops, smarter scraping, and fixes",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-13-0.md",
+          "title": "Optional steps, screenshot tool, scraper upgrades",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-4-2-0.md",
+          "title": "Proxy auth, conditional logic, flexible scheduling, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-4-7-0.md",
+          "title": "Proxy rotation, AI updates, new run options and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-4-3-0.md",
+          "title": "Quick builder, new sidebar, better onboarding, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-4-5-0.md",
+          "title": "Scrape faster, set keys once, skip steps, end runs early, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-14-0.md",
+          "title": "Selector overhaul, drag to reorder steps, new templates, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-21-0.md",
+          "title": "Sneak peek at 4.0, open linked axioms, new steps, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-12-0.md",
+          "title": "Solve captchas, press keys smarter, fix iframe hangs, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-9-0.md",
+          "title": "Step-by-step templates, improved scraping, click multiple, and more",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-18-0.md",
+          "title": "Structured scraping with chatgpt, new schedule view, filters, and fixes",
+          "description": ""
+        },
+        {
+          "path": "no-code-tool/release-notes/axiom-version-3-16-0.md",
+          "title": "Upload to drive, undo mistakes, upgrade steps, and more",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/the-builder",
+      "description": "Get started with the axiom.ai No-Code Tool. Install the Chrome extension, create an account, and build your first browser automation.",
+      "count": 7,
+      "entries": [
+        {
+          "path": "no-code-tool/the-builder/index.md",
+          "title": "Make automations with our no-code tool",
+          "description": "Get started with the axiom.ai No-Code Tool. Install the Chrome extension, create an account, and build your first browser automation.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/the-builder/install.md",
+          "title": "Installation",
+          "description": "Install the axiom.ai Chrome extension and optional desktop application to build and run browser automations.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/the-builder/dashboard.md",
+          "title": "The dashboard",
+          "description": "A tour of the axiom.ai dashboard, where you create new automations, check run reports, and find your scheduled automations.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/the-builder/builder.md",
+          "title": "The no-code Builder",
+          "description": "Learn how to add, duplicate, move, and configure steps in the axiom.ai Builder, plus useful keyboard shortcuts.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/the-builder/pass.md",
+          "title": "Pass data between steps",
+          "description": "Learn how data variables work in axiom.ai and how to pass data from one step to another in your automation.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/the-builder/sharing.md",
+          "title": "Share an automation",
+          "description": "Download your axiom.ai automation as a template file so you can share it with our support team or with other users.",
+          "order": 6
+        },
+        {
+          "path": "no-code-tool/the-builder/ai-assistant.md",
+          "title": "AI Assistant",
+          "description": "Use the in-Builder AI Assistant to debug failing automations, get suggested fixes, extend your automation with new steps, and resolve common configuration issues from a chat conversation.",
+          "order": 10
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/the-builder/selector-tool",
+      "description": "Use the no-code selector tool to pick elements to interact with, extract data from a page, and pass custom CSS selectors into your automations.",
+      "count": 4,
+      "entries": [
+        {
+          "path": "no-code-tool/the-builder/selector-tool/single.md",
+          "title": "Use the Single Selector",
+          "description": "Use the no-code Single Selector to point and click an element on a page, type a text label to match it, paste a custom CSS selector, or pass selectors in from a data source.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/the-builder/selector-tool/multi.md",
+          "title": "Use the Multi Selector tool",
+          "description": "Point and click to select text, images, links, and HTML for extraction, group repeating content into rows, and apply custom CSS selectors.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/the-builder/selector-tool/custom-css-selectors.md",
+          "title": "Use custom CSS selectors",
+          "description": "Set custom CSS selectors in the Single Selector and Multi Selector tools to target elements that the default picker can't reach.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/the-builder/selector-tool/index.md",
+          "title": "The selector tool",
+          "description": "Use the no-code selector tool to pick elements to interact with, extract data from a page, and pass custom CSS selectors into your automations.",
+          "order": 5
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/troubleshooting",
+      "description": "Tools and patterns for debugging an axiom.ai automation, handling errors gracefully, and finding the cause when a run fails.",
+      "count": 3,
+      "entries": [
+        {
+          "path": "no-code-tool/troubleshooting/how-to-debug.md",
+          "title": "Debug an automation",
+          "description": "Use the in-builder error messages, debugger, run reports, and steps like Display a message and Add error metadata to find the cause of a failing automation.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/troubleshooting/error-handling.md",
+          "title": "Handle errors in an automation",
+          "description": "Catch errors with Try / Catch, ignore them with Continue on error, handle empty loops gracefully, and get notified when runs fail.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/troubleshooting/index.md",
+          "title": "Troubleshooting",
+          "description": "Tools and patterns for debugging an axiom.ai automation, handling errors gracefully, and finding the cause when a run fails.",
+          "order": 6
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/troubleshooting/errors",
+      "description": "Browse common errors by category to find the cause and recommended fix for issues with installation, runs, and the desktop application.",
+      "count": 5,
+      "entries": [
+        {
+          "path": "no-code-tool/troubleshooting/errors/index.md",
+          "title": "Common errors",
+          "description": "Browse common errors by category to find the cause and recommended fix for issues with installation, runs, and the desktop application.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/installation.md",
+          "title": "Installation and uninstallation errors",
+          "description": "Errors that can appear when installing or uninstalling the axiom.ai Chrome extension or desktop application, and how to resolve them.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/general.md",
+          "title": "General errors",
+          "description": "Errors that can occur during automation runs, including server errors, version mismatches, concurrency limits, and browser launch failures.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/runtime.md",
+          "title": "Runtime errors",
+          "description": "Errors that occur while an automation is running, including missing elements, browser navigation issues, and runtime limits on long jobs.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/desktop-app.md",
+          "title": "Desktop app errors",
+          "description": "Errors that can occur with the axiom.ai desktop application, including port conflicts that prevent the app from starting.",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/troubleshooting/errors/integrations",
+      "description": "Browse errors specific to axiom.ai integrations including Google Sheets, AI providers, and 2Captcha, with the cause and recommended fix for each.",
+      "count": 4,
+      "entries": [
+        {
+          "path": "no-code-tool/troubleshooting/errors/integrations/google-sheets.md",
+          "title": "Google Sheets errors",
+          "description": "Errors that can occur when reading from or writing to Google Sheets, including expired tokens, missing data, permission issues, and invalid ranges.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/integrations/ai.md",
+          "title": "AI integration errors",
+          "description": "Errors that can occur when using AI steps with OpenAI, Google Gemini, Anthropic Claude, or Perplexity Sonar, mostly related to missing or invalid API keys.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/integrations/index.md",
+          "title": "Integration errors",
+          "description": "Browse errors specific to axiom.ai integrations including Google Sheets, AI providers, and 2Captcha, with the cause and recommended fix for each.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/integrations/2captcha.md",
+          "title": "2Captcha errors",
+          "description": "Errors that can occur when using the Solve Captcha step with 2Captcha, mostly related to missing or invalid API keys.",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "key": "no-code-tool/troubleshooting/errors/steps",
+      "description": "Browse errors specific to axiom.ai steps by category, including interact, scrape, navigate, loop, files, control flow, JavaScript, and webhooks.",
+      "count": 9,
+      "entries": [
+        {
+          "path": "no-code-tool/troubleshooting/errors/steps/interact.md",
+          "title": "Interact step errors",
+          "description": "Errors that can occur with interact steps including click, enter text, and press key, with the cause and recommended fix for each.",
+          "order": 1
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/steps/scrape.md",
+          "title": "Scrape step errors",
+          "description": "Errors that can occur with scrape steps including Get data from a URL and Get data from current page, with the cause and recommended fix.",
+          "order": 2
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/steps/index.md",
+          "title": "Step errors",
+          "description": "Browse errors specific to axiom.ai steps by category, including interact, scrape, navigate, loop, files, control flow, JavaScript, and webhooks.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/steps/navigate.md",
+          "title": "Navigate step errors",
+          "description": "Errors that can occur with navigate steps including Go to page and Switch browser tab, with the cause and recommended fix for each.",
+          "order": 3
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/steps/loop.md",
+          "title": "Loop step errors",
+          "description": "Errors that can occur with loop steps, including how to debug a loop where every iteration fails.",
+          "order": 4
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/steps/files.md",
+          "title": "File step errors",
+          "description": "Errors that can occur with file steps including Upload a file and Download file, with the cause and recommended fix for each.",
+          "order": 5
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/steps/control-flow.md",
+          "title": "Control flow step errors",
+          "description": "Errors that can occur with control flow steps including Jump to another step and Continue only if a condition is met.",
+          "order": 6
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/steps/misc.md",
+          "title": "Other step errors",
+          "description": "Errors that don't fit other step categories, including JavaScript runtime errors from the Write javascript step.",
+          "order": 7
+        },
+        {
+          "path": "no-code-tool/troubleshooting/errors/steps/webhooks-api.md",
+          "title": "Webhook and API step errors",
+          "description": "Errors that can occur when using the Trigger webhook and Receive data from another app steps, including JSON validation issues and missing test data.",
+          "order": 8
+        }
+      ]
+    }
+  ]
+}

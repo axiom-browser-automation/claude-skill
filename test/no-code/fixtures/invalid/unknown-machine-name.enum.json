@@ -1,0 +1,35 @@
+{
+  "id": 0,
+  "openWidgetIndex": -1,
+  "name": "Bad widget",
+  "templateId": 0,
+  "triggers": [],
+  "share_status": false,
+  "share_link": "",
+  "stored_cookies": [],
+  "data": {
+    "allowConcurrencyDesktop": true,
+    "builderTemplateId": 0,
+    "context": [{"context": "url", "url": "https://example.com"}],
+    "disallowConcurrencyCloud": false,
+    "form": [
+      {
+        "machine_name": "WidgetTelekinesis",
+        "name": "Move things with the mind",
+        "stepNumber": "1",
+        "params": []
+      }
+    ],
+    "headless": false,
+    "incognitoMode": false,
+    "injector": {"injector": "dom", "magic_btn_status": true, "selector": ""},
+    "mode": "browser",
+    "storeCookies": false,
+    "templateId": 0,
+    "templateItem": {"name": "x", "description": ""},
+    "templateMode": false,
+    "templateStarted": false,
+    "tokens": null,
+    "viewport": null
+  }
+}

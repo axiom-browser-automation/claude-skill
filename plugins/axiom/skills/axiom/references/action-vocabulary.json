@@ -1,0 +1,4990 @@
+{
+  "_sourceCommit": "d1dd5f0502e22a3bb27bae358978e044fa8ff084",
+  "baseActionList": [
+    {
+      "action": "goto",
+      "machineName": "WidgetDriverGoto",
+      "description": "Navigate to a URL in the current tab."
+    },
+    {
+      "action": "click",
+      "machineName": "WidgetDriverClick",
+      "description": "Click an element on the page."
+    },
+    {
+      "action": "hover",
+      "machineName": "WidgetHoverEvent",
+      "description": "Hover or rollover an element on the page (use for dropdown menus or tooltips)."
+    },
+    {
+      "action": "fill",
+      "machineName": "WidgetDriverEnterText",
+      "description": "Type text into an input or text area."
+    },
+    {
+      "action": "waitForSelector",
+      "machineName": "WidgetDriverWait",
+      "description": "Wait for an element to appear before continuing."
+    },
+    {
+      "action": "extract",
+      "machineName": "WidgetDriverSmartScraper",
+      "description": "Get data from the bot's current page (use when users ask to extract/scrape/return data)."
+    },
+    {
+      "action": "download",
+      "machineName": "WidgetDriverDownloadFiles",
+      "description": "Download multiple files from a webpage (use for “download all PDFs/files”)."
+    },
+    {
+      "action": "upload",
+      "machineName": "WidgetDriverFileUpload",
+      "description": "Upload a file from the user’s computer to a file input field (use when the user says upload files from my computer/device)."
+    },
+    {
+      "action": "readGoogleSheet",
+      "machineName": "WidgetReadGoogleSheet",
+      "description": "Read rows from a Google Sheet to use as input data (use for “from a Google Sheet” / “for each row”)."
+    },
+    {
+      "action": "writeGoogleSheet",
+      "machineName": "WidgetWriteGoogleSheet",
+      "description": "Write/append results to a Google Sheet (use for “save to a Google Sheet”)."
+    },
+    {
+      "action": "screenshot",
+      "machineName": "WidgetDriverSaveScreenshot",
+      "description": "Capture a screenshot of the current page."
+    },
+    {
+      "action": "evaluate",
+      "machineName": "WidgetDriverCode",
+      "description": "Run a JavaScript step in the browser context."
+    },
+    {
+      "action": "axiomWidget",
+      "machineName": "",
+      "description": "Use a specific Axiom widget by machine_name."
+    }
+  ],
+  "widgetActionList": [
+    {
+      "action": "WidgetAI",
+      "machineName": "WidgetAI",
+      "name": "Integrate AI",
+      "originalName": "Integrate AI",
+      "description": "Interact with LLMs to extract data, generate text or make decisions. Supports either ChatGPT and Claude, requires an API key.",
+      "method": {
+        "browser": "AxiomApiAiGeneric"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "ai-output",
+      "params": [
+        {
+          "name": "",
+          "description": [],
+          "type": "ai_options",
+          "value": {
+            "aiFunction": "extract",
+            "model": "",
+            "prompt": "",
+            "extractData": "",
+            "promptExtract": ""
+          },
+          "maxTokens": 1,
+          "default_value": {
+            "aiFunction": "extract",
+            "model": "",
+            "prompt": "",
+            "extractData": "",
+            "promptExtract": ""
+          },
+          "collapsible": 0,
+          "configurable": true
+        }
+      ]
+    },
+    {
+      "action": "WidgetAlwaysJump",
+      "machineName": "WidgetAlwaysJump",
+      "name": "Jump to another step",
+      "originalName": "Jump to another step",
+      "description": "Jump to a different step.",
+      "method": {
+        "browser": "AxiomApiAlwaysJump"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Jump to step",
+          "description": [
+            "Enter the number of the step to jump to if the value is found."
+          ],
+          "value": "",
+          "type": "step_number",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Maximum cycles",
+          "description": [
+            "Maximum number of times this step should trigger in a single run."
+          ],
+          "value": "20",
+          "type": "max_cycles",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "20"
+        }
+      ]
+    },
+    {
+      "action": "WidgetBotComplete",
+      "machineName": "WidgetBotComplete",
+      "name": "Loop through data",
+      "originalName": "Loop through data",
+      "description": "Finish and trigger the bot's run!",
+      "method": {
+        "browser": "driver.internalRun"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "loop-data",
+      "params": []
+    },
+    {
+      "action": "WidgetBotCreate",
+      "machineName": "WidgetBotCreate",
+      "name": "Loop through data",
+      "originalName": "Loop through data",
+      "description": "Repeat the sub-steps once for each item in a data set.",
+      "method": {
+        "driver": "DriverNoUrl"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "bot-input-data",
+      "params": [
+        {
+          "name": "driverLaunchOptions",
+          "description": [
+            " "
+          ],
+          "value": "",
+          "type": "",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "type": "bot_token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "bot_token",
+          "description": [
+            "Repeat for each item in another step's data."
+          ],
+          "name": "Loop through data",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Show tooltips",
+          "description": [
+            "Enter the time, in seconds, to show tooltips. Enter 0 for no tooltip."
+          ],
+          "value": "0",
+          "type": "pause_time",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "0"
+        }
+      ]
+    },
+    {
+      "action": "WidgetCatch",
+      "machineName": "WidgetCatch",
+      "name": "Catch",
+      "originalName": "Catch",
+      "description": "Catch",
+      "method": {
+        "browser": "AxiomApiCatch"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "error-message",
+      "params": []
+    },
+    {
+      "action": "WidgetChatGPT",
+      "machineName": "WidgetChatGPT",
+      "name": "Extract data with ChatGPT",
+      "originalName": "Extract data with ChatGPT",
+      "description": "Extract and structure data from any unformatted text.",
+      "method": {
+        "browser": "AxiomApiChatGPTV450"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "chat-gpt",
+      "params": [
+        {
+          "name": "Override default API key",
+          "description": [
+            "Enter an Open AI key here to be used only on this step."
+          ],
+          "value": "",
+          "type": "api_key_vault",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Open AI API key",
+          "description": [
+            ""
+          ],
+          "value": "",
+          "type": "external_api_key",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Enter data to extract values from"
+          ],
+          "name": "Data",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Extract values",
+          "description": [
+            "Enter a comma-separated list of items you want to extract from the given data, or select a template."
+          ],
+          "value": "",
+          "type": "gpt_prompt_builder",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Select model",
+          "description": [
+            "Choose the model you want to use."
+          ],
+          "value": "gpt-3.5-turbo",
+          "type": "gpt_model",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "gpt-3.5-turbo"
+        }
+      ]
+    },
+    {
+      "action": "WidgetChatGPTGenerateText",
+      "machineName": "WidgetChatGPTGenerateText",
+      "name": "Generate text with ChatGPT",
+      "originalName": "Generate text with ChatGPT",
+      "description": "Use ChatGPT to generate a passage of text, given any prompt.",
+      "method": {
+        "driver": "driver.chatGPTGenerateTextV450"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "chatgpt-output",
+      "params": [
+        {
+          "name": "Override default API key",
+          "description": [
+            "Enter an Open AI key here to be used only on this step."
+          ],
+          "value": "",
+          "type": "api_key_vault",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Open AI API key",
+          "description": [
+            ""
+          ],
+          "value": "",
+          "type": "external_api_key",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Prompt",
+          "description": [
+            "Enter a prompt for ChatGPT to respond to."
+          ],
+          "value": "",
+          "type": "long_text_required",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Select model",
+          "description": [
+            "Choose the model you want to use."
+          ],
+          "value": "gpt-3.5-turbo",
+          "type": "gpt_model",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "gpt-3.5-turbo"
+        }
+      ]
+    },
+    {
+      "action": "WidgetClearGoogleSheet",
+      "machineName": "WidgetClearGoogleSheet",
+      "name": "Clear data from a Google Sheet",
+      "originalName": "Clear data from a Google Sheet",
+      "description": "Clear the contents of the selected cell range while preserving formatting.",
+      "method": {
+        "browser": "AxiomApiClearGoogleSheetWithRange"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Spreadsheet",
+          "description": [
+            "Select Google sheet"
+          ],
+          "value": "",
+          "type": "spreadsheet_picker",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Sheet name",
+          "description": [
+            "Leave blank to use the first sheet."
+          ],
+          "value": "",
+          "type": "sheet_name_dropdown",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "First cell",
+          "description": [
+            "Will use A1 if no value provided"
+          ],
+          "value": "A1",
+          "type": "first_cell",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "A1"
+        },
+        {
+          "name": "Last cell",
+          "description": [
+            "Will use ZZ if no value provided"
+          ],
+          "value": "ZZ",
+          "type": "last_cell",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "ZZ"
+        }
+      ]
+    },
+    {
+      "action": "WidgetClickEngagementButton",
+      "machineName": "WidgetClickEngagementButton",
+      "name": "Click social media buttons",
+      "originalName": "Click social media buttons",
+      "description": "Click on a social button such as like, follow, etc. but only if it has not already been clicked",
+      "method": {
+        "driver": "driver.clickEngagementButton"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Select",
+          "description": [
+            "Choose what you want to click on."
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Set value to check",
+          "description": [
+            "The bot will check these values. If one is present on the link or button it will not perform the click."
+          ],
+          "value": "Unlike, Following, Liked, true, UPVOTED, Following",
+          "type": "word_list",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "Unlike, Following, Liked, true, UPVOTED, Following"
+        }
+      ]
+    },
+    {
+      "action": "WidgetCode",
+      "machineName": "WidgetCode",
+      "name": "Write javascript",
+      "originalName": "Write javascript",
+      "description": "Are you a coder? Write some custom javascript to do any kind of operation you can think of.",
+      "method": {
+        "browser": "AxiomApiRunCodeV3180"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "code-data",
+      "params": [
+        {
+          "name": "Script",
+          "description": [
+            "You can return values as an array of arrays from this step, for use in other steps."
+          ],
+          "value": "",
+          "type": "code",
+          "image": "",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [
+            {
+              "name": "See tips on how to ",
+              "linkSrc": "https://axiom.ai/docs/tutorials/javascript#the-write-javascript-step",
+              "linkText": "use javascript"
+            }
+          ],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetContinue",
+      "machineName": "WidgetContinue",
+      "name": "Continue only if a condition is met",
+      "originalName": "Continue only if a condition is met",
+      "description": "Check that data contains certain values; when it does, continue execution. Otherwise, stop.",
+      "method": {
+        "browser": "AxiomApiContinueV3140"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Enter data to check for a value."
+          ],
+          "name": "Data to check",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Condition to check",
+          "description": [
+            "Check data for either a list of words or if a javascript expression is true."
+          ],
+          "value": {
+            "evaluateType": "words",
+            "words": "",
+            "matchMode": "any",
+            "wordBoundary": false,
+            "javascript": ""
+          },
+          "type": "conditional_check_v4010",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "evaluateType": "words",
+            "words": "",
+            "matchMode": "any",
+            "wordBoundary": false,
+            "javascript": ""
+          }
+        },
+        {
+          "name": "Fail if condition not met",
+          "description": [
+            "Tick this box to end the run with the 'Failed' status if the condition is not met. If this is left unchecked, the run will end in 'Success' instead."
+          ],
+          "value": "",
+          "type": "exact_match",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Reverse condition",
+          "description": [
+            "Continue if the condition is NOT met."
+          ],
+          "value": false,
+          "type": "reverse_condition",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetCountRows",
+      "machineName": "WidgetCountRows",
+      "name": "Count rows",
+      "originalName": "Count rows",
+      "description": "Count the number of rows in the selected data.",
+      "method": {
+        "browser": "AxiomApiCountRows"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "count-rows",
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "token",
+          "description": [
+            "Select the data to count."
+          ],
+          "name": "Data",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        }
+      ]
+    },
+    {
+      "action": "WidgetCreateFormattedSheet",
+      "machineName": "WidgetCreateFormattedSheet",
+      "name": "Create formatted Google Sheet",
+      "originalName": "Create formatted Google Sheet",
+      "description": "Create formatted Google Sheet",
+      "method": {
+        "browser": "AxiomApiReturnFirst"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "created-sheet",
+      "params": [
+        {
+          "name": "Sheet",
+          "description": [],
+          "value": "",
+          "type": "create_formatted_sheet",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetCreateGoogleSheet",
+      "machineName": "WidgetCreateGoogleSheet",
+      "name": "Create a new Google Sheet",
+      "originalName": "Create a new Google Sheet",
+      "description": "Create a new Google Sheet",
+      "method": {
+        "browser": "AxiomApiCreateGoogleSheetV2"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "new-google-sheet-url",
+      "params": [
+        {
+          "name": "Sheet name",
+          "description": [
+            "Enter a name for the new Google Sheet."
+          ],
+          "value": "",
+          "type": "long_text",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetCurrentDateTime",
+      "machineName": "WidgetCurrentDateTime",
+      "name": "Date and time",
+      "originalName": "Date and time",
+      "description": "Store a relative date and time as data or reformat existing date and time data that can be used later.",
+      "method": {
+        "browser": "AxiomApiCurrentDateAndTimeV3160"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "date-and-time",
+      "params": [
+        {
+          "name": "Data",
+          "description": [
+            ""
+          ],
+          "value": {
+            "dateType": "current",
+            "offsetType": "",
+            "offsetValue": "",
+            "dataToFormat": "",
+            "inputFormat": ""
+          },
+          "type": "date_offset",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "dateType": "current",
+            "offsetType": "",
+            "offsetValue": "",
+            "dataToFormat": "",
+            "inputFormat": ""
+          }
+        },
+        {
+          "name": "Select format",
+          "description": [
+            ""
+          ],
+          "value": {
+            "date_time": "date,time",
+            "format": ""
+          },
+          "type": "current_date_time",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "date_time": "date,time",
+            "format": ""
+          }
+        }
+      ]
+    },
+    {
+      "action": "WidgetCurrentUrl",
+      "machineName": "WidgetCurrentUrl",
+      "name": "Current Url",
+      "originalName": "Current Url",
+      "description": "Grab the current URL at the time that the automation starts running, and store it as data.",
+      "method": {
+        "browser": "AxiomApiGrabCurrentUrl"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "current-url",
+      "params": [
+        {
+          "name": "Get current url",
+          "description": [
+            "When Axiom starts running, the page you have it open on will be stored in this step's output data."
+          ],
+          "value": "",
+          "type": "",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDatePicker",
+      "machineName": "WidgetDatePicker",
+      "name": "Date picker",
+      "originalName": "Date picker",
+      "description": "Interact with a date picker to select a particular date",
+      "method": {
+        "driver": "driver.datePicker"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Select month",
+          "description": [
+            "Select the text of the month on the datepicker"
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Select month change button",
+          "description": [
+            "Select either the previous or next month button, depending on whether you want to look into the future (next) or past (previous)"
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Change month to",
+          "description": [
+            "Type the text of the month you want to change to. NOTE: this must be exactly as it appears on the datepicker for it to work!"
+          ],
+          "value": "",
+          "type": "long_text",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Change day of month to",
+          "description": [
+            "Type the day of the month you'd like to switch to."
+          ],
+          "value": "",
+          "type": "long_text",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDeleteRowsFromGoogleSheet",
+      "machineName": "WidgetDeleteRowsFromGoogleSheet",
+      "name": "Delete rows from a Google Sheet",
+      "originalName": "Delete rows from a Google Sheet",
+      "description": "Delete rows from a Google Sheet",
+      "method": {
+        "browser": "AxiomApiDeleteRowsFromGoogleSheetV3180"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Spreadsheet URL",
+          "description": [
+            "Select Google sheet"
+          ],
+          "value": "",
+          "type": "spreadsheet_picker",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Sheet name",
+          "description": [
+            "Optionally specify a sheet name to delete from. Sheets are different tabs visible at the bottom of your google doc; enter the name that appears on the tab to specify the sheet. Leaving this blank will use the first sheet in the document."
+          ],
+          "value": "",
+          "type": "sheet_name_dropdown",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "First row to delete",
+          "description": [
+            "Enter the number of the first row to delete"
+          ],
+          "value": "1",
+          "type": "start_page",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "1"
+        },
+        {
+          "name": "Last row to delete",
+          "description": [
+            "Enter the number of the last row to delete. Everything between the first and last rows will also be deleted."
+          ],
+          "value": "1",
+          "type": "page_count",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "1"
+        }
+      ]
+    },
+    {
+      "action": "WidgetDisplayMessage",
+      "machineName": "WidgetDisplayMessage",
+      "name": "Display a message",
+      "originalName": "Display a message",
+      "description": "Show a message to the user's browser window. Can contain any text or data from previous steps - useful for checking if things are working!",
+      "method": {
+        "browser": "AxiomApiDisplayMessage"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Message",
+          "description": [
+            "Enter some text to display! You can also plug data into this field from other steps."
+          ],
+          "value": "",
+          "type": "long_text",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverBack",
+      "machineName": "WidgetDriverBack",
+      "name": "Go back to the previous page",
+      "originalName": "Go back to the previous page",
+      "description": "Go back to the previous page",
+      "method": {
+        "driver": "driver.back"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Go back",
+          "description": [
+            "Return to the previous page, like clicking the 'Back' button in the browser."
+          ],
+          "value": "",
+          "type": "",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverClearCookies",
+      "machineName": "WidgetDriverClearCookies",
+      "name": "Clear cookies",
+      "originalName": "Clear cookies",
+      "description": "Clear all cookies in the current bot browser session.",
+      "method": {
+        "driver": "driver.clearCookies"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": []
+    },
+    {
+      "action": "WidgetDriverClick",
+      "machineName": "WidgetDriverClick",
+      "name": "Click element",
+      "originalName": "Click element",
+      "description": "Instruct the bot to click on a button, link, or any other clickable thing.",
+      "method": {
+        "driver": "driver.clickV4090"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Select",
+          "description": [
+            "Select an element. Use dedicated download steps for downloading files."
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Optional click",
+          "description": [
+            "If checked & the selected element is not present on the page the automation will continue without an error."
+          ],
+          "value": false,
+          "type": "optional",
+          "image": null,
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        },
+        {
+          "name": "Double click",
+          "description": [
+            "If checked a double click on the selected element will be performed. This setting will be ignored if performing a right click."
+          ],
+          "value": false,
+          "type": "double_click",
+          "image": null,
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        },
+        {
+          "name": "Left click | Right click",
+          "description": [
+            "Toggle off to perform a left click; toggle on to perform a right click."
+          ],
+          "value": false,
+          "type": "toggle",
+          "image": null,
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverClickMultiple",
+      "machineName": "WidgetDriverClickMultiple",
+      "name": "Click multiple elements",
+      "originalName": "Click multiple elements",
+      "description": "Instruct the bot to click multiple buttons, links or other clickable things that share a common structure.",
+      "method": {
+        "driver": "driver.multiClickV3170"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Select",
+          "description": [
+            "Select elements. Use dedicated download steps for downloading files."
+          ],
+          "value": "",
+          "type": "multi_selector",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Left click | Right click",
+          "description": [
+            "Toggle off to perform a left click; toggle on to perform a right click."
+          ],
+          "value": false,
+          "type": "toggle",
+          "image": null,
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        },
+        {
+          "name": "Maximum clicks",
+          "description": [
+            "The maximum number of clicks to perform."
+          ],
+          "value": 0,
+          "type": "max_results",
+          "image": null,
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": 0
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverClipboardContents",
+      "machineName": "WidgetDriverClipboardContents",
+      "name": "Get clipboard contents",
+      "originalName": "Get clipboard contents",
+      "description": "Get the contents of the clipboard to use in subsequent steps.",
+      "method": {
+        "driver": "driver.readClipboardContents"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "clipboard-contents",
+      "params": []
+    },
+    {
+      "action": "WidgetDriverCloseTab",
+      "machineName": "WidgetDriverCloseTab",
+      "name": "Close browser tab",
+      "originalName": "Close browser tab",
+      "description": "Close a tab in the running automation.",
+      "method": {
+        "driver": "driver.closeTab"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Select Tab",
+          "description": [
+            "Enter the tab to close. 1 chooses the tab on the farthest left, 2 the second left etc."
+          ],
+          "value": 0,
+          "type": "select_tab",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": 0
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverCode",
+      "machineName": "WidgetDriverCode",
+      "name": "Write javascript",
+      "originalName": "Write javascript",
+      "description": "Utilise JavaScript, custom code, or Axiom APIs when the user explicitly asks for scripting.",
+      "method": {
+        "driver": "driver.codeV3180"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "code-data",
+      "params": [
+        {
+          "name": "Script",
+          "description": [
+            "Return values as an array of arrays from this step."
+          ],
+          "value": "",
+          "type": "code",
+          "image": "",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [
+            {
+              "name": "See tips on how to ",
+              "linkSrc": "https://axiom.ai/docs/tutorials/javascript#the-write-javascript-step",
+              "linkText": "use javascript"
+            }
+          ],
+          "default_value": ""
+        },
+        {
+          "name": "Run in app",
+          "description": [
+            "Check to run the javascript in the context of the Axiom app, rather than in the browser window."
+          ],
+          "value": false,
+          "type": "exact_match",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverCurrentUrl",
+      "machineName": "WidgetDriverCurrentUrl",
+      "name": "Get current bot URL",
+      "originalName": "Get current bot URL",
+      "description": "Grab the URL that bot is currently on and store it as data for later use.",
+      "method": {
+        "driver": "driver.getCurrentUrl"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "current-url-data",
+      "params": []
+    },
+    {
+      "action": "WidgetDriverDownload",
+      "machineName": "WidgetDriverDownload",
+      "name": "Download file",
+      "originalName": "Download file",
+      "description": "Download a single file from a webpage.",
+      "method": {
+        "driver": "driver.downloadFileV410"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "download-file-data",
+      "params": [
+        {
+          "name": "Select",
+          "description": [
+            "Choose the file to download"
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Folder",
+          "description": [
+            "Set a folder to download into (please note currently only one new folder can be created at a time)"
+          ],
+          "value": "",
+          "type": "file_explorer",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "File name",
+          "description": [
+            "Enter a name to save the file as. File name will be appended with a number e.g. \"example\" would become \"example1.jpg\", \"example2.jpg\" and so on unless the overwrite existing file option is used."
+          ],
+          "value": "",
+          "type": "file_name",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Overwrite existing file",
+          "description": [
+            "Tick here to overwrite any existing file with the same name instead of renaming the newly downloaded file."
+          ],
+          "value": "",
+          "type": "special_character",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Force download",
+          "description": [
+            "Some files will open in the browser window instead of download. Tick here to force a download instead.",
+            "This field does nothing when the file does not open in the browser window."
+          ],
+          "value": "",
+          "type": "special_character",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Download start wait time",
+          "description": [
+            "Increase the length of time axiom will wait for a download to start."
+          ],
+          "value": 10000,
+          "type": "integer",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": 10000
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverDownloadFiles",
+      "machineName": "WidgetDriverDownloadFiles",
+      "name": "Download files",
+      "originalName": "Download files",
+      "description": "Download multiple files from a webpage.",
+      "method": {
+        "driver": "driver.downloadFilesV410"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "download-files-data",
+      "params": [
+        {
+          "name": "Select",
+          "description": [
+            "Choose the files to download"
+          ],
+          "value": "",
+          "type": "smart_selector",
+          "image": "",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Folder",
+          "description": [
+            "Set a folder to download into (please note currently only one new folder can be created at a time)"
+          ],
+          "value": "",
+          "type": "file_explorer",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "File Name",
+          "description": [
+            "Enter a name to save the files as. File name will be appended with a number e.g. \"example\" would become \"example1.jpg\", \"example2.jpg\" and so on"
+          ],
+          "value": "",
+          "type": "file_name",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Force download",
+          "description": [
+            "Some files will open in the browser window instead of download. Tick here to force a download instead.",
+            "This field does nothing when the file does not open in the browser window."
+          ],
+          "value": "",
+          "type": "special_character",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Download start wait time",
+          "description": [
+            "Increase the length of time axiom will wait for a download to start."
+          ],
+          "value": 10000,
+          "type": "integer",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": 10000
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverDownloadFromUrl",
+      "machineName": "WidgetDriverDownloadFromUrl",
+      "name": "Download file from URL",
+      "originalName": "Download file from URL",
+      "description": "Download a file from the given URL to your computer.",
+      "method": {
+        "driver": "driver.downloadFileFromUrlV3200"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "download-file-url-data",
+      "params": [
+        {
+          "name": "Enter URL",
+          "description": [
+            "Enter the URL of a file to download. You can also plugin data from other steps."
+          ],
+          "value": "",
+          "type": "current_url",
+          "image": "",
+          "collapsible": 0,
+          "help": [],
+          "default_value": "",
+          "configurable": true
+        },
+        {
+          "name": "Folder",
+          "description": [
+            "Set a folder to download into (please note currently only one new folder can be created at a time)"
+          ],
+          "value": "",
+          "type": "file_explorer",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "File Name",
+          "description": [
+            "Enter a name to save the file as. File name will be appended with a number e.g. \"example\" would become \"example1.jpg\", \"example2.jpg\" and so on unless the overwrite existing file option is used."
+          ],
+          "value": "",
+          "type": "file_name",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Overwrite existing file",
+          "description": [
+            "Tick here to overwrite any existing file with the same name instead of renaming the newly downloaded file."
+          ],
+          "value": "",
+          "type": "special_character",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Force download",
+          "description": [
+            "Some files will open in the browser window instead of download. Tick here to force a download instead.",
+            "This field does nothing when the file does not open in the browser window."
+          ],
+          "value": "",
+          "type": "special_character",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverDownloadToGoogleDrive",
+      "machineName": "WidgetDriverDownloadToGoogleDrive",
+      "name": "Download a file to Google Drive",
+      "originalName": "Download a file to Google Drive",
+      "description": "Download a single file from a webpage to a Google Drive folder. Maximum file size that can be processed is 250MB.",
+      "method": {
+        "driver": "driver.downloadToGoogleDriveV410"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "download-google-drive",
+      "params": [
+        {
+          "name": "Select",
+          "description": [
+            "Choose the file to download"
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Google Drive folder URL",
+          "description": [
+            "Enter the URL of the folder in Google Drive to download to."
+          ],
+          "value": "",
+          "type": "google_folder_url",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "File name",
+          "description": [
+            "Enter a name for the file on Google Drive. Leave blank to keep the existing filename."
+          ],
+          "value": "",
+          "type": "file_name",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Force download",
+          "description": [
+            "Some files will open in the browser window instead of download. Tick here to force a download instead.",
+            "This field does nothing when the file does not open in the browser window."
+          ],
+          "value": "",
+          "type": "special_character",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Auto convert",
+          "description": [
+            "Automatically convert the downloaded file to a Google Docs editor format. ZIP files or images will not be converted."
+          ],
+          "value": "",
+          "type": "special_character",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Local folder",
+          "description": [
+            "If you are using the desktop version of Axiom you can set a local folder here to use as an intermediate step for the file download. Do not use this setting if you are running Axiom via the cloud."
+          ],
+          "value": false,
+          "type": "local_folder",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        },
+        {
+          "name": "Download start wait time",
+          "description": [
+            "Increase the length of time axiom will wait for a download to start."
+          ],
+          "value": 10000,
+          "type": "integer",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": 10000
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverEnterText",
+      "machineName": "WidgetDriverEnterText",
+      "name": "Enter text",
+      "originalName": "Enter text",
+      "description": "Instruct the bot to enter some text into a field.",
+      "method": {
+        "driver": "driver.enterTextV4500"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Select text field",
+          "description": [
+            "Choose the text field that the bot should enter text into. If you do not select a field, the bot will type into whatever is selected by default."
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "h-text-field",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Text",
+          "description": [
+            "Sending DMs in apps like Instagram? Configure a custom line break below - <a target=\"_blank\" class=\"link\" href=\"undefined/docs/guides/general/form-filling/line-breaks\">click to learn why</a>"
+          ],
+          "value": "",
+          "type": "long_text_required",
+          "image": "h-text-input",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Delay",
+          "description": [
+            "Delay between each key press in miliseconds."
+          ],
+          "value": "0",
+          "type": "delay",
+          "image": "h-text-input",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "0"
+        },
+        {
+          "name": "Append to existing",
+          "description": [
+            "Toggle on to skip clearing the text before entering. The value will be appended to whatever is already in the box."
+          ],
+          "value": false,
+          "type": "optional",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        },
+        {
+          "name": "Custom line break",
+          "description": [
+            "Record a sequence of characters to use instead of enter for line breaks. For example, record shift and enter for Instagram DMs."
+          ],
+          "value": [],
+          "type": "select_key",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Optional text",
+          "description": [
+            "If checked & the selected field is not present on the page the automation will continue without an error."
+          ],
+          "value": false,
+          "type": "optional",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverExportCSV",
+      "machineName": "WidgetDriverExportCSV",
+      "name": "Export to CSV",
+      "originalName": "Export to CSV",
+      "description": "Export data to a CSV file",
+      "method": {
+        "driver": "driver.exportCSV"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "export-csv",
+      "params": [
+        {
+          "type": "write_csv_data_token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "write_csv_data_token",
+          "description": [
+            "Select the data to convert into a CSV file."
+          ],
+          "name": "DATA",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Folder",
+          "description": [
+            "Set a folder to export the file to"
+          ],
+          "value": "",
+          "type": "file_explorer",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "File name",
+          "description": [
+            "Enter a name to export the file as. Duplicate file names will be appended with a number e.g. \"example.csv\" would become \"example1.csv\", \"example2.csv\" and so on unless the overwrite existing file option is used."
+          ],
+          "value": "",
+          "type": "file_name",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Overwrite existing file",
+          "description": [
+            "Tick here to overwrite any existing file with the same name instead of renaming the newly exported file."
+          ],
+          "value": "",
+          "type": "special_character",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverFileUpload",
+      "machineName": "WidgetDriverFileUpload",
+      "name": "Upload a file",
+      "originalName": "Upload a file",
+      "description": "Use this step when the user asks to upload files from their computer/device. Targets a standard file input (e.g. input[type=\"file\"]) and provides a local file path.",
+      "method": {
+        "driver": "driver.fileUpload"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "File Input Field",
+          "description": [
+            "Choose the form element to upload the file to. Note that this is only guaranteed to work on standard HTML file upload fields - some customised file upload implementations may not function. Sorry!"
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "h-upload-file",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "File Path",
+          "description": [
+            "Input the path to the file on your computer that should be uploaded."
+          ],
+          "value": "",
+          "type": "file_upload",
+          "image": "h-upload-file-path",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverGoto",
+      "machineName": "WidgetDriverGoto",
+      "name": "Go to page",
+      "originalName": "Go to page",
+      "description": "Instruct the bot to go to a new page.",
+      "method": {
+        "driver": "driver.gotoV4070"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Enter URL",
+          "description": [
+            "Enter a URL to go to. You can also plugin data from other steps to provide a URL. Enter (skip) to skip this step."
+          ],
+          "value": "",
+          "type": "current_url",
+          "image": "",
+          "collapsible": 0,
+          "help": [],
+          "default_value": "",
+          "configurable": true
+        },
+        {
+          "name": "Store Cookie",
+          "description": [
+            "Cookie detected, store if running in the cloud and you wish to run your automation using the scheduler or the API."
+          ],
+          "value": false,
+          "type": "store_cookie",
+          "image": "",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [
+            {
+              "name": "Learn ",
+              "linkSrc": "https://axiom.ai/docs/tutorials/settings/run-options/store-cookies",
+              "linkText": "more"
+            }
+          ],
+          "default_value": false
+        },
+        {
+          "name": "Do not share localstorage",
+          "description": [
+            "Check the box to stop Axiom retrieving session data from this URL's localstorage. This will prevent an extra page refresh but can prevent your session from loading fully."
+          ],
+          "value": false,
+          "type": "special_character",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        },
+        {
+          "name": "Open in new tab",
+          "description": [
+            "Check the box to open the URL in a new browser tab, the automation will automatically switch to running in the new tab."
+          ],
+          "value": false,
+          "type": "special_character",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverKeyDown",
+      "machineName": "WidgetDriverKeyDown",
+      "name": "Press key(s)",
+      "originalName": "Press key(s)",
+      "description": "Record a key press for the bot to execute. Multiple keys can be pressed at once.",
+      "method": {
+        "driver": "driver.keydownV3120"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Key",
+          "description": [
+            "Click record, then press the keys you want the bot to press. You can record a sequence of keys.",
+            "The bot will enter these one by one, except for Ctrl, Alt, or Shift, which will be held down until the end of the sequence."
+          ],
+          "value": [],
+          "type": "select_key",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "type": "bot_token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "bot_token",
+          "description": [
+            "The contents of the data will be entered as key presses (optional). This overwrites any recorded sequence."
+          ],
+          "name": "Data",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Delimiter",
+          "description": [
+            "When using data, use this character to seperate individual key presses. Make sure this is present between each desired key press in the given data, or this step will not work properly."
+          ],
+          "value": "||",
+          "type": "textfield",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "||"
+        },
+        {
+          "name": "Delay",
+          "description": [
+            "Set a delay between each key press (in milliseconds)."
+          ],
+          "value": "10",
+          "type": "integer",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "10"
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverMouseClickDrag",
+      "machineName": "WidgetDriverMouseClickDrag",
+      "name": "Mouse click & drag",
+      "originalName": "Mouse click & drag",
+      "description": "Instruct the bot to move the mouse to the start coordinates then click and drag to the end coordinates",
+      "method": {
+        "driver": "driver.mouseClickDragV0300"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Start coordinates",
+          "description": [
+            "Coordinates of the location for the initial mouse click. You should disable any ad blockers or other browser extensions which may change the page layout before recording the coordinates, as extensions are not loaded when the automation is run."
+          ],
+          "value": "",
+          "type": "select_coordinates",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "End coordinates",
+          "description": [
+            "Coordinates of the location to drag the mouse to. If left blank the same coordinates will be used as for the start click location to perform a single click without dragging"
+          ],
+          "value": "",
+          "type": "select_coordinates_optional",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverPassword",
+      "machineName": "WidgetDriverPassword",
+      "name": "Log In",
+      "originalName": "Log In",
+      "description": "Tell the bot to log into a site by entering the page and username. The bot will hand over to you to enter a password.",
+      "method": {
+        "driver": "driver.login"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "URL",
+          "description": [
+            " "
+          ],
+          "value": "",
+          "type": "current_url",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Username",
+          "description": [
+            " "
+          ],
+          "value": "",
+          "type": "textfield",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Username field",
+          "description": [
+            "Choose the field that the username should be entered into."
+          ],
+          "value": "",
+          "type": "selector_single_optional",
+          "image": "h-login-user",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverSaveHTML",
+      "machineName": "WidgetDriverSaveHTML",
+      "name": "Save page HTML",
+      "originalName": "Save page HTML",
+      "description": "Download the HTML of the current page to your computer.",
+      "method": {
+        "driver": "driver.saveHTMLV3200"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Folder",
+          "description": [
+            "Set a folder to save to (please note currently only one new folder can be created at a time)"
+          ],
+          "value": "",
+          "type": "file_explorer",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "File name",
+          "description": [
+            "Enter a name to save the HTML page as. If a file with this name already exists it will be appended with a number e.g. \"page\" would become \"page1.html\", \"page2.html\" and so on unless the overwrite existing file option is used."
+          ],
+          "value": "",
+          "type": "long_text",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Overwrite existing file",
+          "description": [
+            "Tick here to overwrite any existing file with the same name instead of renaming the newly downloaded file."
+          ],
+          "value": "",
+          "type": "special_character",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverSaveScreenshot",
+      "machineName": "WidgetDriverSaveScreenshot",
+      "name": "Save screenshot locally",
+      "originalName": "Save screenshot locally",
+      "description": "Save a screenshot of a webpage or part of a webpage to your local machine",
+      "method": {
+        "driver": "driver.saveScreenshotV4010"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "screenshot-local",
+      "params": [
+        {
+          "name": "Selected element",
+          "description": [
+            "Select an element to screenshot that area on the page."
+          ],
+          "value": {
+            "screenshotType": "full_page",
+            "screenshotElement": ""
+          },
+          "type": "screenshot_type",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "screenshotType": "full_page",
+            "screenshotElement": ""
+          }
+        },
+        {
+          "name": "Folder",
+          "description": [
+            "Set a folder to save to (please note currently only one new folder can be created at a time)"
+          ],
+          "value": "",
+          "type": "file_explorer",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "File name",
+          "description": [
+            "Enter a name to save the screenshot as. If a file with this name already exists it will be appended with a number e.g. \"screenshot\" would become \"screenshot1.jpeg\", \"screenshot2.jpeg\" and so on unless the overwrite existing file option is used."
+          ],
+          "value": "",
+          "type": "file_name",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Overwrite existing file",
+          "description": [
+            "Tick here to overwrite any existing file with the same name instead of renaming the newly downloaded file."
+          ],
+          "value": "",
+          "type": "special_character",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "File type",
+          "description": [
+            "File type to save the screenshot as"
+          ],
+          "value": "jpeg",
+          "type": "radio_filetype",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "jpeg"
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverSaveScreenshotToGoogleDrive",
+      "machineName": "WidgetDriverSaveScreenshotToGoogleDrive",
+      "name": "Save screenshot to Google Drive",
+      "originalName": "Save screenshot to Google Drive",
+      "description": "Save a screenshot of a webpage or part of a webpage to a Google Drive folder.",
+      "method": {
+        "driver": "driver.saveScreenshotToGoogleDriveV4010"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "screenshot-google-drive",
+      "params": [
+        {
+          "name": "Selected element",
+          "description": [
+            "Select an element to screenshot that area on the page."
+          ],
+          "value": {
+            "screenshotType": "full_page",
+            "screenshotElement": ""
+          },
+          "type": "screenshot_type",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "screenshotType": "full_page",
+            "screenshotElement": ""
+          }
+        },
+        {
+          "name": "Google Drive folder URL",
+          "description": [
+            "Enter the URL of the folder in Google Drive to save the screenshot to."
+          ],
+          "value": "",
+          "type": "google_folder_url",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "File name",
+          "description": [
+            "Enter a name to save the screenshot as. Leave blank to use the default Google Drive filename."
+          ],
+          "value": "",
+          "type": "file_name_unvalidated",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "File type",
+          "description": [
+            "File type to save the screenshot as"
+          ],
+          "value": "jpeg",
+          "type": "radio_filetype",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "jpeg"
+        },
+        {
+          "name": "Local folder",
+          "description": [
+            "If you are using the desktop version of Axiom you can set a local folder here to use as an intermediate step for the file save. Do not use this setting if you are running Axiom via the cloud."
+          ],
+          "value": false,
+          "type": "local_folder",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverScrapeLinks",
+      "machineName": "WidgetDriverScrapeLinks",
+      "name": "Get a list of links to pages from bot's current page",
+      "originalName": "Get a list of links to pages from bot's current page",
+      "description": "Scrape links from the page the bot is currently on. Use the scraped links to visit those pages and perform further actions.",
+      "method": {
+        "driver": "driver.linkScraperV4400"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "link-data",
+      "params": [
+        {
+          "name": "Select",
+          "description": [
+            "Choose the links you wish to scrape."
+          ],
+          "value": "",
+          "type": "smart_selector",
+          "image": "h-link-scraper",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Find pager",
+          "description": [
+            "Select the 'Next' button for the pager, if there is one. When running the bot, please select 'Use element text' if it stops paging after the first page."
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "h-pager",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Max results",
+          "description": [
+            "Set a maximum number of results you wish to scrape. Setting this number higher than the number of results you need will slow down the scraper - axiom has to spend time looking for results that it will never find."
+          ],
+          "value": "20",
+          "type": "scraper_max_results",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "20"
+        },
+        {
+          "name": "Configure scraper",
+          "description": [],
+          "value": {
+            "scrollSpeed": 5000,
+            "maxAttempts": 2
+          },
+          "type": "scraper_settings",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "scrollSpeed": 5000,
+            "maxAttempts": 2
+          }
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverScrapeMetadata",
+      "machineName": "WidgetDriverScrapeMetadata",
+      "name": "Scrape metadata",
+      "originalName": "Scrape metadata",
+      "description": "Scrape metadata from a page",
+      "method": {
+        "driver": "driver.scrapeMetadata"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "metadata",
+      "params": [
+        {
+          "name": "Metadata",
+          "description": [
+            "Select the metadata to scrape from the page."
+          ],
+          "value": "",
+          "type": "select_metadata",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverSelectList",
+      "machineName": "WidgetDriverSelectList",
+      "name": "Select list",
+      "originalName": "Select list",
+      "description": "Instruct the bot to choose a value from a select list or dropdown form field.",
+      "method": {
+        "driver": "driver.selectList"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Select",
+          "description": [
+            "Choose the select list."
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "h-text-field",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Text",
+          "description": [
+            "Input the option the bot should select, or use data."
+          ],
+          "value": "",
+          "type": "word_list",
+          "image": "h-text-input",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverSmartScraper",
+      "machineName": "WidgetDriverSmartScraper",
+      "name": "Get data from bot's current page",
+      "originalName": "Get data from bot's current page",
+      "description": "Scrape data from the page the bot is currently on.",
+      "method": {
+        "driver": "driver.smartScraperV4400"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "scrape-data",
+      "params": [
+        {
+          "name": "Select",
+          "description": [
+            "Choose the data you wish to scrape."
+          ],
+          "value": "",
+          "type": "smart_selector",
+          "image": "h-scrape-data",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Find pager",
+          "description": [
+            "Select the 'Next' button for the pager, if there is one. When running the bot, please select 'Use element text' if it stops paging after the first page."
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "h-pager",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Max results",
+          "description": [
+            "Set a maximum number of results you wish to scrape. Setting this number higher than the number of results you need will slow down the scraper - axiom has to spend time looking for results that it will never find."
+          ],
+          "value": "1",
+          "type": "scraper_max_results",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "1"
+        },
+        {
+          "name": "Configure scraper",
+          "description": [],
+          "value": {
+            "scrollSpeed": 5000,
+            "maxAttempts": 2
+          },
+          "type": "scraper_settings",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "scrollSpeed": 5000,
+            "maxAttempts": 2
+          }
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverSolveCaptcha",
+      "machineName": "WidgetDriverSolveCaptcha",
+      "name": "Solve Captcha",
+      "originalName": "Solve Captcha",
+      "description": "Use the 2Captcha external service to solve a captcha.",
+      "method": {
+        "driver": "driver.solveCaptchaV450"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "2Captcha",
+          "description": [
+            "",
+            "Additional charges may be incurred, a 2Captcha account is required."
+          ],
+          "value": "",
+          "type": "hidden",
+          "image": "",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [
+            {
+              "name": "To learn more about this step, see our ",
+              "linkSrc": "https://axiom.ai/docs/tutorials/browser-actions/solve-captcha",
+              "linkText": "Solve captcha documentation"
+            }
+          ],
+          "default_value": ""
+        },
+        {
+          "name": "Override default API key",
+          "description": [
+            "Enter a 2Captcha API key here to be used only on this widget."
+          ],
+          "value": "",
+          "type": "api_key",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "2Captcha API key",
+          "description": [
+            ""
+          ],
+          "value": "",
+          "type": "external_api_key",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverSwitchBrowserTab",
+      "machineName": "WidgetDriverSwitchBrowserTab",
+      "name": "Switch browser tab",
+      "originalName": "Switch browser tab",
+      "description": "Instruct the bot to switch to a different browser tab (that is already open).",
+      "method": {
+        "driver": "driver.switchBrowserTab"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Select Tab",
+          "description": [
+            "Set the position of the tab to switch to. 1 chooses the tab on the farthest left, 2 the second left etc."
+          ],
+          "value": 0,
+          "type": "select_tab",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": 0
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverUploadFromGoogleDrive",
+      "machineName": "WidgetDriverUploadFromGoogleDrive",
+      "name": "Upload a file from Google Drive",
+      "originalName": "Upload a file from Google Drive",
+      "description": "Instruct the bot to upload a file from Google Drive to a file field.",
+      "method": {
+        "driver": "driver.uploadFromGoogleDriveV4000"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "File Input Field",
+          "description": [
+            "Choose the form element to upload the file to. Note that this is only guaranteed to work on standard HTML file upload fields - some customised file upload implementations may not function. Sorry!"
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "h-upload-file",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Google Drive file URL",
+          "description": [
+            "Enter the URL of the file in Google Drive to upload."
+          ],
+          "value": "",
+          "type": "google_file_url",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Local folder",
+          "description": [
+            "If you are using the desktop version of Axiom you can set a local folder here to use as an intermediate step for the file download. Do not use this setting if you are running Axiom via the cloud."
+          ],
+          "value": false,
+          "type": "local_folder",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverWait",
+      "machineName": "WidgetDriverWait",
+      "name": "Wait",
+      "originalName": "Wait",
+      "description": "Instruct the bot to wait for the given number of milliseconds. Wait for loading events, animations, page rendering etc.",
+      "method": {
+        "driver": "driver.waitV4000"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Wait time",
+          "description": [
+            ""
+          ],
+          "value": {
+            "waitType": "fixed",
+            "fixedDuration": "",
+            "minDuration": "",
+            "maxDuration": ""
+          },
+          "type": "wait_time",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "waitType": "fixed",
+            "fixedDuration": "",
+            "minDuration": "",
+            "maxDuration": ""
+          }
+        }
+      ]
+    },
+    {
+      "action": "WidgetElse",
+      "machineName": "WidgetElse",
+      "name": "Else",
+      "originalName": "Else",
+      "description": "Perform these steps only when the previous if condition failed",
+      "method": "AxiomApiElse",
+      "modes": [
+        "browser"
+      ],
+      "params": []
+    },
+    {
+      "action": "WidgetEndLoop",
+      "machineName": "WidgetEndLoop",
+      "name": "End Loop",
+      "originalName": "End Loop",
+      "description": "Break out of a loop and proceed to the next step",
+      "method": {
+        "browser": "AxiomApiEndLoop"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": []
+    },
+    {
+      "action": "WidgetEndRun",
+      "machineName": "WidgetEndRun",
+      "name": "End Run",
+      "originalName": "End Run",
+      "description": "End the run when this step is reached",
+      "method": {
+        "browser": "AxiomApiEndRun"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": []
+    },
+    {
+      "action": "WidgetErrorMetadata",
+      "machineName": "WidgetErrorMetadata",
+      "name": "Add error metadata",
+      "originalName": "Add error metadata",
+      "description": "The output from this step will be added to any error messages that occur in any step after this one - useful for debugging your automation.",
+      "method": {
+        "browser": "AxiomApiNothing"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Message",
+          "description": [
+            "Build your custom error message here, you can select tokens to display the values they contain at runtime."
+          ],
+          "value": "",
+          "type": "long_text",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetExportCSV",
+      "machineName": "WidgetExportCSV",
+      "name": "Export to CSV",
+      "originalName": "Export to CSV",
+      "description": "Export data to a CSV file. It will be downloaded to your Chrome downloads folder when the automation runs. Please note that the CSV will not download if triggered from an external service or API.",
+      "method": {
+        "browser": "AxiomApiExportCsvV3190"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "token",
+          "description": [
+            "Select the data to convert into a CSV file."
+          ],
+          "name": "Export to CSV",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "File name",
+          "description": [
+            "Enter a name to save the file as. If the file already exists it will be renamed by the browser download process."
+          ],
+          "value": "",
+          "type": "file_name",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetFilterAppend",
+      "machineName": "WidgetFilterAppend",
+      "name": "Append or merge data",
+      "originalName": "Append or merge data",
+      "description": "Merge two pieces of data together by appending one to the other. You can append either horizontally, which merges rows, or vertically, which adds all the columns in the second set to the end of the first.",
+      "method": {
+        "browser": "AxiomApiAppendV4090"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "appended-data",
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Data to be appended to"
+          ],
+          "name": "Data A",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Data to append"
+          ],
+          "name": "Data B",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Append mode",
+          "description": [
+            "Whether to append the data horizontally or vertically"
+          ],
+          "value": "horizontal",
+          "type": "horizontal_vertical",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "horizontal"
+        },
+        {
+          "name": "Horizontal append start column",
+          "description": [
+            "Specify a column to begin a horizontal append at.",
+            "For example, entering '5' or 'E' here will append beginning at the 5th column even if the first dataset has less than 5 columns. Will be ignored for vertical append mode."
+          ],
+          "value": "",
+          "type": "append_start_column",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetFilterDataList",
+      "machineName": "WidgetFilterDataList",
+      "name": "Enter custom data",
+      "originalName": "Enter custom data",
+      "description": "Create custom data to use later in your automation.",
+      "method": {
+        "browser": "AxiomApiDataListToArray"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "custom-data",
+      "params": [
+        {
+          "name": "Custom data",
+          "description": [
+            "Enter a list of items to store as data; each line will be stored as a new row."
+          ],
+          "value": "",
+          "type": "long_text",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetFilterMerge",
+      "machineName": "WidgetFilterMerge",
+      "name": "Join different data sources based on matching columns",
+      "originalName": "Join different data sources based on matching columns",
+      "description": "Join data gathered from different sources together. A shared column is used to combine the two. For example, use this to join product info from different e-commerce sites.",
+      "method": {
+        "browser": "AxiomApiMergeV0133"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "merged-data",
+      "params": [
+        {
+          "type": "merge_token_list",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "merge_token",
+          "description": [
+            "Enter the base data to join with another."
+          ],
+          "name": "Base data",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Base data column",
+          "description": [
+            "Column of data to use as the basis of the join. For example, if you want to join based on company name, enter the column number or letter which contains the company name here."
+          ],
+          "value": 1,
+          "type": "column_string",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": 1
+        },
+        {
+          "type": "merge_token_list",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "merge_token",
+          "description": [
+            "Enter the data you want to join with the base data."
+          ],
+          "name": "Join data",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Column",
+          "description": [
+            "Specify a particular column of the base data to always match against. Leave this blank to match with any column."
+          ],
+          "value": 1,
+          "type": "column_string",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": 1
+        },
+        {
+          "name": "Fuzzyness of the match",
+          "description": [
+            "Ranges from 0 to 1. 0 indicates that the match must be exact, and 1 indicates that anything will match. It's recommended to start with a low value here."
+          ],
+          "value": 0.1,
+          "type": "column_slider",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": 0.1
+        }
+      ]
+    },
+    {
+      "action": "WidgetFilterRemoveDuplicates",
+      "machineName": "WidgetFilterRemoveDuplicates",
+      "name": "Remove duplicates",
+      "originalName": "Remove duplicates",
+      "description": "Remove duplicates from the specified data. This can be limited to particular columns.",
+      "method": {
+        "browser": "AxiomApiRemoveDuplicates"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "duplicates-removed-data",
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "The data to deduplicate"
+          ],
+          "name": "Data",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Columns to check",
+          "description": [
+            "Specify a list of column numbers, each separated with a comma. Only these columns will be checked for duplicates.",
+            "For example, entering 'A,B' here will check for duplicates in columns A and B only."
+          ],
+          "value": "",
+          "type": "sheet_name",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetFilterRemoveWord",
+      "machineName": "WidgetFilterRemoveWord",
+      "name": "Remove results that contain certain words",
+      "originalName": "Remove results that contain certain words",
+      "description": "Filter out rows from your data that contain particular words.",
+      "method": {
+        "browser": "AxiomApiRemoveWordV0170"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "word-removed-data",
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Select the data you wish to remove rows from."
+          ],
+          "name": "Data",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Words (comma separated)",
+          "description": [
+            "Enter either a list of any number of words to check for, separated by commas, or data containing a list of words, one in each row.",
+            "Any row that contains the given word will be removed."
+          ],
+          "value": "",
+          "type": "word_list",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Word matching mode",
+          "description": [
+            " "
+          ],
+          "value": "all",
+          "type": "radio_any_all",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "all"
+        },
+        {
+          "name": "Match on word boundary",
+          "description": [
+            "Check this to match only when the complete word appears in the data. Only the characters a-z A-Z 0-9 and _ are considered to be part of a word, all other characters are considered as being part of a word boundary."
+          ],
+          "value": false,
+          "type": "exact_match",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        },
+        {
+          "name": "Columns (optional)",
+          "description": [
+            "Specify a list of column numbers, each separated with a comma. Only rows that have matches within these columns will be removed.",
+            "For example, entering '1,2' here will check in columns 1 and 2 only."
+          ],
+          "value": "",
+          "type": "column_string",
+          "image": null,
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetFilterReplace",
+      "machineName": "WidgetFilterReplace",
+      "name": "Replace text",
+      "originalName": "Replace text",
+      "description": "Replace one piece of text with another within a dataset.",
+      "method": "AxiomApiReplaceText",
+      "modes": [
+        "browser"
+      ],
+      "token": "replaced-text",
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Select the data within which you want to replace text."
+          ],
+          "name": "Data to replace words",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Text to replace",
+          "description": [
+            "Enter the text you want to replace"
+          ],
+          "value": "",
+          "type": "word_list",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Replace with",
+          "description": [
+            "Enter what you want to replace the text with"
+          ],
+          "value": "",
+          "type": "word_list",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetFilterSplitName",
+      "machineName": "WidgetFilterSplitName",
+      "name": "Split a name into columns",
+      "originalName": "Split a name into columns",
+      "description": "Takes any full name and splits it into its parts - title, first name, last name and additional names.",
+      "method": {
+        "browser": "AxiomApiSplitName"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "split-name-data",
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Select data to expand."
+          ],
+          "name": "DATA",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Column",
+          "description": [
+            "Enter the column in the data where the names can be found. You can enter either a number (starting from 1) or a capital letter (starting from A).",
+            "Please ensure you only enter one value as only the first column provided will be used."
+          ],
+          "value": "",
+          "type": "column_string",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Fields",
+          "description": [
+            "Select the fields to split the name into. The order of the parts will be the same as below."
+          ],
+          "value": "title, firstName, lastName, otherNames",
+          "type": "word_list_checkbox",
+          "image": null,
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "title, firstName, lastName, otherNames"
+        }
+      ]
+    },
+    {
+      "action": "WidgetFilterStripHtml",
+      "machineName": "WidgetFilterStripHtml",
+      "name": "Remove HTML code",
+      "originalName": "Remove HTML code",
+      "description": "Strip all the HTML from a set of data.",
+      "method": {
+        "browser": "AxiomApiStripHTML"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "stripped-html-data",
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Select the data to remove HTML from."
+          ],
+          "name": "DATA",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        }
+      ]
+    },
+    {
+      "action": "WidgetFilterTranspose",
+      "machineName": "WidgetFilterTranspose",
+      "name": "Swap rows and columns",
+      "originalName": "Swap rows and columns",
+      "description": "Swap (transpose) the rows and columns in your data. Rows become columns and columns become rows.",
+      "method": {
+        "browser": "AxiomApiTransposeV070"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "transposed-data",
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Select the data to transpose."
+          ],
+          "name": "Transposable data",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        }
+      ]
+    },
+    {
+      "action": "WidgetFilterWord",
+      "machineName": "WidgetFilterWord",
+      "name": "Remove results which do not contain certain words",
+      "originalName": "Remove results which do not contain certain words",
+      "description": "Filter out rows from your data that do not contain particular words.",
+      "method": {
+        "browser": "AxiomApiMatchWordV0170"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "matching-word-data",
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Select the data you wish to remove rows from."
+          ],
+          "name": "Data",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Words (comma separated)",
+          "description": [
+            "Enter either a list of any number of words to check for, separated by commas, or data containing a list of words, one in each row.",
+            "Any row that does not contain the given word will be removed."
+          ],
+          "value": "",
+          "type": "word_list",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Word matching mode",
+          "description": [
+            " "
+          ],
+          "value": "any",
+          "type": "radio_any_all",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "any"
+        },
+        {
+          "name": "Match on word boundary",
+          "description": [
+            "Check this to match only when the complete word appears in the data. Only the characters a-z A-Z 0-9 and _ are considered to be part of a word, all other characters are considered as being part of a word boundary."
+          ],
+          "value": false,
+          "type": "exact_match",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        },
+        {
+          "name": "Columns (optional)",
+          "description": [
+            "Specify a list of column numbers, each separated with a comma. Only rows that have matches within these columns will be removed.",
+            "For example, entering '1,2' here will check in columns 1 and 2 only."
+          ],
+          "value": "",
+          "type": "column_string",
+          "image": null,
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetFindRowGoogleSheet",
+      "machineName": "WidgetFindRowGoogleSheet",
+      "name": "Find row in a Google Sheet",
+      "originalName": "Find row in a Google Sheet",
+      "description": "Search for values in a Google Sheet and return the row number of the first cell matching the passed values.",
+      "method": {
+        "browser": "AxiomApiFindRowGoogleSheet"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "find-row-google-sheet",
+      "params": [
+        {
+          "name": "Spreadsheet",
+          "description": [
+            "Select Google sheet"
+          ],
+          "value": "",
+          "type": "spreadsheet_picker",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Sheet name",
+          "description": [
+            "Optionally specify a sheet name to search. Sheets are different tabs visible at the bottom of your google doc; enter the name that appears on the tab to specify the sheet. Leaving this blank will use the first sheet in the document."
+          ],
+          "value": "",
+          "type": "sheet_name_dropdown",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Values (comma separated)",
+          "description": [
+            "Enter either a list of any number of values to check for, separated by commas, or data containing a list of values, one in each row.",
+            "The row number of the first cell that matches the values will be returned."
+          ],
+          "value": "",
+          "type": "word_list",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Exact match",
+          "description": [
+            "Check this to match the whole value rather than finding a partial match."
+          ],
+          "value": false,
+          "type": "exact_match",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        },
+        {
+          "name": "Value matching mode",
+          "description": [
+            " "
+          ],
+          "value": "any",
+          "type": "radio_any_all",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "any"
+        },
+        {
+          "name": "Columns (optional)",
+          "description": [
+            "Specify a list of column numbers, each separated with a comma. Only the selected columns will be searched.",
+            "For example, entering '1,2' here will search in columns 1 and 2 only."
+          ],
+          "value": "",
+          "type": "column_string",
+          "image": null,
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetGoogleDriveFolder",
+      "machineName": "WidgetGoogleDriveFolder",
+      "name": "Move a Google Sheet to a new folder in Google Drive",
+      "originalName": "Move a Google Sheet to a new folder in Google Drive",
+      "description": "Move a Google Sheet to a new folder in Google Drive",
+      "method": "AxiomApiGoogleDriveFolder",
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Sheet to move",
+          "description": [
+            "Select Google sheet"
+          ],
+          "value": "",
+          "type": "spreadsheet_picker",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Folder URL",
+          "description": [
+            "Enter the URL of the folder in Google Drive to move this sheet to."
+          ],
+          "value": "",
+          "type": "spreadsheet_id",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetHoverEvent",
+      "machineName": "WidgetHoverEvent",
+      "name": "Rollover element",
+      "originalName": "Rollover element",
+      "description": "Instruct the bot to record a mouse hover or rollover event, for example on a drop-down menu.",
+      "method": {
+        "driver": "driver.hover"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Select",
+          "description": [
+            "Choose the item you want to hover over."
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "h-hover",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetIf",
+      "machineName": "WidgetIf",
+      "name": "If condition",
+      "originalName": "If condition",
+      "description": "If the condition in this step is true, all of its sub-steps will run, otherwise they will be skipped.",
+      "method": {
+        "browser": "AxiomApiIf"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            ""
+          ],
+          "name": "Data to check",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Condition to check",
+          "description": [
+            ""
+          ],
+          "value": {
+            "evaluateType": "words",
+            "words": "",
+            "matchMode": "any",
+            "wordBoundary": false,
+            "javascript": ""
+          },
+          "type": "conditional_check_v4010",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "evaluateType": "words",
+            "words": "",
+            "matchMode": "any",
+            "wordBoundary": false,
+            "javascript": ""
+          }
+        },
+        {
+          "name": "Reverse condition",
+          "description": [
+            ""
+          ],
+          "value": false,
+          "type": "reverse_condition",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetIfEnd",
+      "machineName": "WidgetIfEnd",
+      "name": "End If",
+      "originalName": "End If",
+      "description": "End If",
+      "method": {
+        "browser": "AxiomApiNothing"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Instructions",
+          "description": [],
+          "value": "",
+          "type": "",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetImportCSV",
+      "machineName": "WidgetImportCSV",
+      "name": "Import CSV File",
+      "originalName": "Import CSV File",
+      "description": "Upload a CSV file from your computer. You can then use the data in other automation steps.",
+      "method": {
+        "browser": "AxiomApiImportCsvV300"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "imported-csv",
+      "params": [
+        {
+          "name": "Import CSV",
+          "description": [
+            "Select CSV file to upload. If you see corrupted characters, please make sure the file is encoded in UTF-8 format."
+          ],
+          "value": "",
+          "type": "file_upload",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "First cell",
+          "description": [
+            "Will use A1 if no value provided"
+          ],
+          "value": "A1",
+          "type": "first_cell",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "A1"
+        },
+        {
+          "name": "Last cell",
+          "description": [
+            "Will use ZZ if no value provided"
+          ],
+          "value": "ZZ",
+          "type": "last_cell",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "ZZ"
+        }
+      ]
+    },
+    {
+      "action": "WidgetInstructions",
+      "machineName": "WidgetInstructions",
+      "name": "How to use this recipe",
+      "originalName": "How to use this recipe",
+      "description": "How to use this recipe",
+      "method": {
+        "browser": "AxiomApiNothing"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Instructions",
+          "description": [],
+          "value": "",
+          "type": "",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetJump",
+      "machineName": "WidgetJump",
+      "name": "Conditionally jump to another step",
+      "originalName": "Conditionally jump to another step",
+      "description": "Check if some data contains certain values; if it does, jump to a different step.",
+      "method": {
+        "browser": "AxiomApiJumpV3140"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Enter the data to check for values."
+          ],
+          "name": "Data to check",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Condition to check",
+          "description": [
+            "Check data for either a list of words or if a javascript expression is true."
+          ],
+          "value": {
+            "evaluateType": "words",
+            "words": "",
+            "matchMode": "any",
+            "wordBoundary": false,
+            "javascript": ""
+          },
+          "type": "conditional_check_v4010",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "evaluateType": "words",
+            "words": "",
+            "matchMode": "any",
+            "wordBoundary": false,
+            "javascript": ""
+          }
+        },
+        {
+          "name": "Jump to step",
+          "description": [
+            "Enter the number of the step to jump to if the value is found."
+          ],
+          "value": "",
+          "type": "step_number",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Maximum cycles",
+          "description": [
+            "Maximum number of times this step should trigger in a single run."
+          ],
+          "value": "20",
+          "type": "max_cycles",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "20"
+        },
+        {
+          "name": "Reverse condition",
+          "description": [
+            "Jump if the specified words are NOT found."
+          ],
+          "value": false,
+          "type": "reverse_condition",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetNavigate",
+      "machineName": "WidgetNavigate",
+      "name": "Open a new tab",
+      "originalName": "Open a new tab",
+      "description": "Opens a new tab in your main browser and navigates to that URL.",
+      "method": {
+        "browser": "AxiomApiNavigate"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "URL",
+          "description": [
+            "Enter the url of the page you wish to open."
+          ],
+          "value": "",
+          "type": "current_url",
+          "image": "",
+          "collapsible": 0,
+          "help": [],
+          "default_value": "",
+          "configurable": true
+        }
+      ]
+    },
+    {
+      "action": "WidgetRadomPassword",
+      "machineName": "WidgetRadomPassword",
+      "name": "Generate random password",
+      "originalName": "Generate random password",
+      "description": "Auto generate a password. You can configure the types of characters that are included and the length of the password.",
+      "method": {
+        "browser": "AxiomApiGenerateRandomPassword"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "random-password",
+      "params": [
+        {
+          "name": "Password length",
+          "description": [
+            " "
+          ],
+          "value": "",
+          "type": "integer_required",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Include non-alphanumeric characters (punctuation etc.)",
+          "description": [
+            " "
+          ],
+          "value": "",
+          "type": "special_character",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetRandomWait",
+      "machineName": "WidgetRandomWait",
+      "name": "Random Wait",
+      "originalName": "Random Wait",
+      "description": "Waits a random amount of time between the specified minimum and maximum.",
+      "method": {
+        "driver": "driver.randomWait"
+      },
+      "modes": [
+        "driver"
+      ],
+      "params": [
+        {
+          "name": "Min wait",
+          "description": [
+            "Wait time in miliseconds"
+          ],
+          "value": "100",
+          "type": "pause_time",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "100"
+        },
+        {
+          "name": "Max wait",
+          "description": [
+            "Wait time in miliseconds"
+          ],
+          "value": "10000",
+          "type": "pause_time",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "10000"
+        }
+      ]
+    },
+    {
+      "action": "WidgetReadAirtable",
+      "machineName": "WidgetReadAirtable",
+      "name": "Read data from Airtable",
+      "originalName": "Read data from Airtable",
+      "description": "Read data from Airtable",
+      "method": {
+        "browser": "AxiomApiReadAirtable"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "airtable-data",
+      "params": [
+        {
+          "name": "Base ID",
+          "description": [
+            "Input your airtable base ID"
+          ],
+          "value": "",
+          "type": "textfield_required",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Table ID or name",
+          "description": [
+            "Input the table ID or name"
+          ],
+          "value": "",
+          "type": "textfield_required",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetReadExcelSheet",
+      "machineName": "WidgetReadExcelSheet",
+      "name": "Read data from Excel",
+      "originalName": "Read data from Excel",
+      "description": "Read data from Excel",
+      "method": {
+        "browser": "AxiomApiReadExcelSheet"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "excel-sheet-data",
+      "params": [
+        {
+          "name": "Workbook",
+          "description": [
+            "Select an Excel workbook to read from, or paste its URL here. Reading from workbooks stored on personal OneDrive accounts is not supported"
+          ],
+          "value": "",
+          "type": "excel_workbook_picker",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Sheet name",
+          "description": [
+            "Specify a sheet name to read from. These are the tabs at the bottom of each workbook."
+          ],
+          "value": "",
+          "type": "excel_sheet_name_dropdown",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "First cell",
+          "description": [
+            "Will use A1 if no value provided"
+          ],
+          "value": "A1",
+          "type": "first_cell",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "A1"
+        },
+        {
+          "name": "Last cell",
+          "description": [
+            "Will use ZZ if no value provided"
+          ],
+          "value": "ZZ",
+          "type": "last_cell",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "ZZ"
+        },
+        {
+          "name": "Continue when empty",
+          "description": [
+            "If this is turned on, the automation will proceed even if the input sheet is empty."
+          ],
+          "value": false,
+          "type": "optional",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetReadFileFromGoogleDrive",
+      "machineName": "WidgetReadFileFromGoogleDrive",
+      "name": "Read file from Google Drive",
+      "originalName": "Read file from Google Drive",
+      "description": "Read the contents of a file stored on Google Drive. Supports reading text, pdf and .docx files.",
+      "method": {
+        "browser": "AxiomApiReadFileFromGoogleDrive"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "drive-file-content",
+      "params": [
+        {
+          "name": "Google Drive file URL",
+          "description": [
+            "Enter the URL of the file in Google Drive to read."
+          ],
+          "value": "",
+          "type": "google_file_url",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Local folder",
+          "description": [
+            "If you are using the desktop version of Axiom you should set a local folder here to use as an intermediate step for the file download. Do not use this setting if you are running Axiom via the cloud."
+          ],
+          "value": false,
+          "type": "local_folder",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetReadGoogleSheet",
+      "machineName": "WidgetReadGoogleSheet",
+      "name": "Read data from a Google Sheet",
+      "originalName": "Read data from a Google Sheet",
+      "description": "Read rows from a Google Sheet to use as an input data source (use when the user says: from a Google Sheet, read a Google Sheet, for each row).",
+      "method": {
+        "browser": "AxiomApiReadGoogleSheetWithRangeV3170"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "google-sheet-data",
+      "params": [
+        {
+          "name": "Spreadsheet",
+          "description": [
+            "Select Google sheet"
+          ],
+          "value": "",
+          "type": "spreadsheet_picker",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Sheet name",
+          "description": [
+            "Specify a sheet name to read from. These are the tabs at the bottom of each spreadsheet."
+          ],
+          "value": "",
+          "type": "sheet_name_dropdown",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "First cell",
+          "description": [
+            "Will use A1 if no value provided"
+          ],
+          "value": "A1",
+          "type": "first_cell",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "A1"
+        },
+        {
+          "name": "Last cell",
+          "description": [
+            "Will use ZZ if no value provided"
+          ],
+          "value": "ZZ",
+          "type": "last_cell",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "ZZ"
+        },
+        {
+          "name": "Continue when empty",
+          "description": [
+            "If this is turned on, the automation will proceed even if the input sheet is empty."
+          ],
+          "value": false,
+          "type": "optional",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": false
+        }
+      ]
+    },
+    {
+      "action": "WidgetReadLocalFile",
+      "machineName": "WidgetReadLocalFile",
+      "name": "Read local file",
+      "originalName": "Read local file",
+      "description": "Read the contents of a file stored on your computer. Supports reading text, pdf and .docx files.",
+      "method": {
+        "browser": "AxiomApiReadLocalFile"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "local-file-content",
+      "params": [
+        {
+          "name": "File Path",
+          "description": [
+            "Input the path to the file on your computer that should be read."
+          ],
+          "value": "",
+          "type": "file_upload",
+          "image": "h-upload-file-path",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetRestApi",
+      "machineName": "WidgetRestApi",
+      "name": "Trigger webhook",
+      "originalName": "Trigger webhook",
+      "description": "Integrate with any site that supports webhooks by sending them whatever data you want.",
+      "method": {
+        "browser": "AxiomApiRestApiV0230"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Endpoint",
+          "description": [
+            " "
+          ],
+          "value": "",
+          "type": "end_point",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Payload",
+          "description": [
+            "Enter the payload for the request, as JSON."
+          ],
+          "value": "",
+          "type": "json",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetRestartBrowser",
+      "machineName": "WidgetRestartBrowser",
+      "name": "Restart the browser",
+      "originalName": "Restart the browser",
+      "description": "Force a browser restart to prevent memory issues in long running bots",
+      "method": {
+        "browser": "AxiomApiRestartBrowser"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Restart browser",
+          "description": [
+            "Be careful - some javascript or other page state may be lost when reloading the page."
+          ],
+          "value": "",
+          "type": "",
+          "image": "",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [
+            {
+              "name": "Learn ",
+              "linkSrc": "https://axiom.ai/docs/reference/steps/restart-browser",
+              "linkText": "more"
+            }
+          ],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetRowNumbers",
+      "machineName": "WidgetRowNumbers",
+      "name": "Add row numbers",
+      "originalName": "Add row numbers",
+      "description": "Add row numbers to a dataset.",
+      "method": {
+        "browser": "AxiomApiRowNumbers"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "row-numbered-data",
+      "params": [
+        {
+          "type": "row_numbering_token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "row_numbering_token",
+          "description": [
+            "Select the data to append the row numbers to"
+          ],
+          "name": "DATA",
+          "configurable": false,
+          "help": [
+            {
+              "name": "",
+              "linkSrc": "https://axiom.ai/docs/tutorials/data/dynamically_write",
+              "linkText": "Learn how to write to the same row in a loop."
+            }
+          ],
+          "default_value": []
+        },
+        {
+          "name": "Offset",
+          "description": [
+            "Set an number to start the row numbering at."
+          ],
+          "value": "",
+          "type": "row_offset",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetRunAxiom",
+      "machineName": "WidgetRunAxiom",
+      "name": "Run another Axiom",
+      "originalName": "Run another Axiom",
+      "description": "Run another automation from your account. Once complete, it will return control back to this automation.",
+      "method": {
+        "browser": "AxiomApiRunAxiom"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Selected Axiom",
+          "description": [
+            "Select the Axiom to run"
+          ],
+          "value": "",
+          "type": "selected_axiom",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetScrapeLinks",
+      "machineName": "WidgetScrapeLinks",
+      "name": "Get a list of links to pages from a URL",
+      "originalName": "Get a list of links to pages from a URL",
+      "description": "Scrape links from a page. Use these to visit those pages and perform further actions - you could get data from those pages, fill in forms on them, and much more.",
+      "method": {
+        "browser": "AxiomApiScrapeLinksV4400"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "scraped-link-data",
+      "params": [
+        {
+          "name": "URL",
+          "description": [
+            "Enter a URL or multiple URLs, each on their own line. You can also plugin data from other steps to provide URLs."
+          ],
+          "value": "",
+          "type": "multiple_urls",
+          "image": "",
+          "collapsible": 0,
+          "help": [],
+          "default_value": "",
+          "configurable": true
+        },
+        {
+          "name": "Select",
+          "description": [
+            "Choose the links you wish to scrape."
+          ],
+          "value": "",
+          "type": "smart_selector",
+          "image": "h-link-scraper",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Find pager",
+          "description": [
+            "Select the 'Next' button for the pager, if there is one. When running the bot, please select 'Use element text' if it stops paging after the first page."
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "h-pager",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Max results",
+          "description": [
+            "Set a maximum number of results you wish to scrape. Setting this number higher than the number of results you need will slow down the scraper - axiom has to spend time looking for results that it will never find."
+          ],
+          "value": "20",
+          "type": "scraper_max_results",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "20"
+        },
+        {
+          "name": "Configure scraper",
+          "description": [],
+          "value": {
+            "scrollSpeed": 5000,
+            "maxAttempts": 2
+          },
+          "type": "scraper_settings",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "scrollSpeed": 5000,
+            "maxAttempts": 2
+          }
+        }
+      ]
+    },
+    {
+      "action": "WidgetSelectRandomRows",
+      "machineName": "WidgetSelectRandomRows",
+      "name": "Select random rows",
+      "originalName": "Select random rows",
+      "description": "Select random rows from a given data set, and create a new data set containing them.",
+      "method": {
+        "browser": "AxiomApiRandomRows"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "random-row",
+      "params": [
+        {
+          "name": "Rows",
+          "description": [
+            "Enter the number of rows to select."
+          ],
+          "value": "",
+          "type": "integer_required",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Select the data to get rows from."
+          ],
+          "name": "DATA",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        }
+      ]
+    },
+    {
+      "action": "WidgetSendEmail",
+      "machineName": "WidgetSendEmail",
+      "name": "Send an email",
+      "originalName": "Send an email",
+      "description": "Send an email to one or more email addresses.",
+      "method": {
+        "browser": "AxiomApiSendEmail"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Email addresses",
+          "description": [
+            "Enter a list of email addresses to send to, one email address per line.",
+            "All emails are sent from a no-reply axiom.ai email address and you will not receive a reply to any message sent. Messages are rate limited to one per 30 seconds. Please do not use this step to send unsolicited email to third parties!"
+          ],
+          "value": "",
+          "type": "email_addresses",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Email subject",
+          "description": [
+            " "
+          ],
+          "value": "",
+          "type": "textfield",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Email body",
+          "description": [
+            " "
+          ],
+          "value": "",
+          "type": "long_text",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetSmartScraper",
+      "machineName": "WidgetSmartScraper",
+      "name": "Get data from a URL",
+      "originalName": "Get data from a URL",
+      "description": "Scrape data from any web page.",
+      "method": {
+        "browser": "AxiomApiSmartScrapeV4400"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "scrape-data",
+      "params": [
+        {
+          "name": "URL",
+          "description": [
+            "Enter a URL or multiple URLs, each on their own line. You can also plugin data from other steps to provide URLs."
+          ],
+          "value": "",
+          "type": "multiple_urls",
+          "image": "",
+          "collapsible": 0,
+          "help": [],
+          "default_value": "",
+          "configurable": true
+        },
+        {
+          "name": "Select",
+          "description": [
+            "Choose the data you wish to scrape."
+          ],
+          "value": "",
+          "type": "smart_selector",
+          "image": "h-scrape-data",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Find pager",
+          "description": [
+            "Select the 'Next' button for the pager, if there is one. When running the bot, please select 'Use element text' if it stops paging after the first page."
+          ],
+          "value": "",
+          "type": "selector_single",
+          "image": "h-pager",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Max results",
+          "description": [
+            "Set a maximum number of results you wish to scrape. Setting this number higher than the number of results you need will slow down the scraper - axiom has to spend time looking for results that it will never find."
+          ],
+          "value": "20",
+          "type": "scraper_max_results",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": "20"
+        },
+        {
+          "name": "Configure scraper",
+          "description": [],
+          "value": {
+            "scrollSpeed": 5000,
+            "maxAttempts": 2
+          },
+          "type": "scraper_settings",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "scrollSpeed": 5000,
+            "maxAttempts": 2
+          }
+        }
+      ]
+    },
+    {
+      "action": "WidgetSplitByCharacter",
+      "machineName": "WidgetSplitByCharacter",
+      "name": "Split by character",
+      "originalName": "Split by character",
+      "description": "Split data into parts using a delimter that you specifiy.",
+      "method": {
+        "browser": "AxiomApiSplitByCharacter"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "split-by-character",
+      "params": [
+        {
+          "name": "Character",
+          "description": [
+            "Enter a character or word to split on."
+          ],
+          "value": "",
+          "type": "textfield",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "",
+          "description": [
+            "Select the data that should be split."
+          ],
+          "name": "DATA",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        }
+      ]
+    },
+    {
+      "action": "WidgetTry",
+      "machineName": "WidgetTry",
+      "name": "Try",
+      "originalName": "Try",
+      "description": "Try",
+      "method": {
+        "browser": "AxiomApiTry"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": []
+    },
+    {
+      "action": "WidgetTryCatchEnd",
+      "machineName": "WidgetTryCatchEnd",
+      "name": "Try / Catch End",
+      "originalName": "Try / Catch End",
+      "description": "Try / Catch End",
+      "method": {
+        "browser": "AxiomApiNothingNoParam"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": []
+    },
+    {
+      "action": "WidgetWebhookReceive",
+      "machineName": "WidgetWebhookReceive",
+      "name": "Receive data from another app",
+      "originalName": "Receive data from another app",
+      "description": "Add this step to use the data passed to Axiom from an external service, such as Zapier or an external API.",
+      "method": "AxiomApiWebhookReceiveV450",
+      "modes": [
+        "browser"
+      ],
+      "token": "webhook-data",
+      "params": [
+        {
+          "name": "Instructions",
+          "description": [
+            "Step by step guides for:"
+          ],
+          "value": "",
+          "type": "hidden",
+          "image": "",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [
+            {
+              "name": "",
+              "linkSrc": "https://axiom.ai/docs/integrations/zapier",
+              "linkText": "Zapier"
+            },
+            {
+              "name": "",
+              "linkSrc": "https://axiom.ai/docs/integrations/make",
+              "linkText": "Make"
+            },
+            {
+              "name": "",
+              "linkSrc": "https://axiom.ai/docs/guides/general/api/curl",
+              "linkText": "cURL"
+            },
+            {
+              "name": "",
+              "linkSrc": "https://axiom.ai/docs/guides/general/api/ifttt",
+              "linkText": "IFTTT"
+            },
+            {
+              "name": "",
+              "linkSrc": "https://axiom.ai/docs/guides/general/api/power-automate",
+              "linkText": "Power Automate"
+            },
+            {
+              "name": "",
+              "linkSrc": "https://axiom.ai/docs/guides/general/api/send-an-api-request-from-postman",
+              "linkText": "Postman"
+            },
+            {
+              "name": "",
+              "linkSrc": "https://axiom.ai/docs/guides/general/api/google-apps-script",
+              "linkText": "Google Apps Script"
+            },
+            {
+              "name": "",
+              "linkSrc": "https://axiom.ai/docs/guides/general/api/apple-shortcuts",
+              "linkText": "Apple Shortcuts"
+            }
+          ],
+          "default_value": ""
+        },
+        {
+          "name": "API Credentials",
+          "description": [
+            "Click below to copy to clipboard:"
+          ],
+          "value": "",
+          "type": "api_credentials",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "JSON payload example",
+          "description": [],
+          "value": "",
+          "type": "json_payload",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Test data",
+          "description": [
+            "Set up dummy data to test your axiom with. If data is sent via a webhook, any data here will be ignored.",
+            "Enter data either by separating columns by commas and rows by line breaks, or in a JSON 2d array format - [[\"A1\", \"B1\"], [\"A2\", \"B2\"]] etc."
+          ],
+          "value": "",
+          "type": "long_text",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetWriteAirtable",
+      "machineName": "WidgetWriteAirtable",
+      "name": "Write data to Airtable",
+      "originalName": "Write data to Airtable",
+      "description": "Write data to Airtable",
+      "method": {
+        "browser": "AxiomApiWriteAirtable"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Base ID",
+          "description": [
+            "Input your airtable base ID"
+          ],
+          "value": "",
+          "type": "textfield_required",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Table ID or name",
+          "description": [
+            "Input the table ID or name"
+          ],
+          "value": "",
+          "type": "textfield_required",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "type": "token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "token",
+          "description": [
+            "Select the data to write"
+          ],
+          "name": "DATA",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Clear data before writing",
+          "description": [
+            "Add to keep existing data; clear to delete it before adding new data"
+          ],
+          "value": true,
+          "type": "append_or_clear",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": true
+        }
+      ]
+    },
+    {
+      "action": "WidgetWriteExcelSheet",
+      "machineName": "WidgetWriteExcelSheet",
+      "name": "Write data to an Excel Sheet",
+      "originalName": "Write data to an Excel Sheet",
+      "description": "Write data to an Excel Sheet",
+      "method": {
+        "browser": "AxiomApiWriteExcelSheet"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Workbook",
+          "description": [
+            "Select an Excel workbook to write to, or paste its URL here. Writing to workbooks stored on personal OneDrive accounts is not supported."
+          ],
+          "value": "",
+          "type": "excel_workbook_picker",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Sheet name",
+          "description": [
+            "Specify a sheet name to write to. These are the tabs at the bottom of each workbook."
+          ],
+          "value": "",
+          "type": "excel_sheet_name_dropdown",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "type": "write_excel_sheet_token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "write_excel_sheet_token",
+          "description": [
+            "Select the data to write"
+          ],
+          "name": "DATA",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Write options",
+          "description": [
+            ""
+          ],
+          "value": {
+            "append": true,
+            "startingCell": ""
+          },
+          "type": "google_sheet_write_options",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "append": true,
+            "startingCell": ""
+          }
+        }
+      ]
+    },
+    {
+      "action": "WidgetWriteGoogleSheet",
+      "machineName": "WidgetWriteGoogleSheet",
+      "name": "Write data to a Google Sheet",
+      "originalName": "Write data to a Google Sheet",
+      "description": "Write/append data to a Google Sheet (use when the user says: save/export/store results to a Google Sheet).",
+      "method": {
+        "browser": "AxiomApiUpdateGoogleSheetV3160"
+      },
+      "modes": [
+        "browser"
+      ],
+      "params": [
+        {
+          "name": "Spreadsheet",
+          "description": [
+            "Select Google sheet"
+          ],
+          "value": "",
+          "type": "spreadsheet_picker",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Sheet name",
+          "description": [
+            "Specify a sheet name to write to. These are the tabs at the bottom of each spreadsheet."
+          ],
+          "value": "",
+          "type": "sheet_name_dropdown",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "type": "write_google_sheet_token",
+          "value": [],
+          "maxTokens": 1,
+          "collapsible": 0,
+          "image": "",
+          "tokenType": "write_google_sheet_token",
+          "description": [
+            "Select the data to write"
+          ],
+          "name": "DATA",
+          "configurable": false,
+          "help": [],
+          "default_value": []
+        },
+        {
+          "name": "Write options",
+          "description": [
+            ""
+          ],
+          "value": {
+            "append": true,
+            "startingCell": ""
+          },
+          "type": "google_sheet_write_options",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": {
+            "append": true,
+            "startingCell": ""
+          }
+        },
+        {
+          "name": "Write method",
+          "description": [
+            "Select \"User Entered\" if you want to write formulas to the sheet."
+          ],
+          "value": "raw",
+          "type": "radio_value_input_option",
+          "image": null,
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "raw"
+        }
+      ]
+    }
+  ]
+}

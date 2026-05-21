@@ -1,0 +1,43 @@
+{
+  "id": 0,
+  "openWidgetIndex": -1,
+  "name": "Step number wrong type",
+  "templateId": 0,
+  "triggers": [],
+  "share_status": false,
+  "share_link": "",
+  "stored_cookies": [],
+  "data": {
+    "allowConcurrencyDesktop": true,
+    "builderTemplateId": 0,
+    "context": [{"context": "url", "url": "https://example.com"}],
+    "disallowConcurrencyCloud": false,
+    "form": [
+      {
+        "machine_name": "WidgetDriverGoto",
+        "name": "Go to page",
+        "stepNumber": 1,
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "name": "URL",
+            "type": "token",
+            "value": "https://example.com"
+          }
+        ]
+      }
+    ],
+    "headless": false,
+    "incognitoMode": false,
+    "injector": {"injector": "dom", "magic_btn_status": true, "selector": ""},
+    "mode": "browser",
+    "storeCookies": false,
+    "templateId": 0,
+    "templateItem": {"name": "x", "description": ""},
+    "templateMode": false,
+    "templateStarted": false,
+    "tokens": null,
+    "viewport": null
+  }
+}

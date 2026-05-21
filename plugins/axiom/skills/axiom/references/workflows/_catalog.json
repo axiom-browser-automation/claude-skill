@@ -1,0 +1,184 @@
+{
+  "_sourceCommit": "d1dd5f0502e22a3bb27bae358978e044fa8ff084",
+  "_note": "Sanitised catalog of in-app chat workflows. Each entry is the user-facing intent the workflow handles; raw source and dispatch wiring lives in the maintainer-only archive.",
+  "workflows": [
+    {
+      "key": "add_steps",
+      "description": "The user wants to add a new step to their workflow",
+      "category": "build"
+    },
+    {
+      "key": "autofix_workflow",
+      "description": "Applies automated troubleshooting fixes with clarification support",
+      "forcing": true,
+      "category": "troubleshooting"
+    },
+    {
+      "key": "beefy",
+      "description": "Basildon boy's gonna drop some lyric",
+      "category": "settings"
+    },
+    {
+      "key": "block_resources",
+      "description": null,
+      "forcing": true,
+      "category": "build"
+    },
+    {
+      "key": "cancellation_workflow",
+      "description": null,
+      "forcing": true,
+      "category": "settings"
+    },
+    {
+      "key": "click_failed",
+      "description": "The user says a click step failed, did not click, or does not work",
+      "category": "troubleshooting"
+    },
+    {
+      "key": "cloudflare",
+      "description": "Checks Cloudflare bot blocking failures and routes to support when bot detection bypass is already enabled",
+      "forcing": true,
+      "category": "troubleshooting"
+    },
+    {
+      "key": "empty_google_sheet",
+      "description": "Handles empty Google Sheet reads by either opening the sheet for edits or enabling continue when empty",
+      "forcing": true,
+      "category": "troubleshooting"
+    },
+    {
+      "key": "error_suppression",
+      "description": "Suppresses non-critical errors by wrapping existing steps in try/catch or turning on continue on error",
+      "category": "troubleshooting"
+    },
+    {
+      "key": "error_workflow",
+      "description": null,
+      "forcing": true,
+      "category": "troubleshooting"
+    },
+    {
+      "key": "fill_form",
+      "description": "Guides users through adding basic form filling steps to their automation",
+      "forcing": true,
+      "category": "build"
+    },
+    {
+      "key": "google_sheets_write",
+      "description": "Help users write or update data in Google Sheets by adding the read, find row, and write steps",
+      "forcing": true,
+      "category": "build"
+    },
+    {
+      "key": "incoming_webhook",
+      "description": "Help users trigger an Axiom.ai automation from Zapier, an incoming webhook, or an external API",
+      "forcing": true,
+      "category": "build"
+    },
+    {
+      "key": "loop_steps",
+      "description": null,
+      "category": "build"
+    },
+    {
+      "key": "mac_chromium_unsupported",
+      "description": "Routes macOS Chromium unsupported desktop-app errors to support with Mac system detail instructions",
+      "forcing": true,
+      "category": "troubleshooting"
+    },
+    {
+      "key": "notifications",
+      "description": "User wants to set up, update, or disable notifications for automation runs",
+      "forcing": true,
+      "category": "build"
+    },
+    {
+      "key": "page_loading_failure",
+      "description": "Troubleshoots pages or URLs that fail to load",
+      "forcing": true,
+      "category": "troubleshooting"
+    },
+    {
+      "key": "proxy_settings",
+      "description": "User wants to set up a proxy or change their proxy settings",
+      "forcing": true,
+      "category": "settings"
+    },
+    {
+      "key": "run_in_app",
+      "description": "Handles Write javascript errors that require the Run in app setting",
+      "forcing": true,
+      "category": "settings"
+    },
+    {
+      "key": "runtime_limit",
+      "description": "Explains when a run most likely exceeded the maximum runtime for an individual run and offers upgrade guidance",
+      "forcing": true,
+      "category": "settings"
+    },
+    {
+      "key": "schedule_time",
+      "description": "The user says a scheduled automation runs at the wrong time, usually because of timezone, UTC, daylight saving, or local/cloud schedule settings",
+      "forcing": true,
+      "category": "build"
+    },
+    {
+      "key": "scheduler",
+      "description": "User wants to schedule their automation to run at a particular time, or disable an already set schedule",
+      "category": "build"
+    },
+    {
+      "key": "selector_issues",
+      "description": "The user is running into issues with a selector not working",
+      "category": "troubleshooting"
+    },
+    {
+      "key": "slow_automation",
+      "description": "The user says their automation is slow, Chrome crashed, or they saw an oh snap browser crash",
+      "category": "troubleshooting"
+    },
+    {
+      "key": "slow_scraper",
+      "description": "Speeds up scraper automations by reducing scraper retry attempts",
+      "category": "troubleshooting"
+    },
+    {
+      "key": "store_cookies",
+      "description": "User wants to sync, store, or resync cookies for logged-in sessions",
+      "forcing": true,
+      "category": "build"
+    },
+    {
+      "key": "stuck_automation",
+      "description": "The user says their automation appears stuck on running for a long time or the UI has not updated",
+      "category": "troubleshooting"
+    },
+    {
+      "key": "support",
+      "description": "The user should be routed to support, because they request it or because it is not clear how to assist them further",
+      "category": "troubleshooting"
+    },
+    {
+      "key": "trigger_webhook",
+      "description": "User wants to send data to a webhook or API endpoint",
+      "category": "build"
+    },
+    {
+      "key": "troubleshooting_workflow",
+      "description": "Generic troubleshooting workflow, used to handle a general user request as a fallback",
+      "category": "troubleshooting"
+    },
+    {
+      "key": "upgrade_subscription",
+      "description": "Helps users who want to upgrade their subscription plan or need more monthly runtime",
+      "forcing": true,
+      "category": "settings"
+    },
+    {
+      "key": "working_with_files",
+      "description": "The user wants to do automate something with files, either uploading or downloading, locally or in the cloud",
+      "category": "build"
+    }
+  ]
+}

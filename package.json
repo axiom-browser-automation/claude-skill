@@ -1,0 +1,30 @@
+{
+  "name": "@axiom_ai/claude-skill",
+  "version": "0.6.1",
+  "private": true,
+  "description": "Claude Code skill for building Axiom no-code and coded automations.",
+  "scripts": {
+    "test": "jest",
+    "test:no-code": "jest test/no-code",
+    "test:coded": "jest test/coded",
+    "validate:no-code": "node plugins/axiom/skills/axiom/scripts/validate-no-code.js",
+    "validate:coded": "node plugins/axiom/skills/axiom/scripts/validate-coded.js",
+    "save:no-code": "node plugins/axiom/skills/axiom/scripts/save-to-axiom-lar.js",
+    "signup": "node plugins/axiom/skills/axiom/scripts/signup-and-mint-key.js",
+    "run": "node plugins/axiom/skills/axiom/scripts/run-axiom.js",
+    "dispatch": "node plugins/axiom/skills/axiom/workflows/index.js",
+    "lint": "eslint plugins/**/skills/**/examples plugins/**/skills/**/scripts test"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "acorn": "^8.11.0",
+    "acorn-walk": "^8.3.0",
+    "ajv": "^8.12.0",
+    "ajv-formats": "^2.1.1",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.4.0"
+  }
+}

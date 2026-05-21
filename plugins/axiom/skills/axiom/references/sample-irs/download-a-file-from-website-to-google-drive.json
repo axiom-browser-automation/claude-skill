@@ -1,0 +1,30 @@
+{
+  "_sourceCommit": "d1dd5f0502e22a3bb27bae358978e044fa8ff084",
+  "_sourceId": "axiom-download-a-file-from-website-to-google-drive",
+  "ir": {
+    "version": "0.1",
+    "name": "Download a file from website to google drive",
+    "initialPrompt": "Download a file from website to google drive",
+    "expectedOutput": "",
+    "context": {
+      "url": "",
+      "headless": false
+    },
+    "steps": [
+      {
+        "id": "step-1",
+        "kind": "action",
+        "action": "goto",
+        "value": "",
+        "assertions": []
+      },
+      {
+        "id": "step-2",
+        "kind": "action",
+        "action": "axiomWidget",
+        "machineName": "WidgetDriverDownloadToGoogleDrive",
+        "assertions": []
+      }
+    ]
+  }
+}

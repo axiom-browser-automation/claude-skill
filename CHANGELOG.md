@@ -1,0 +1,72 @@
+# Changelog
+
+## 0.6.1 — vendor the full axiom.ai docs corpus into the skill
+
+Replaces a vector-store-backed doc retrieval model with file-based docs Claude reads on demand. Skill now ships the entire user-facing documentation tree (332 markdown files across 41 categories) under `plugins/axiom/skills/axiom/references/docs/`, plus a generated `_index.json` so Claude can scan the catalog before reading any specific file.
+
+Rationale: Claude reads structured indices well, picks files precisely, and ingests whole documents rather than chunks. For a single-turn skill where the model isn't context-constrained, vendored markdown + a Claude-readable index is the right shape; retrieval-augmented generation is overkill.
+
+What landed:
+- **`references/docs/_index.json`** — generated catalog: 332 entries grouped into 41 category buckets. Each entry has `path`, `title`, `description`, optional `docCategory` + `order`.
+- **`references/docs/<full tree>`** — the 332 markdown files, with Nuxt Content frontmatter and `::ComponentName{}` shortcodes preserved.
+- **`SKILL.md` Step 2.5** — "always read `_index.json` before composing", with example prompt-to-doc mappings. Emphasises reading 3-6 well-chosen docs rather than scanning the corpus.
+
+## 0.6.0 — five-workflow architecture: signup, build (no-code + coded), run, handoff
+
+The skill now exposes five workflows in a code-based registry. Each is a class with `key`, `description`, `getRoutes()` (regex matchers), and `invoke()` returning `{response, debug}`. Routing precedence is registry order; first match wins.
+
+Two new user-facing capabilities land alongside the registry:
+
+- **Run/trigger a saved axiom from Claude.** Drives the existing Axiom REST surface — no backend changes. Modes: `list` / `trigger` / `status` / `wait`. Limitations of the underlying name-keyed endpoints flow through to the workflow and are documented in `references/workflows-index.md`:
+  - No run identity — status reads ask "is any pod running this name?"; concurrent runs of the same axiom can't be told apart.
+  - Status is binary (`Running`/`Finished`); failures are indistinguishable from success.
+  - Only Google-Sheets-widget output is recoverable via the status endpoint; other scraped data isn't surfaced.
+  - No `cancel` mode — `/v4/stop` requires pod credentials we can't reliably recover. Cancel via the dashboard.
+- **Tell the user how to install the Chrome extension.** Pure guidance: returns a message pointing at `https://axiom.ai` and the Chrome Web Store URL, with sign-in-with-same-email instructions so the user's saved axioms appear in the extension dashboard.
+
+The five workflows in routing order:
+
+| Key | Wraps | Purpose |
+|---|---|---|
+| `signup` | `signup-and-mint-key.js` | Bootstrap account + mint API key |
+| `build_no_code` | `validate-no-code` + `save-to-axiom-lar` | Emit + validate + save `AutomationTemplate` JSON |
+| `build_coded` | `validate-coded` | Emit + validate `@axiom_ai/api` script |
+| `run_automation` | `run-axiom.js` | List / trigger by name / status / wait (see caveats above) |
+| `handoff_to_extension` | (inline guidance) | Tell the user how to install the Chrome extension and find their saved axioms |
+
+CLI: `node workflows/index.js list | dispatch --message "..." | invoke <key> [opts-json]`. Used by tests + power users.
+
+Total skill tests: 63 → 102 across 10 → 12 suites.
+
+## 0.5.0 — vendor in-app workflow catalog into the skill
+
+Skill consults a sanitised catalog of in-app chat workflows to recognise build-vs-troubleshooting intent without trying to re-implement multi-turn dispatch:
+
+- **`references/workflows/_catalog.json`** — 32 entries, one per workflow. Each carries `key`, `description`, `category` (build/troubleshooting/settings), and an optional `forcing` flag. Drives Step 1 intent classification.
+- **`SKILL.md` Step 1** — new troubleshooting-intent branch points the user back to the in-app chat rather than emitting an artifact.
+
+## 0.4.0 — account onboarding (signup + key mint)
+
+The skill can now bootstrap a user from "no Axiom account" or "no API key" to a working state. New artifacts:
+
+- **`scripts/signup-and-mint-key.js`** — combined helper wrapping the three REST calls (`POST /api/user/create` → `POST /api/user/login` → `GET /api/user/key/create`). CLI flags: `--email`, `--name`, `--existing` (skip create), `--check-only` (report whether a key already exists without minting one). Password read from `AXIOM_PASSWORD` env var (never the CLI). Auto-falls-back from create to login when the server returns `email_exists`.
+- **`references/account-setup.md`** — Claude-facing reference for the onboarding flow: when to invoke it, the choreography (one question, password via env, run helper, persist key, retry save), error modes, and the key-rotation gotcha.
+- **`SKILL.md` Step 0** — Claude now checks `AXIOM_API_KEY` is set before producing artifacts. If not, it walks the user through the decision (existing account vs new vs paste-a-key) and uses the helper.
+
+## 0.3.0 — marketplace-of-plugins layout for local installability
+
+Restructured to canonical Claude Code plugin-marketplace layout: top-level `.claude-plugin/marketplace.json` lists `axiom` plugin under `./plugins/axiom`. All paths updated: package.json scripts, test spec imports + runtime path resolution.
+
+## 0.2.0 — wire the REST save endpoint
+
+- **`references/rest-save-endpoint.md`** — full contract for `POST /api/v4/automation` (request fields, defaults, error table, curl examples).
+- **`scripts/save-to-axiom-lar.js`** — Node helper that POSTs a validated AutomationTemplate to the endpoint. Re-runs schema validation before sending; refuses on invalid. Exposes `saveAutomation()` and `buildRequestBody()` for tests.
+- **`SKILL.md` Step 5** — Claude runs the save helper for the no-code path after validation passes.
+
+## 0.1.0 — initial scaffold
+
+- Plugin layout: `.claude-plugin/plugin.json` + `skills/axiom/SKILL.md`.
+- Dual-output skill: no-code AutomationTemplate JSON + coded `@axiom_ai/api` script.
+- Hand-crafted references: `axiom-api-method-allowlist.json` / `…-blocklist.json`, `axiom-api-surface.md`, `decision-tree.md`, `automation-template-schema.md`.
+- Validators: `validate-no-code.js` (AJV) and `validate-coded.js` (acorn AST). Same code Claude runs at skill execution time is what the test suite uses.
+- Test suite: Jest + ts-jest, covering valid-corpus + filename-coded negative fixtures + Claude-output regression bank.
