@@ -20,7 +20,7 @@ Before you produce anything, **decide which workflow fits**. If the user's inten
 
 Skip this section if `AXIOM_API_KEY` is already set in the environment AND the user hasn't said anything like "I don't have an account" / "set me up". Otherwise walk through it before producing any artifacts.
 
-**Quick check:** run `echo "AXIOM_API_KEY=${AXIOM_API_KEY:+set}${AXIOM_API_KEY:-unset}"` via Bash. If it prints `unset`, you need to onboard.
+**Quick check:** run `[ -n "$AXIOM_API_KEY" ] && echo "AXIOM_API_KEY=set" || echo "AXIOM_API_KEY=unset"` via Bash. **Do not echo the raw value** — it will end up in the conversation transcript. If it prints `unset`, you need to onboard.
 
 You also need to do this if a save attempt later returns HTTP 401 — the key is stale or invalid.
 
