@@ -9,14 +9,27 @@ Claude (loaded with this skill) reads the user's prompt, picks the right format,
 
 ## Install
 
-In a Claude Code session:
+> **You need Claude Code (the CLI tool)** — not the Claude extension for VS Code or the Claude.ai web app. The `/plugin` commands shown below only work inside a Claude Code terminal session. If you don't have it yet, install from <https://www.claude.com/product/claude-code>.
+
+Open a Claude Code session in any directory and submit each command as its **own** message — wait for the first to finish before sending the second.
+
+**Step 1 — add the marketplace:**
 
 ```
 /plugin marketplace add git@github.com:axiom-browser-automation/claude-skill.git
+```
+
+You should see a confirmation that the `axiom-skills` marketplace was added.
+
+**Step 2 — install the plugin:**
+
+```
 /plugin install axiom@axiom-skills
 ```
 
-Restart Claude Code so the skill is picked up. The first invocation will check that `AXIOM_API_KEY` is set — if it isn't, the skill walks you through signup and key minting (see [`plugins/axiom/skills/axiom/references/account-setup.md`](./plugins/axiom/skills/axiom/references/account-setup.md)). To set it manually, add to `~/.claude/settings.json`'s `env` block:
+> ⚠️ Submit Step 1 and Step 2 as separate messages. If you paste both into a single message, Claude Code concatenates them and tries to clone a malformed URL — you'll see a `fatal: remote error: ... is not a valid repository name` from git.
+
+Restart Claude Code after install so the skill is picked up. The first invocation will check that `AXIOM_API_KEY` is set — if it isn't, the skill walks you through signup and key minting (see [`plugins/axiom/skills/axiom/references/account-setup.md`](./plugins/axiom/skills/axiom/references/account-setup.md)). To set it manually, add to `~/.claude/settings.json`'s `env` block:
 
 ```json
 {
