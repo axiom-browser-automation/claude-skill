@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.3 — version bump to exercise the update-check flow
+
+Pure version bump — no functional change. Released so the v0.7.2 update-check
+flow can be tested end-to-end: an installer on v0.7.2 starts a fresh
+conversation, the Step −1 probe runs, finds 0.7.3 upstream, and surfaces the
+heads-up. Confirms the live `gh api` lookup, the semver comparison, and the
+user-facing message all work in a real Claude Code session.
+
 ## 0.7.2 — per-conversation update check
 
 The skill now checks for newer upstream versions the first time it activates in a conversation and prompts the user to upgrade if one's available. Closes the gap where installers who got the skill weeks ago had no idea that fixes had landed since.
