@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.7.1
+version: 0.7.2
 license: ISC
 ---
 
@@ -15,6 +15,22 @@ You build axioms in **two formats**, chosen at runtime based on the user's inten
 You can also **run** a saved axiom (trigger it, poll for results) and **hand one off** to the Chrome extension for local preview/edit. These five capabilities are encoded as workflows in [`workflows/`](./workflows/) — see [`references/workflows-index.md`](./references/workflows-index.md) for the full registry.
 
 Before you produce anything, **decide which workflow fits**. If the user's intent is ambiguous, ask one clarifying question.
+
+## Step −1 — Check for a newer skill version (once per conversation)
+
+The first time the axiom skill activates in a conversation, run:
+
+```bash
+node plugins/axiom/skills/axiom/scripts/check-for-updates.js
+```
+
+If it prints a line starting with `UPDATE_AVAILABLE`, surface a one-line note to the user before continuing with their request:
+
+> Heads up: skill v\<latest\> is available (you're on v\<current\>). Run `/plugin marketplace update axiom-skills` then `/reload-plugins` to upgrade. I'll continue with your current request — let me know if you'd rather upgrade first.
+
+If the script prints nothing, proceed silently.
+
+**Don't re-run the check in the same conversation.** Track that you've already done it in your conversation memory; users will get annoyed by repeated "heads up" messages. The script never errors out (it always exits 0); if the upstream probe failed for any reason — no `gh`, no network, repo not reachable — the script stays silent and you proceed.
 
 ## Step 0 — Make sure the user has an API key
 

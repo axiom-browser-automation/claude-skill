@@ -1,6 +1,6 @@
 {
   "name": "axiom",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Build Axiom automations from natural language — produces either a no-code AutomationTemplate JSON (for saving to your Axiom account) or a runnable Node script using the @axiom_ai/api library.",
   "author": {
     "name": "Axiom.ai",

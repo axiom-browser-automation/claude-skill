@@ -1,6 +1,6 @@
 {
   "name": "@axiom_ai/claude-skill",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "private": true,
   "description": "Claude Code skill for building Axiom no-code and coded automations.",
   "scripts": {

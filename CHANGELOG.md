@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.7.2 — per-conversation update check
+
+The skill now checks for newer upstream versions the first time it activates in a conversation and prompts the user to upgrade if one's available. Closes the gap where installers who got the skill weeks ago had no idea that fixes had landed since.
+
+How it works:
+
+- New script `plugins/axiom/skills/axiom/scripts/check-for-updates.js` reads the locally-installed `plugin.json`'s `version`, then probes the upstream `main` branch's `plugin.json` via either `gh api` (best for the current private-repo state) or unauthenticated HTTPS (kicks in once the repo flips public). Whichever returns first wins. Hard 5-second timeout; if both fail, the script exits 0 with no output.
+- New **SKILL.md Step −1** tells Claude to run the script once per conversation and, if its output starts with `UPDATE_AVAILABLE`, surface a one-line note to the user: "Heads up: skill v\<latest\> is available — run `/plugin marketplace update axiom-skills` then `/reload-plugins` to upgrade." Claude proceeds with the user's request either way.
+- Semver-aware comparison (`0.10.0 > 0.9.9` works), null-safe, malformed-input-safe — the check never raises an alarm it shouldn't.
+
+Honours `LOCAL_VERSION_OVERRIDE` and `REMOTE_VERSION_OVERRIDE` env vars for testing without network. Honours `GITHUB_TOKEN` for the curl fallback.
+
+Tests: 21 new specs in `test/scripts/check-for-updates.spec.ts` (compareSemver / formatOutput / readLocalVersion / fetchRemoteVersion primitives with injected fakes — no real network). Suite total: 157 → 178 across 14 → 15 suites.
+
 ## 0.7.1 — ask the user where to save the artifact; default to ~/Downloads
 
 SKILL.md Step 3 now tells Claude to ask the user where they want the JSON (or JS) artifact written before it's emitted, with `~/Downloads/axiom-<short-name>.json` as the suggested default. Downloads is the right default because the Chrome extension's import file-picker opens there — making the path of least friction "click Select file, the JSON is already in front of you".
