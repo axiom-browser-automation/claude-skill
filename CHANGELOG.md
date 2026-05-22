@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.1 — ask the user where to save the artifact; default to ~/Downloads
+
+SKILL.md Step 3 now tells Claude to ask the user where they want the JSON (or JS) artifact written before it's emitted, with `~/Downloads/axiom-<short-name>.json` as the suggested default. Downloads is the right default because the Chrome extension's import file-picker opens there — making the path of least friction "click Select file, the JSON is already in front of you".
+
+Claude is reminded to resolve `~` to the user's home dir before writing (via `$HOME/Downloads/…` or equivalent) since most file-writing tools don't expand the tilde themselves, and to fall back to `~/` with a heads-up if `~/Downloads` doesn't exist on the machine.
+
+No code changes; no test changes; the workflow still accepts whatever path Claude passes in `opts.artifactPath` and the file just lands somewhere more sensible.
+
 ## 0.7.0 — drop save endpoint, drop sample IRs, recommend VS Code
 
 The skill no longer POSTs the validated AutomationTemplate JSON to a backend save endpoint. That endpoint was always behind an unmerged backend branch and was never available on the public Axiom backend, so any external installer hit a 404 the moment the skill tried to save. The skill now writes the JSON to disk and hands the user the path plus the 4-step import flow:

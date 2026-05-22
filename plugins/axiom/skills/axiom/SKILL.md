@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.7.0
+version: 0.7.1
 license: ISC
 ---
 
@@ -164,9 +164,19 @@ indiscriminately.
 
 - `references/decision-tree.md` if uncertain which path.
 
-## Step 3 — Emit the artifact
+## Step 3 — Pick the output path, then emit the artifact
 
-Write the output to a file at a path of your choosing (e.g. `/tmp/axiom-<short-name>.json` or `/tmp/axiom-<short-name>.js`). Use the same conventions as the examples.
+**Ask the user where they want the file saved before you write it.** Propose `~/Downloads/axiom-<short-name>.json` (or `.js` for the coded path) as the default — the Downloads folder is what the user's file picker opens in when they go to import via the Chrome extension's **Cog → Import or download → Select file** flow, so it's the path of least friction. Let them override with anything else if they prefer (`/tmp/...`, a project directory, etc.).
+
+Resolve `~` to the user's home directory before writing — most file-writing tools don't expand the tilde themselves. Quick way:
+
+```bash
+echo "$HOME/Downloads/axiom-<short-name>.json"
+```
+
+If `~/Downloads` doesn't exist on the user's machine (rare — present on macOS, Windows, and most Linux distros), fall back to `~/` and tell the user.
+
+Use the same conventions as the examples for the artifact contents.
 
 ### No-code rules
 
