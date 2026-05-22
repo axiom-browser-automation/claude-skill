@@ -48,13 +48,21 @@ The extension shares the plugin install + `~/.claude/settings.json` env vars wit
 
 ### Updating
 
-Once installed, fetch the latest version with:
+Updating is **two commands**, not one. Submit each separately:
 
 ```
 /plugin update axiom@axiom-skills
 ```
 
-(Run this from Claude Code CLI — the slash-commands aren't available in the VS Code extension.) Auto-update is on by default for marketplaces added explicitly; you can disable it per-marketplace in `~/.claude/settings.json`.
+```
+/reload-plugins
+```
+
+The first command fetches the new version into Claude Code's plugin cache; the second applies it to the running session. If you skip `/reload-plugins`, the cache is updated but you'll keep using the old skill until you restart Claude Code. The success message from the first command literally tells you this — look for `✓ Updated axiom. Run /reload-plugins to apply.`
+
+Run both from Claude Code CLI — the `/plugin` slash-commands aren't available in the VS Code extension. Auto-update is on by default for marketplaces added explicitly; you can disable it per-marketplace in `~/.claude/settings.json`.
+
+If `/reload-plugins` misbehaves for any reason, quit Claude Code entirely and restart — that always picks up the latest cached version.
 
 ## What's in here
 
