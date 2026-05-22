@@ -48,7 +48,11 @@ The extension shares the plugin install + `~/.claude/settings.json` env vars wit
 
 ### Updating
 
-Updating is **two commands**, not one. Submit each separately:
+Updating is **three commands**, not one. Submit each as its own message:
+
+```
+/plugin marketplace update axiom-skills
+```
 
 ```
 /plugin update axiom@axiom-skills
@@ -58,11 +62,15 @@ Updating is **two commands**, not one. Submit each separately:
 /reload-plugins
 ```
 
-The first command fetches the new version into Claude Code's plugin cache; the second applies it to the running session. If you skip `/reload-plugins`, the cache is updated but you'll keep using the old skill until you restart Claude Code. The success message from the first command literally tells you this — look for `✓ Updated axiom. Run /reload-plugins to apply.`
+Why each one:
 
-Run both from Claude Code CLI — the `/plugin` slash-commands aren't available in the VS Code extension. Auto-update is on by default for marketplaces added explicitly; you can disable it per-marketplace in `~/.claude/settings.json`.
+1. **Marketplace update** re-fetches `.claude-plugin/marketplace.json` from the git remote. Claude Code caches that manifest locally; without this step `/plugin update` will look at the stale cache, see no newer version, and silently drop you into the Plugins UI without doing anything.
+2. **Plugin update** fetches the new version of the plugin itself into Claude Code's plugin cache. The success message says `✓ Updated axiom. Run /reload-plugins to apply.` — that's the cue for step 3.
+3. **Reload plugins** applies the new version to the running session. Skip this and you'll keep using the previously-loaded skill until you restart Claude Code.
 
-If `/reload-plugins` misbehaves for any reason, quit Claude Code entirely and restart — that always picks up the latest cached version.
+Run all three from Claude Code CLI — the `/plugin` slash-commands aren't available in the VS Code extension. If `/reload-plugins` misbehaves for any reason, quit Claude Code entirely and restart — that always picks up the latest cached version.
+
+Auto-update is on by default for marketplaces added explicitly; you can disable it per-marketplace in `~/.claude/settings.json`.
 
 ## What's in here
 
