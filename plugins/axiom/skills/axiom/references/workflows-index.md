@@ -10,7 +10,7 @@ shape — no hook bus, no return stack, no multi-turn state.
 | Order | Key | Description | Wraps |
 |---|---|---|---|
 | 1 | `signup` | User has no Axiom account / no API key — bootstrap them through signup + key minting. | `scripts/signup-and-mint-key.js` |
-| 2 | `build_no_code` | Emit a no-code AutomationTemplate JSON, validate, save to the user's account. | `scripts/validate-no-code.js` + `scripts/save-to-axiom-lar.js` |
+| 2 | `build_no_code` | Emit a no-code AutomationTemplate JSON, validate, hand the file path back to the user with import instructions. | `scripts/validate-no-code.js` |
 | 3 | `build_coded` | Emit a Node script using `@axiom_ai/api`. User runs it from their own code. | `scripts/validate-coded.js` |
 | 4 | `run_automation` | Trigger a saved axiom by name, poll binary status, surface results. | `scripts/run-axiom.js` (existing `/v3/v4` REST surface — see [run-automation caveats](#run_automation-caveats)) |
 | 5 | `handoff_to_extension` | Tell the user how to install the Axiom Chrome extension so they can find and run their saved axioms. | (inline guidance — no script) |

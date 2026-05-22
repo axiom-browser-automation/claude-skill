@@ -9,7 +9,7 @@ Claude (loaded with this skill) reads the user's prompt, picks the right format,
 
 ## Install
 
-> **You need Claude Code (the CLI tool)** — not the Claude extension for VS Code or the Claude.ai web app. The `/plugin` commands shown below only work inside a Claude Code terminal session. If you don't have it yet, install from <https://www.claude.com/product/claude-code>.
+> **For the install steps below you need Claude Code (the CLI tool)** — the `/plugin` slash-commands only work in a terminal session. Once installed, you can keep working in Claude Code or switch to the [Claude extension for VS Code](#step-3--optional-recommended-switch-to-the-vs-code-extension) (see Step 3) for day-to-day building. If you don't have Claude Code yet, install from <https://www.claude.com/product/claude-code>.
 
 Open a Claude Code session in any directory and submit each command as its **own** message — wait for the first to finish before sending the second.
 
@@ -40,6 +40,12 @@ Restart Claude Code after install so the skill is picked up. The first invocatio
 }
 ```
 
+### Step 3 — optional, recommended: switch to the VS Code extension
+
+The `/plugin` commands above require Claude Code (the CLI), but once the plugin is installed, day-to-day building works smoothly in the **Claude extension for VS Code**. Install it from VS Code's Extensions panel (search "Claude"), sign in with the same account you used for Claude Code, and the axiom skill will activate automatically when you ask Claude to build an axiom in any project.
+
+The extension shares the plugin install + `~/.claude/settings.json` env vars with the CLI, so you only set things up once.
+
 ### Updating
 
 Once installed, fetch the latest version with:
@@ -48,7 +54,7 @@ Once installed, fetch the latest version with:
 /plugin update axiom@axiom-skills
 ```
 
-Auto-update is on by default for marketplaces added explicitly; you can disable it per-marketplace in `~/.claude/settings.json`.
+(Run this from Claude Code CLI — the slash-commands aren't available in the VS Code extension.) Auto-update is on by default for marketplaces added explicitly; you can disable it per-marketplace in `~/.claude/settings.json`.
 
 ## What's in here
 

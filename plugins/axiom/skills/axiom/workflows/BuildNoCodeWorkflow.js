@@ -1,19 +1,20 @@
 /**
- * BuildNoCodeWorkflow — emit a no-code AutomationTemplate JSON, validate, save.
+ * BuildNoCodeWorkflow — emit a no-code AutomationTemplate JSON and validate it.
  *
- * The actual JSON generation is Claude's job (it composes the artifact from the
- * action vocabulary and example IRs). This workflow's invoke() runs the
- * validator + save helper over an already-written artifact.
+ * The skill writes a JSON file on disk; the user imports it into their Axiom
+ * account themselves via the in-app import flow. No HTTP, no API key, no
+ * network failure modes — the path on disk is the contract.
  */
 
 const {validateAutomationTemplate} = require('../scripts/validate-no-code.js')
-const {saveAutomation} = require('../scripts/save-to-axiom-lar.js')
 const fs = require('fs')
 const path = require('path')
 
+const IMPORT_DOCS_URL = 'https://axiom.ai/docs/no-code-tool/reference/settings/import-export/sharing'
+
 class BuildNoCodeWorkflow {
     static key = 'build_no_code'
-    static description = 'Emit a no-code AutomationTemplate JSON (saved to the user\'s Axiom account, runs in the dashboard, schedulable).'
+    static description = 'Emit a no-code AutomationTemplate JSON. User imports it into the Axiom Chrome extension via the in-app import flow.'
 
     static getRoutes() {
         return [
@@ -27,14 +28,12 @@ class BuildNoCodeWorkflow {
 
     /**
      * @param {import('./types').WorkflowInput} input
-     * @param {string} [input.opts.artifactPath]  path to the JSON Claude has written
-     * @param {boolean} [input.opts.save]         actually save (true) or validate-only (false)
+     * @param {string} input.opts.artifactPath  path to the JSON Claude has written
      * @returns {Promise<import('./types').WorkflowResult>}
      */
     static async invoke(input) {
         const start = Date.now()
         const opts = input.opts || {}
-        const env = input.env || process.env
 
         if (!opts.artifactPath) {
             return {
@@ -46,7 +45,6 @@ class BuildNoCodeWorkflow {
         const absPath = path.resolve(opts.artifactPath)
         const template = JSON.parse(fs.readFileSync(absPath, 'utf8'))
 
-        // Step 1 — validate
         const validation = validateAutomationTemplate(template)
         if (!validation.valid) {
             return {
@@ -59,49 +57,29 @@ class BuildNoCodeWorkflow {
             }
         }
 
-        // Step 2 — save (unless validate-only)
-        if (opts.save === false) {
-            return {
-                response: {
-                    message: `Validation passed for ${absPath}. Skipped save (validate-only mode).`,
-                    artifacts: [absPath],
-                    nextSteps: ['Set save: true on the next invocation to persist to the user\'s account']
-                },
-                debug: {route: BuildNoCodeWorkflow.key, durationMs: Date.now() - start}
-            }
-        }
-
-        const apiKey = opts.apiKey || env.AXIOM_API_KEY
-        if (!apiKey) {
-            return {
-                response: {
-                    message: 'AXIOM_API_KEY is required to save. Run the signup workflow first.',
-                    nextSteps: ['Invoke SignupWorkflow to obtain a key']
-                },
-                debug: {route: BuildNoCodeWorkflow.key, error: 'missing_api_key'}
-            }
-        }
-
-        const saveResult = await saveAutomation({
-            template,
-            apiKey,
-            baseUrl: env.AXIOM_LAR_URL,
-            fetchImpl: input.fetchImpl
-        })
-
         return {
             response: {
-                message: `Saved ${saveResult.name} (id=${saveResult.id}) to ${env.AXIOM_LAR_URL || 'https://lar.axiom.ai'}.`,
+                message: [
+                    `Validated and written to ${absPath}.`,
+                    '',
+                    'To use it in your Axiom account:',
+                    '  1. Open the Chrome extension\'s builder.',
+                    '  2. Click the Cog icon in the left toolbar.',
+                    '  3. Open "Import or download" → click "Select file" → pick the JSON above.',
+                    '  4. Save the automation.',
+                    '',
+                    `Full docs: ${IMPORT_DOCS_URL}`
+                ].join('\n'),
                 artifacts: [absPath],
-                data: saveResult,
+                data: {artifactPath: absPath, importDocsUrl: IMPORT_DOCS_URL},
                 nextSteps: [
-                    `Optionally hand off to the extension: HandoffToExtensionWorkflow.invoke({opts: {id: ${saveResult.id}}})`,
-                    `Or trigger it: RunAutomationWorkflow.invoke({opts: {id: ${saveResult.id}}})`
+                    `Import the JSON via the Chrome extension — see ${IMPORT_DOCS_URL}`,
+                    'If the extension isn\'t installed yet, invoke HandoffToExtensionWorkflow for install guidance'
                 ]
             },
-            debug: {route: BuildNoCodeWorkflow.key, durationMs: Date.now() - start, savedId: saveResult.id}
+            debug: {route: BuildNoCodeWorkflow.key, durationMs: Date.now() - start}
         }
     }
 }
 
-module.exports = {BuildNoCodeWorkflow}
+module.exports = {BuildNoCodeWorkflow, IMPORT_DOCS_URL}

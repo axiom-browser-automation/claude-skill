@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.6.1
+version: 0.7.0
 license: ISC
 ---
 
@@ -131,8 +131,7 @@ Claude session.
 1. `references/automation-template-schema.json` — authoritative schema your output must validate against.
 2. `references/automation-template-schema.md` — prose explanation of the shape, with the minimal-required-fields cheatsheet.
 3. `references/action-vocabulary.json` — the `machine_name` values you may use in widgets (`baseActionList` + `widgetActionList`).
-4. `references/sample-irs/*.json` — three IRs from real registry templates; useful as planning references for action sequences.
-5. `examples/no-code/*.json` — three minimal, hand-crafted, schema-valid AutomationTemplates. Read them to absorb the boilerplate shape.
+4. `examples/no-code/*.json` — three minimal, hand-crafted, schema-valid AutomationTemplates. Read them to absorb the boilerplate shape.
 
 **For the coded path:**
 
@@ -209,29 +208,25 @@ Exit 0 = valid. Exit 1 = error codes printed (`UNKNOWN_METHOD`, `MISSING_LIFECYC
 
 If validation fails, **read the error, fix the artifact, re-run the validator**. Don't argue with the validator — its rules come from the actual Axiom backend schema and the published `@axiom_ai/api` surface.
 
-## Step 5 — Save (no-code only) or hand off (coded)
+## Step 5 — Hand the artifact back to the user
 
-### No-code: save to the user's Axiom account
+### No-code: tell the user how to import the JSON
 
-After validation passes, run the bundled save helper:
+After validation passes, the JSON is sitting on disk at the path you wrote it to. The user imports it into Axiom themselves. Give them the path **plus** the 4-step import flow:
 
-```bash
-AXIOM_API_KEY=axm_<user-key> node plugins/axiom/skills/axiom/scripts/save-to-axiom-lar.js /tmp/your-axiom.json
-```
+> Validated and written to `<path>`.
+>
+> To use it in your Axiom account:
+> 1. Open the Chrome extension's builder.
+> 2. Click the **Cog** icon in the left toolbar.
+> 3. Open **Import or download** → click **Select file** → pick the JSON above.
+> 4. Save the automation.
+>
+> Full docs: <https://axiom.ai/docs/no-code-tool/reference/settings/import-export/sharing>
 
-**If you get HTTP 401 back**, the key is stale or invalid. Go back to **Step 0** — ask whether they want to re-mint (which requires their password again via `AXIOM_PASSWORD`) or paste a fresh key directly. Don't loop endlessly: if the second attempt also 401s, stop and explain that the auth is broken at the account level (not a skill bug).
+If the user doesn't have the Chrome extension yet, invoke `HandoffToExtensionWorkflow` to point them at the install page.
 
-Endpoint: `POST https://lar.axiom.ai/api/v4/automation`. Auth is `X-API-KEY` (the same long-lived token used by `/v4/trigger` — **not** a JWT). See `references/rest-save-endpoint.md` for the full contract.
-
-The helper:
-1. Re-runs schema validation (defensive — refuses to send broken JSON).
-2. POSTs the template's `name`, `data`, `triggers`, `stored_cookies`. Server overrides `creator_id` with the authenticated user; it ignores anything else.
-3. Prints `saved: id=<N> name=<name>` on success.
-4. Exits 1 with a clear server error message on failure (401 bad key, 403 free tier / wrong owner, 400 missing name, 404 unknown id).
-
-To **update** an existing axiom rather than create one, include `"id": <existing-axiom-id>` in the AutomationTemplate. The helper passes it through.
-
-Override the host with `AXIOM_LAR_URL=https://lar-staging.axiom.ai` for testing against staging.
+No save endpoint, no API key required to ship the artifact — the path on disk is the contract.
 
 ### Coded: hand the script back to the user
 

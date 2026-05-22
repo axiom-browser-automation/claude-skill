@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.7.0 — drop save endpoint, drop sample IRs, recommend VS Code
+
+The skill no longer POSTs the validated AutomationTemplate JSON to a backend save endpoint. That endpoint was always behind an unmerged backend branch and was never available on the public Axiom backend, so any external installer hit a 404 the moment the skill tried to save. The skill now writes the JSON to disk and hands the user the path plus the 4-step import flow:
+
+> 1. Open the Chrome extension's builder.
+> 2. Click the **Cog** icon in the left toolbar.
+> 3. Open **Import or download** → click **Select file** → pick the JSON.
+> 4. Save the automation.
+>
+> Full docs: <https://axiom.ai/docs/no-code-tool/reference/settings/import-export/sharing>
+
+No API key required to ship the artifact; no network call from `BuildNoCodeWorkflow`; no failure modes beyond schema validation.
+
+Other cleanups landing at the same time:
+
+- **Removed the `references/sample-irs/` corpus.** Three large vendored AutomationTemplate samples that overlapped with the hand-crafted `examples/no-code/*.json`. The remaining reference material (schema JSON, schema prose, action vocabulary, examples) is enough for Claude to compose valid artifacts.
+- **README recommends the VS Code extension** for day-to-day building. The `/plugin` install commands still require Claude Code (the CLI), but a new **Step 3** points users at the VS Code extension once install is complete — the extension shares plugin install + `~/.claude/settings.json` env vars with the CLI.
+
+Deleted:
+- `plugins/axiom/skills/axiom/scripts/save-to-axiom-lar.js`
+- `plugins/axiom/skills/axiom/references/rest-save-endpoint.md`
+- `plugins/axiom/skills/axiom/references/graphql-task-mutation.md`
+- `plugins/axiom/skills/axiom/references/sample-irs/` (3 files)
+- `test/no-code/save-helper.spec.ts` (8 tests gone)
+
+Modified:
+- `plugins/axiom/skills/axiom/workflows/BuildNoCodeWorkflow.js` — now pure validate + hand-off; no `require()` of the save helper
+- `plugins/axiom/skills/axiom/SKILL.md` — Step 5 rewritten; sample-irs bullet removed from Step 2
+- `plugins/axiom/skills/axiom/references/workflows-index.md` — `build_no_code` no longer "saves"
+- `plugins/axiom/skills/axiom/references/account-setup.md` — onboarding trigger no longer references the save 401
+- `package.json` — `save:no-code` npm script removed
+- `.env.example` — `AXIOM_API_KEY` comment now references `run-axiom.js` instead of the deleted save helper
+- `README.md` — VS Code Step 3 added; CLI-only callout softened
+- Version bumped to 0.7.0 in `package.json`, `plugins/axiom/.claude-plugin/plugin.json`, and `SKILL.md` frontmatter
+
 ## 0.6.1 — vendor the full axiom.ai docs corpus into the skill
 
 Replaces a vector-store-backed doc retrieval model with file-based docs Claude reads on demand. Skill now ships the entire user-facing documentation tree (332 markdown files across 41 categories) under `plugins/axiom/skills/axiom/references/docs/`, plus a generated `_index.json` so Claude can scan the catalog before reading any specific file.

@@ -12,10 +12,10 @@ Source-of-truth website doc: [/docs/developer-hub/api/programmatic-signup](https
 
 ## When to invoke the onboarding flow
 
-Trigger this when **any** of the following is true at save-time:
+Trigger this when **any** of the following is true:
 
 - `AXIOM_API_KEY` env var is unset / empty.
-- `save-to-axiom-lar.js` returned HTTP 401 (`Unable to authenticate, please check your API key`).
+- A workflow that uses the key (e.g. `run_automation`) returned HTTP 401 (`Unable to authenticate, please check your API key`).
 - User explicitly asks to create an Axiom account / "I don't have a key yet" / "set me up".
 
 ## How to drive it (the choreography)
@@ -80,12 +80,12 @@ Tell the user to add the key to `~/.claude/settings.json` so the next session in
 
 Restart Claude Code after editing settings.json — env vars are read at startup.
 
-**Step 5 — Retry the save.**
+**Step 5 — Use the key in the current session.**
 
-For the current session (no restart), set the env inline and re-run the save helper:
+For the current session (no restart), export it inline before invoking any workflow that needs it:
 
 ```bash
-AXIOM_API_KEY="axm_…" node plugins/axiom/skills/axiom/scripts/save-to-axiom-lar.js /tmp/your-axiom.json
+export AXIOM_API_KEY="axm_…"
 ```
 
 ## Important gotcha — minting a key invalidates the previous one
