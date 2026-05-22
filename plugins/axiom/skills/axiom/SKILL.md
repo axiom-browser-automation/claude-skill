@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.7.3
+version: 0.7.4
 license: ISC
 ---
 
@@ -192,16 +192,42 @@ echo "$HOME/Downloads/axiom-<short-name>.json"
 
 If `~/Downloads` doesn't exist on the user's machine (rare — present on macOS, Windows, and most Linux distros), fall back to `~/` and tell the user.
 
-Use the same conventions as the examples for the artifact contents.
+### No-code path — use the build-axiom helper, don't hand-compose
 
-### No-code rules
+**Don't write the AutomationTemplate JSON by hand.** The canonical step shape is verbose (10 step-level fields, every param the widget declares with full metadata) and easy to get wrong — missing fields like `original_name` cause the Chrome extension to render every step as `undefined: <name>`, and missing params show up as empty cells. Use the bundled helper instead:
 
-- Every `data.form` widget needs `machine_name`, `name`, `stepNumber`, `params`.
-- `machine_name` must be a value from `references/action-vocabulary.json`. Pick the most specific widget for the intent (e.g. `WidgetDriverScrapeLinks` rather than a generic `WidgetDriverSmartScraper` when the user wants link extraction).
-- `triggers` is empty `[]` unless the user wants a schedule. Schedule shape: `{name, status: "active", type: "recursive", time_criteria, interval_type, starting_time}`.
-- Top-level boilerplate (`id: 0`, `openWidgetIndex: -1`, `templateId: 0`, `share_status: false`, `share_link: ""`, `stored_cookies: []`) is always required by the schema.
-- `data.context` is an array of `{context: "url", url: "<url>"}`. At least one entry.
-- `data.injector`, `data.templateItem`, `data.mode: "browser"` etc. — see `examples/no-code/visit-example.json` for the minimal valid envelope.
+1. **Write a small intent JSON** describing what the axiom does at the high level. Each step lists the `machineName` (from `references/action-vocabulary.json`'s `widgetActionList`) and only the param `values` you want to override. Save the intent anywhere; `/tmp/<name>-intent.json` is fine.
+
+   ```json
+   {
+     "name": "BBC search for harry kane",
+     "description": "Navigates to bbc.co.uk and searches for harry kane.",
+     "contextUrl": "https://www.bbc.co.uk",
+     "steps": [
+       {"machineName": "WidgetDriverGoto", "values": {"Enter URL": "https://www.bbc.co.uk"}},
+       {"machineName": "WidgetDriverEnterText", "values": {"Select text field": "input[type='search']", "Text": "harry kane"}},
+       {"machineName": "WidgetDriverClick", "values": {"Select": "button[type='submit']"}}
+     ]
+   }
+   ```
+
+   The `values` keys must be the exact param names declared by the widget (look them up in `widgetActionList` — case-sensitive, e.g. `"Enter URL"` not `"URL"`). The helper rejects unknown param names with a clear error message so typos surface immediately.
+
+2. **Run the helper** to produce the full canonical JSON at the user's chosen path:
+
+   ```bash
+   node plugins/axiom/skills/axiom/scripts/build-axiom.js \
+       --intent /tmp/bbc-intent.json \
+       --output "$HOME/Downloads/axiom-bbc-search.json"
+   ```
+
+   The helper clones every param from the widget definition (with its real types, defaults, descriptions, help links) and only overrides the `value` field for the params you named.
+
+3. **Skip the legacy "hand-compose by reading examples" approach.** The `examples/no-code/*.json` files are regenerated through the helper; they're for reference reading, not patterns to copy by hand. Hand-composing leads to subtly broken JSON — most of the step shape is metadata the validator can't infer.
+
+#### Schedules + other top-level shape
+
+`triggers` is empty `[]` unless the user wants a schedule. Schedule shape: `{name, status: "active", type: "recursive", time_criteria, interval_type, starting_time}`. Pass it through `intent.triggers` and the helper forwards it. The starting URL goes in `intent.contextUrl`. The rest of the envelope (`id: 0`, `openWidgetIndex: -1`, `data.injector`, `data.templateItem`, etc.) is handled by the helper — you don't need to think about it.
 
 ### Coded rules
 

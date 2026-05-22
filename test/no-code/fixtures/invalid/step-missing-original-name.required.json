@@ -1,0 +1,44 @@
+{
+  "id": 0,
+  "openWidgetIndex": -1,
+  "name": "Step without original_name",
+  "templateId": 0,
+  "triggers": [],
+  "share_status": false,
+  "share_link": "",
+  "stored_cookies": [],
+  "data": {
+    "allowConcurrencyDesktop": true,
+    "builderTemplateId": 0,
+    "context": [{"context": "url", "url": "https://example.com"}],
+    "disallowConcurrencyCloud": false,
+    "form": [
+      {
+        "machine_name": "WidgetDriverGoto",
+        "name": "Go to page",
+        "stepNumber": "1",
+        "description": "Instruct the bot to go to a new page.",
+        "hasErrors": false,
+        "metadata": "",
+        "token": "",
+        "params": [
+          {"collapsible": 0, "configurable": true, "default_value": "", "description": [], "help": [], "image": "", "name": "Enter URL", "type": "current_url", "value": "https://example.com"},
+          {"collapsible": 0, "configurable": false, "default_value": false, "description": [], "help": [], "image": "", "name": "Store Cookie", "type": "store_cookie", "value": false},
+          {"collapsible": 1, "configurable": true, "default_value": false, "description": [], "help": [], "image": "", "name": "Do not share localstorage", "type": "special_character", "value": false},
+          {"collapsible": 1, "configurable": true, "default_value": false, "description": [], "help": [], "image": "", "name": "Open in new tab", "type": "special_character", "value": false}
+        ]
+      }
+    ],
+    "headless": false,
+    "incognitoMode": false,
+    "injector": {"injector": "dom", "magic_btn_status": true, "selector": ""},
+    "mode": "browser",
+    "storeCookies": false,
+    "templateId": 0,
+    "templateItem": {"name": "x", "description": ""},
+    "templateMode": false,
+    "templateStarted": false,
+    "tokens": null,
+    "viewport": null
+  }
+}

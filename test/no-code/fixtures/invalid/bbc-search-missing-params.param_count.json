@@ -1,0 +1,78 @@
+{
+  "id": 0,
+  "openWidgetIndex": -1,
+  "name": "BBC search for harry kane",
+  "templateId": 0,
+  "triggers": [],
+  "share_status": false,
+  "share_link": "",
+  "stored_cookies": [],
+  "data": {
+    "allowConcurrencyDesktop": true,
+    "builderTemplateId": 0,
+    "context": [{"context": "url", "url": "https://www.bbc.co.uk"}],
+    "disallowConcurrencyCloud": false,
+    "form": [
+      {
+        "machine_name": "WidgetDriverGoto",
+        "name": "Go to page",
+        "stepNumber": "1",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "name": "URL",
+            "type": "token",
+            "value": "https://www.bbc.co.uk"
+          }
+        ]
+      },
+      {
+        "machine_name": "WidgetDriverEnterText",
+        "name": "Enter search text",
+        "stepNumber": "2",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": false,
+            "name": "Select text field",
+            "type": "selector_single",
+            "value": "input[type=\"search\"]"
+          },
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "name": "Text",
+            "type": "long_text_required",
+            "value": "harry kane"
+          }
+        ]
+      },
+      {
+        "machine_name": "WidgetDriverClick",
+        "name": "Click search",
+        "stepNumber": "3",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": false,
+            "name": "Select",
+            "type": "selector_single",
+            "value": "button[type=\"submit\"]"
+          }
+        ]
+      }
+    ],
+    "headless": false,
+    "incognitoMode": false,
+    "injector": {"injector": "dom", "magic_btn_status": true, "selector": ""},
+    "mode": "browser",
+    "storeCookies": false,
+    "templateId": 0,
+    "templateItem": {"name": "BBC search for \"harry kane\"", "description": "Navigates to bbc.co.uk, types a query into the search field, then clicks the submit button."},
+    "templateMode": false,
+    "templateStarted": false,
+    "tokens": null,
+    "viewport": null
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "@axiom_ai/claude-skill",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "private": true,
   "description": "Claude Code skill for building Axiom no-code and coded automations.",
   "scripts": {
@@ -11,6 +11,7 @@
     "build:scripts:check": "node tools/build-scripts.js --check",
     "validate:no-code": "node plugins/axiom/skills/axiom/scripts/validate-no-code.js",
     "validate:coded": "node plugins/axiom/skills/axiom/scripts/validate-coded.js",
+    "build:axiom": "node plugins/axiom/skills/axiom/scripts/build-axiom.js",
     "signup": "node plugins/axiom/skills/axiom/scripts/signup-and-mint-key.js",
     "run": "node plugins/axiom/skills/axiom/scripts/run-axiom.js",
     "dispatch": "node plugins/axiom/skills/axiom/workflows/index.js",

@@ -5,12 +5,12 @@
   "templateId": 0,
   "triggers": [
     {
-      "name": "Every day at 9am",
+      "name": "Daily at 9am",
       "status": "active",
       "type": "recursive",
       "time_criteria": 86400,
       "interval_type": "seconds",
-      "starting_time": "2026-05-21 09:00:00+00"
+      "starting_time": "2026-05-22 09:00:00+00"
     }
   ],
   "share_status": false,
@@ -19,45 +19,150 @@
   "data": {
     "allowConcurrencyDesktop": true,
     "builderTemplateId": 0,
-    "context": [{"context": "url", "url": "https://example.com/dashboard"}],
+    "context": [
+      {
+        "context": "url",
+        "url": "https://example.com/dashboard"
+      }
+    ],
     "disallowConcurrencyCloud": false,
     "form": [
       {
+        "description": "Instruct the bot to go to a new page.",
+        "hasErrors": false,
         "machine_name": "WidgetDriverGoto",
+        "metadata": "",
         "name": "Go to page",
-        "stepNumber": "1",
+        "original_name": "Go to page",
         "params": [
           {
             "collapsible": 0,
             "configurable": true,
-            "name": "URL",
-            "type": "token",
+            "default_value": "",
+            "description": [
+              "Enter a URL to go to. You can also plugin data from other steps to provide a URL. Enter (skip) to skip this step."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Enter URL",
+            "type": "current_url",
             "value": "https://example.com/dashboard"
+          },
+          {
+            "collapsible": 0,
+            "configurable": false,
+            "default_value": false,
+            "description": [
+              "Cookie detected, store if running in the cloud and you wish to run your automation using the scheduler or the API."
+            ],
+            "help": [
+              {
+                "name": "Learn ",
+                "linkSrc": "https://axiom.ai/docs/tutorials/settings/run-options/store-cookies",
+                "linkText": "more"
+              }
+            ],
+            "image": "",
+            "name": "Store Cookie",
+            "type": "store_cookie",
+            "value": false
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "Check the box to stop Axiom retrieving session data from this URL's localstorage. This will prevent an extra page refresh but can prevent your session from loading fully."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Do not share localstorage",
+            "type": "special_character",
+            "value": false
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "Check the box to open the URL in a new browser tab, the automation will automatically switch to running in the new tab."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Open in new tab",
+            "type": "special_character",
+            "value": false
           }
-        ]
+        ],
+        "stepNumber": "1",
+        "token": ""
       },
       {
+        "description": "Download the HTML of the current page to your computer.",
+        "hasErrors": false,
         "machine_name": "WidgetDriverSaveHTML",
+        "metadata": "",
         "name": "Save page HTML",
-        "stepNumber": "2",
+        "original_name": "Save page HTML",
         "params": [
           {
             "collapsible": 0,
             "configurable": true,
-            "name": "Filename",
-            "type": "token",
+            "default_value": "",
+            "description": [
+              "Set a folder to save to (please note currently only one new folder can be created at a time)"
+            ],
+            "help": [],
+            "image": "",
+            "name": "Folder",
+            "type": "file_explorer",
+            "value": ""
+          },
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": "",
+            "description": [
+              "Enter a name to save the HTML page as. If a file with this name already exists it will be appended with a number e.g. \"page\" would become \"page1.html\", \"page2.html\" and so on unless the overwrite existing file option is used."
+            ],
+            "help": [],
+            "image": "",
+            "name": "File name",
+            "type": "long_text",
             "value": "dashboard.html"
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": "",
+            "description": [
+              "Tick here to overwrite any existing file with the same name instead of renaming the newly downloaded file."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Overwrite existing file",
+            "type": "special_character",
+            "value": ""
           }
-        ]
+        ],
+        "stepNumber": "2",
+        "token": ""
       }
     ],
-    "headless": true,
+    "headless": false,
     "incognitoMode": false,
-    "injector": {"injector": "dom", "magic_btn_status": true, "selector": ""},
+    "injector": {
+      "injector": "dom",
+      "magic_btn_status": true,
+      "selector": ""
+    },
     "mode": "browser",
     "storeCookies": false,
     "templateId": 0,
-    "templateItem": {"name": "Daily scrape at 9am", "description": "Scheduled axiom — runs every day at 9am, saves a snapshot."},
+    "templateItem": {
+      "name": "Daily scrape at 9am",
+      "description": "Goto + save the rendered HTML, scheduled to run daily."
+    },
     "templateMode": false,
     "templateStarted": false,
     "tokens": null,

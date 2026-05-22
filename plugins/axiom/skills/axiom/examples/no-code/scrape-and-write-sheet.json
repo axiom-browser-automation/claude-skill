@@ -10,52 +10,169 @@
   "data": {
     "allowConcurrencyDesktop": true,
     "builderTemplateId": 0,
-    "context": [{"context": "url", "url": "https://example.com/products"}],
+    "context": [
+      {
+        "context": "url",
+        "url": "https://example.com/products"
+      }
+    ],
     "disallowConcurrencyCloud": false,
     "form": [
       {
+        "description": "Instruct the bot to go to a new page.",
+        "hasErrors": false,
         "machine_name": "WidgetDriverGoto",
+        "metadata": "",
         "name": "Go to page",
-        "stepNumber": "1",
+        "original_name": "Go to page",
         "params": [
           {
             "collapsible": 0,
             "configurable": true,
-            "name": "URL",
-            "type": "token",
+            "default_value": "",
+            "description": [
+              "Enter a URL to go to. You can also plugin data from other steps to provide a URL. Enter (skip) to skip this step."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Enter URL",
+            "type": "current_url",
             "value": "https://example.com/products"
+          },
+          {
+            "collapsible": 0,
+            "configurable": false,
+            "default_value": false,
+            "description": [
+              "Cookie detected, store if running in the cloud and you wish to run your automation using the scheduler or the API."
+            ],
+            "help": [
+              {
+                "name": "Learn ",
+                "linkSrc": "https://axiom.ai/docs/tutorials/settings/run-options/store-cookies",
+                "linkText": "more"
+              }
+            ],
+            "image": "",
+            "name": "Store Cookie",
+            "type": "store_cookie",
+            "value": false
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "Check the box to stop Axiom retrieving session data from this URL's localstorage. This will prevent an extra page refresh but can prevent your session from loading fully."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Do not share localstorage",
+            "type": "special_character",
+            "value": false
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "Check the box to open the URL in a new browser tab, the automation will automatically switch to running in the new tab."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Open in new tab",
+            "type": "special_character",
+            "value": false
           }
-        ]
+        ],
+        "stepNumber": "1",
+        "token": ""
       },
       {
+        "description": "Scrape data from the page the bot is currently on.",
+        "hasErrors": false,
         "machine_name": "WidgetDriverSmartScraper",
-        "name": "Get data",
-        "stepNumber": "2",
+        "metadata": "",
+        "name": "Get data from bot's current page",
+        "original_name": "Get data from bot's current page",
         "params": [
           {
             "collapsible": 0,
-            "configurable": true,
-            "name": "Selector",
+            "configurable": false,
+            "default_value": "",
+            "description": [
+              "Choose the data you wish to scrape."
+            ],
+            "help": [],
+            "image": "h-scrape-data",
+            "name": "Select",
             "type": "smart_selector",
             "value": ".product-card"
           },
           {
             "collapsible": 0,
+            "configurable": false,
+            "default_value": "",
+            "description": [
+              "Select the 'Next' button for the pager, if there is one. When running the bot, please select 'Use element text' if it stops paging after the first page."
+            ],
+            "help": [],
+            "image": "h-pager",
+            "name": "Find pager",
+            "type": "selector_single",
+            "value": ""
+          },
+          {
+            "collapsible": 0,
             "configurable": true,
+            "default_value": "1",
+            "description": [
+              "Set a maximum number of results you wish to scrape. Setting this number higher than the number of results you need will slow down the scraper - axiom has to spend time looking for results that it will never find."
+            ],
+            "help": [],
+            "image": "",
             "name": "Max results",
             "type": "scraper_max_results",
             "value": "50"
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": {
+              "scrollSpeed": 5000,
+              "maxAttempts": 2
+            },
+            "description": [],
+            "help": [],
+            "image": "",
+            "name": "Configure scraper",
+            "type": "scraper_settings",
+            "value": {
+              "scrollSpeed": 5000,
+              "maxAttempts": 2
+            }
           }
-        ]
+        ],
+        "stepNumber": "2",
+        "token": ""
       },
       {
+        "description": "Write/append data to a Google Sheet (use when the user says: save/export/store results to a Google Sheet).",
+        "hasErrors": false,
         "machine_name": "WidgetWriteGoogleSheet",
-        "name": "Write to sheet",
-        "stepNumber": "3",
+        "metadata": "",
+        "name": "Write data to a Google Sheet",
+        "original_name": "Write data to a Google Sheet",
         "params": [
           {
             "collapsible": 0,
             "configurable": true,
+            "default_value": "",
+            "description": [
+              "Select Google sheet"
+            ],
+            "help": [],
+            "image": "",
             "name": "Spreadsheet",
             "type": "spreadsheet_picker",
             "value": ""
@@ -63,20 +180,80 @@
           {
             "collapsible": 0,
             "configurable": true,
-            "name": "Sheet",
+            "default_value": "",
+            "description": [
+              "Specify a sheet name to write to. These are the tabs at the bottom of each spreadsheet."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Sheet name",
             "type": "sheet_name_dropdown",
             "value": ""
+          },
+          {
+            "collapsible": 0,
+            "configurable": false,
+            "default_value": [],
+            "description": [
+              "Select the data to write"
+            ],
+            "help": [],
+            "image": "",
+            "name": "DATA",
+            "type": "write_google_sheet_token",
+            "value": []
+          },
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": {
+              "append": true,
+              "startingCell": ""
+            },
+            "description": [
+              ""
+            ],
+            "help": [],
+            "image": "",
+            "name": "Write options",
+            "type": "google_sheet_write_options",
+            "value": {
+              "append": true,
+              "startingCell": ""
+            }
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": "raw",
+            "description": [
+              "Select \"User Entered\" if you want to write formulas to the sheet."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Write method",
+            "type": "radio_value_input_option",
+            "value": "raw"
           }
-        ]
+        ],
+        "stepNumber": "3",
+        "token": ""
       }
     ],
     "headless": false,
     "incognitoMode": false,
-    "injector": {"injector": "dom", "magic_btn_status": true, "selector": ""},
+    "injector": {
+      "injector": "dom",
+      "magic_btn_status": true,
+      "selector": ""
+    },
     "mode": "browser",
     "storeCookies": false,
     "templateId": 0,
-    "templateItem": {"name": "Scrape product cards to a sheet", "description": "Three-step pattern: navigate, scrape, write."},
+    "templateItem": {
+      "name": "Scrape product cards to a sheet",
+      "description": "Visit a products page, scrape up to 50 product cards, write to Google Sheets."
+    },
     "templateMode": false,
     "templateStarted": false,
     "tokens": null,

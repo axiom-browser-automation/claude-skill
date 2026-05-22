@@ -10,31 +10,99 @@
   "data": {
     "allowConcurrencyDesktop": true,
     "builderTemplateId": 0,
-    "context": [{"context": "url", "url": "https://example.com"}],
+    "context": [
+      {
+        "context": "url",
+        "url": "https://example.com"
+      }
+    ],
     "disallowConcurrencyCloud": false,
     "form": [
       {
+        "description": "Instruct the bot to go to a new page.",
+        "hasErrors": false,
         "machine_name": "WidgetDriverGoto",
+        "metadata": "",
         "name": "Go to page",
-        "stepNumber": "1",
+        "original_name": "Go to page",
         "params": [
           {
             "collapsible": 0,
             "configurable": true,
-            "name": "URL",
-            "type": "token",
+            "default_value": "",
+            "description": [
+              "Enter a URL to go to. You can also plugin data from other steps to provide a URL. Enter (skip) to skip this step."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Enter URL",
+            "type": "current_url",
             "value": "https://example.com"
+          },
+          {
+            "collapsible": 0,
+            "configurable": false,
+            "default_value": false,
+            "description": [
+              "Cookie detected, store if running in the cloud and you wish to run your automation using the scheduler or the API."
+            ],
+            "help": [
+              {
+                "name": "Learn ",
+                "linkSrc": "https://axiom.ai/docs/tutorials/settings/run-options/store-cookies",
+                "linkText": "more"
+              }
+            ],
+            "image": "",
+            "name": "Store Cookie",
+            "type": "store_cookie",
+            "value": false
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "Check the box to stop Axiom retrieving session data from this URL's localstorage. This will prevent an extra page refresh but can prevent your session from loading fully."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Do not share localstorage",
+            "type": "special_character",
+            "value": false
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "Check the box to open the URL in a new browser tab, the automation will automatically switch to running in the new tab."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Open in new tab",
+            "type": "special_character",
+            "value": false
           }
-        ]
+        ],
+        "stepNumber": "1",
+        "token": ""
       }
     ],
     "headless": false,
     "incognitoMode": false,
-    "injector": {"injector": "dom", "magic_btn_status": true, "selector": ""},
+    "injector": {
+      "injector": "dom",
+      "magic_btn_status": true,
+      "selector": ""
+    },
     "mode": "browser",
     "storeCookies": false,
     "templateId": 0,
-    "templateItem": {"name": "Visit example.com", "description": "Smallest possible valid axiom — just navigates."},
+    "templateItem": {
+      "name": "Visit example.com",
+      "description": "Smallest possible valid axiom — just navigates."
+    },
     "templateMode": false,
     "templateStarted": false,
     "tokens": null,

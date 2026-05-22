@@ -6550,24 +6550,132 @@ var { readFileSync, existsSync } = require("node:fs");
 var { resolve } = require("node:path");
 var Ajv = require_ajv();
 var SCHEMA_PATH = resolve(__dirname, "..", "references", "automation-template-schema.json");
+var VOCAB_PATH = resolve(__dirname, "..", "references", "action-vocabulary.json");
 var schema = JSON.parse(readFileSync(SCHEMA_PATH, "utf8"));
 var cleanSchema = { ...schema };
 delete cleanSchema._sourceCommit;
 delete cleanSchema._sourceFile;
+function patchSchema(schema2) {
+  try {
+    const vocab = JSON.parse(readFileSync(VOCAB_PATH, "utf8"));
+    const typesFromVocab = /* @__PURE__ */ new Set();
+    for (const w of vocab.widgetActionList || []) {
+      for (const p of w.params || []) {
+        if (p.type) typesFromVocab.add(p.type);
+      }
+    }
+    if (schema2.$defs && schema2.$defs.param && schema2.$defs.param.properties) {
+      const typeProp = schema2.$defs.param.properties.type;
+      if (typeProp && Array.isArray(typeProp.enum)) {
+        typeProp.enum = [.../* @__PURE__ */ new Set([...typeProp.enum, ...typesFromVocab])];
+      }
+      const helpProp = schema2.$defs.param.properties.help;
+      if (helpProp && helpProp.items && helpProp.items.type === "string") {
+        helpProp.items = { type: ["string", "object"] };
+      }
+    }
+  } catch (_) {
+  }
+  return schema2;
+}
 var ajv = new Ajv({ allErrors: true, strict: false });
-var validate = ajv.compile(cleanSchema);
+var validate = ajv.compile(patchSchema(cleanSchema));
+var _vocabCache = null;
+function loadWidgetMap() {
+  if (_vocabCache) return _vocabCache;
+  const v = JSON.parse(readFileSync(VOCAB_PATH, "utf8"));
+  _vocabCache = new Map((v.widgetActionList || []).map((w) => [w.machineName, w]));
+  return _vocabCache;
+}
+var REQUIRED_STEP_FIELDS = ["machine_name", "name", "original_name", "stepNumber", "params"];
+function structuralCheck(candidate) {
+  const errors = [];
+  const form = candidate && candidate.data && candidate.data.form;
+  if (!Array.isArray(form)) return errors;
+  let widgets;
+  try {
+    widgets = loadWidgetMap();
+  } catch (_) {
+    return errors;
+  }
+  form.forEach((step, i) => {
+    const stepPath = `/data/form/${i}`;
+    for (const f of REQUIRED_STEP_FIELDS) {
+      if (step[f] === void 0 || step[f] === null || step[f] === "") {
+        errors.push({
+          path: `${stepPath}/${f}`,
+          keyword: "required",
+          message: `step is missing the "${f}" field \u2014 the Chrome extension importer iterates this list, so the step will render as "undefined" in the builder`,
+          params: { missingProperty: f }
+        });
+      }
+    }
+    if (!step.machine_name) return;
+    const widget = widgets.get(step.machine_name);
+    if (!widget) {
+      errors.push({
+        path: `${stepPath}/machine_name`,
+        keyword: "enum",
+        message: `unknown widget "${step.machine_name}" \u2014 not present in references/action-vocabulary.json's widgetActionList`,
+        params: { value: step.machine_name }
+      });
+      return;
+    }
+    if (step.original_name && step.original_name !== widget.name && step.original_name !== widget.originalName) {
+      errors.push({
+        path: `${stepPath}/original_name`,
+        keyword: "const",
+        message: `original_name "${step.original_name}" doesn't match the widget's canonical name "${widget.name}"`,
+        params: { expected: widget.name, actual: step.original_name }
+      });
+    }
+    const widgetParams = widget.params || [];
+    const stepParams = Array.isArray(step.params) ? step.params : [];
+    if (stepParams.length !== widgetParams.length) {
+      errors.push({
+        path: `${stepPath}/params`,
+        keyword: "param_count",
+        message: `${step.machine_name} declares ${widgetParams.length} params; this step ships ${stepParams.length}. The importer iterates the full list \u2014 missing params render as undefined.`,
+        params: { expected: widgetParams.length, actual: stepParams.length, widget: step.machine_name }
+      });
+    }
+    const compareLen = Math.min(stepParams.length, widgetParams.length);
+    for (let j = 0; j < compareLen; j++) {
+      const got = stepParams[j];
+      const want = widgetParams[j];
+      if (!got || got.name !== want.name) {
+        errors.push({
+          path: `${stepPath}/params/${j}/name`,
+          keyword: "param_name",
+          message: `${step.machine_name} param ${j}: expected name "${want.name}", got "${got && got.name}". Param order and names must match the widget definition.`,
+          params: { expected: want.name, actual: got && got.name }
+        });
+      }
+      if (got && want && got.type !== want.type) {
+        errors.push({
+          path: `${stepPath}/params/${j}/type`,
+          keyword: "param_type",
+          message: `${step.machine_name} param "${want.name}": expected type "${want.type}", got "${got.type}". Use the widget's declared type, not a guess.`,
+          params: { expected: want.type, actual: got.type }
+        });
+      }
+    }
+  });
+  return errors;
+}
 function validateAutomationTemplate(candidate) {
-  const valid = validate(candidate);
-  if (valid) return { valid: true, errors: [] };
-  const errors = (validate.errors || []).map((e) => ({
+  const schemaValid = validate(candidate);
+  const schemaErrors = schemaValid ? [] : (validate.errors || []).map((e) => ({
     path: e.instancePath || "<root>",
     message: e.message || "",
     keyword: e.keyword,
     params: e.params
   }));
-  return { valid: false, errors };
+  const structuralErrors = structuralCheck(candidate);
+  const errors = [...schemaErrors, ...structuralErrors];
+  return { valid: errors.length === 0, errors };
 }
-module.exports = { validateAutomationTemplate };
+module.exports = { validateAutomationTemplate, structuralCheck };
 if (require.main === module) {
   const file = process.argv[2];
   if (!file) {

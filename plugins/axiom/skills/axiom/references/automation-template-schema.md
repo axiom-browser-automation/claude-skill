@@ -37,18 +37,27 @@ The canonical schema is [`automation-template-schema.json`](./automation-templat
 
 ## Widget (`data.form` entry) — required fields
 
-Every widget has:
+The Chrome extension importer requires the **full canonical step shape** — every field documented in `docs/developer-hub/deep-dives/axiom-structure.md`, and every param the widget declares (with its real `name`, `type`, `description`, `default_value`, `help`, etc.). Missing fields make the step render as `undefined: <name>` in the builder. A minimal step looks like this:
 
 ```jsonc
 {
-  "machine_name": "WidgetDriverGoto",     // see action-vocabulary.json for the full enum
-  "name": "Go to page",                   // user-visible label
+  "machine_name": "WidgetDriverGoto",     // the widget's canonical key
+  "name": "Go to page",                   // user-visible display label (defaults to original_name)
+  "original_name": "Go to page",          // canonical widget name — the importer renders this
+  "description": "Instruct the bot...",   // preserved from widget def at creation time
   "stepNumber": "1",                      // string, sequential
-  "params": [/* param objects */]          // type-specific; see widget docs
+  "token": "",                            // the step's output token name (empty if none)
+  "hasErrors": false,
+  "metadata": "",
+  "params": [/* every param the widget declares */]
 }
 ```
 
-`machine_name` MUST be a value in [`action-vocabulary.json`](./action-vocabulary.json)'s `widgetActionList[].action` or `baseActionList[].machineName`. The schema enforces this via an enum.
+Each param needs `collapsible`, `configurable`, `default_value`, `description`, `help`, `image`, `name`, `type`, `value` — not just the ones you care about. The importer iterates the canonical param list and missing entries render blank.
+
+**Don't hand-compose this shape.** Use [`scripts/build-axiom.js`](../scripts/build-axiom.js) — it clones the canonical shape from `widgetActionList` for you and only requires you to specify `machineName` + the `value` overrides. See [SKILL.md Step 3](../SKILL.md) for the workflow.
+
+`machine_name` MUST be a value in [`action-vocabulary.json`](./action-vocabulary.json)'s `widgetActionList[].machineName`. The strengthened validator (`scripts/validate-no-code.js`) rejects unknown values plus mismatches between the step's param list and the widget's declared params.
 
 ## Triggers (only present for scheduled axioms)
 
@@ -63,15 +72,15 @@ Every widget has:
 }
 ```
 
-## Common widget shapes (cheat-sheet)
+## Examples
 
-Look at the three vendored examples in [`../examples/no-code/`](../examples/no-code/) for golden patterns:
+The three reference axioms in [`../examples/no-code/`](../examples/no-code/) are regenerated through the build-axiom helper — they're the canonical shape the importer accepts:
 
-- `download-a-file-from-website-to-google-drive.json` — `goto` then a Google Drive widget.
-- `scrape-google-maps-data-to-google-sheet.json` — scrape + sheet write.
-- `support-triage-bot-v2.json` — branching / conditional logic.
+- `visit-example.json` — minimal one-step navigation
+- `scheduled-daily.json` — Goto + SaveHTML, with a daily trigger
+- `scrape-and-write-sheet.json` — Goto + SmartScraper + WriteGoogleSheet
 
-When in doubt: pattern-match against a vendored example, then validate.
+Read them to see the full step shape, but **don't hand-copy** the structure into a new axiom — go through `build-axiom.js` instead.
 
 ## Validate before declaring done
 

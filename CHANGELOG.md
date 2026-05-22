@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.7.4 — build-axiom helper, strengthened validator, regenerated examples
+
+Live install on a clean machine surfaced a structural bug that affected every no-code axiom the skill produced: the generated JSON imported into the Chrome extension with every step rendering as `undefined: <name>` because the canonical step shape — `original_name`, the full param list with the widget's declared types and metadata — was missing. The schema validator passed because the schema's step item is wide-open (`properties: {}`, `required: []`); the structural mismatch only surfaces at import time.
+
+Three coordinated fixes so this can't happen again:
+
+- **New `scripts/build-axiom.js` helper.** Takes a small "intent" JSON (the user's automation name + the list of steps as `{machineName, values}`) and produces a canonical AutomationTemplate by cloning every param from `widgetActionList`. The caller only specifies `value` overrides for named params; the helper fills in `name`, `type`, `description`, `default_value`, `help`, every other field. Wrong param names (`"URL"` instead of `"Enter URL"`) and unknown widgets fail loudly with messages that name the right alternatives. **SKILL.md Step 3 directs Claude to use the helper; hand-composing is explicitly called out as wrong**.
+
+- **Strengthened `scripts/validate-no-code.js`.** Adds a structural check after AJV that catches what the loose schema doesn't:
+  - Each step must have `machine_name`, `name`, `original_name`, `stepNumber`, `params`.
+  - `machine_name` must resolve to a widget in `widgetActionList`.
+  - The step's params must match the widget's declared params by **count, name (by position), and type**.
+  - `original_name` must match the widget's canonical name.
+
+  Plus two in-memory schema patches to align it with the widget vocabulary (the vendored schema is slightly stale): the `type` enum gets widened with every type used in `widgetActionList`, and `help` items can now be either strings or `{name, linkSrc, linkText}` objects (which several widgets ship).
+
+- **Three regenerated examples.** `examples/no-code/visit-example.json`, `scheduled-daily.json`, and `scrape-and-write-sheet.json` were rebuilt through the helper and now serve as canonical reference shapes (not hand-compose patterns).
+
+Two regression fixtures land alongside the new test suite:
+- `test/no-code/fixtures/invalid/bbc-search-missing-params.param_count.json` — the exact broken JSON a user produced before this release; the strengthened validator now catches it on four counts.
+- `test/no-code/fixtures/invalid/step-missing-original-name.required.json` — minimal repro of the missing-`original_name` failure mode.
+
+Plus 19 new specs in `test/scripts/build-axiom.spec.ts` (param cloning, value override semantics, error paths, end-to-end "helper output passes the strengthened validator"). Suite total: 178 → 197 across 15 → 16 suites.
+
+`npm run build:axiom` is the new entry point.
+
 ## 0.7.3 — version bump to exercise the update-check flow
 
 Pure version bump — no functional change. Released so the v0.7.2 update-check
