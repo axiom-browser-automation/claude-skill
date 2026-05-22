@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.7.4
+version: 0.7.5
 license: ISC
 ---
 
@@ -147,7 +147,7 @@ Claude session.
 1. `references/automation-template-schema.json` — authoritative schema your output must validate against.
 2. `references/automation-template-schema.md` — prose explanation of the shape, with the minimal-required-fields cheatsheet.
 3. `references/action-vocabulary.json` — the `machine_name` values you may use in widgets (`baseActionList` + `widgetActionList`).
-4. `examples/no-code/*.json` — three minimal, hand-crafted, schema-valid AutomationTemplates. Read them to absorb the boilerplate shape.
+4. `examples/no-code/*.json` — three canonical reference AutomationTemplates regenerated through the build-axiom helper. **Read for shape reference; don't hand-copy** — produce your own JSON via `BuildNoCodeWorkflow` (see Step 3).
 
 **For the coded path:**
 
@@ -192,11 +192,13 @@ echo "$HOME/Downloads/axiom-<short-name>.json"
 
 If `~/Downloads` doesn't exist on the user's machine (rare — present on macOS, Windows, and most Linux distros), fall back to `~/` and tell the user.
 
-### No-code path — use the build-axiom helper, don't hand-compose
+### No-code path — invoke BuildNoCodeWorkflow with an intent. Do NOT hand-compose JSON.
 
-**Don't write the AutomationTemplate JSON by hand.** The canonical step shape is verbose (10 step-level fields, every param the widget declares with full metadata) and easy to get wrong — missing fields like `original_name` cause the Chrome extension to render every step as `undefined: <name>`, and missing params show up as empty cells. Use the bundled helper instead:
+The workflow is the single entry point for the no-code path. It takes a high-level intent (the user's automation name + a list of `{machineName, values}` step intents) and runs the full pipeline internally: build the canonical AutomationTemplate from `widgetActionList`, validate it, write it to disk. Hand-composing JSON is structurally unsafe — every step needs `original_name` + the widget's full param list with declared types + full metadata, and missing fields render as `undefined: …` in the Chrome extension. The workflow handles all of that.
 
-1. **Write a small intent JSON** describing what the axiom does at the high level. Each step lists the `machineName` (from `references/action-vocabulary.json`'s `widgetActionList`) and only the param `values` you want to override. Save the intent anywhere; `/tmp/<name>-intent.json` is fine.
+**Workflow:**
+
+1. **Compose an intent JSON** describing the axiom at the high level. `machineName` must be a value from `references/action-vocabulary.json`'s `widgetActionList`. `values` keys must be the exact param names declared by that widget (case-sensitive — `"Enter URL"`, not `"URL"`).
 
    ```json
    {
@@ -211,19 +213,23 @@ If `~/Downloads` doesn't exist on the user's machine (rare — present on macOS,
    }
    ```
 
-   The `values` keys must be the exact param names declared by the widget (look them up in `widgetActionList` — case-sensitive, e.g. `"Enter URL"` not `"URL"`). The helper rejects unknown param names with a clear error message so typos surface immediately.
-
-2. **Run the helper** to produce the full canonical JSON at the user's chosen path:
+2. **Invoke the workflow** with the intent + the user's chosen output path:
 
    ```bash
-   node plugins/axiom/skills/axiom/scripts/build-axiom.js \
-       --intent /tmp/bbc-intent.json \
-       --output "$HOME/Downloads/axiom-bbc-search.json"
+   node plugins/axiom/skills/axiom/workflows/index.js invoke build_no_code "$(cat <<'JSON'
+   {
+     "intent": { ...the intent JSON from step 1... },
+     "outputPath": "~/Downloads/axiom-bbc-search.json"
+   }
+   JSON
+   )"
    ```
 
-   The helper clones every param from the widget definition (with its real types, defaults, descriptions, help links) and only overrides the `value` field for the params you named.
+   The workflow's `invoke()` returns a `response.message` containing the absolute path the file was written to and the 4-step Chrome-extension import flow. If the intent has a typo (wrong widget name, wrong param key, etc.), invoke fails with a clear message naming the right alternative — fix and re-run.
 
-3. **Skip the legacy "hand-compose by reading examples" approach.** The `examples/no-code/*.json` files are regenerated through the helper; they're for reference reading, not patterns to copy by hand. Hand-composing leads to subtly broken JSON — most of the step shape is metadata the validator can't infer.
+3. **Hand the path + import flow back to the user.** That's the end of the no-code path. No separate build / validate / save calls; the workflow does the lot.
+
+> ⚠️ Don't run `scripts/build-axiom.js` or `scripts/validate-no-code.js` directly. They exist as a power-user / CI escape hatch, but the workflow is the supported path. Don't hand-write JSON either — the strengthened validator catches the failure modes and refuses to declare a hand-composed artifact done.
 
 #### Schedules + other top-level shape
 
@@ -238,47 +244,21 @@ If `~/Downloads` doesn't exist on the user's machine (rare — present on macOS,
 - Never call `step()` directly (it's the internal dispatcher — emit the named method like `goto`, `click`, `scrape`).
 - Never call `_`-prefixed methods.
 
-## Step 4 — Validate before declaring done
+## Step 4 — Validate before declaring done (coded path only)
 
-Run the corresponding validator on your output. Don't tell the user the artifact is ready until validation passes.
-
-**No-code:**
+The no-code path validates inside `BuildNoCodeWorkflow` — nothing extra to do. The coded path needs an explicit validator pass:
 
 ```bash
-node skills/axiom/scripts/validate-no-code.js /tmp/your-axiom.json
+node plugins/axiom/skills/axiom/scripts/validate-coded.js /tmp/your-script.js
 ```
 
-Exit 0 = valid. Exit 1 = AJV errors printed; each line names an `instancePath` and `keyword` — fix the field and re-validate.
-
-**Coded:**
-
-```bash
-node skills/axiom/scripts/validate-coded.js /tmp/your-script.js
-```
-
-Exit 0 = valid. Exit 1 = error codes printed (`UNKNOWN_METHOD`, `MISSING_LIFECYCLE`, `HARDCODED_TOKEN`, …). Fix and re-run.
-
-If validation fails, **read the error, fix the artifact, re-run the validator**. Don't argue with the validator — its rules come from the actual Axiom backend schema and the published `@axiom_ai/api` surface.
+Exit 0 = valid. Exit 1 = error codes printed (`UNKNOWN_METHOD`, `MISSING_LIFECYCLE`, `HARDCODED_TOKEN`, …). Fix and re-run. Don't argue with the validator — its rules come from the published `@axiom_ai/api` surface.
 
 ## Step 5 — Hand the artifact back to the user
 
-### No-code: tell the user how to import the JSON
+### No-code: the workflow already did this
 
-After validation passes, the JSON is sitting on disk at the path you wrote it to. The user imports it into Axiom themselves. Give them the path **plus** the 4-step import flow:
-
-> Validated and written to `<path>`.
->
-> To use it in your Axiom account:
-> 1. Open the Chrome extension's builder.
-> 2. Click the **Cog** icon in the left toolbar.
-> 3. Open **Import or download** → click **Select file** → pick the JSON above.
-> 4. Save the automation.
->
-> Full docs: <https://axiom.ai/docs/no-code-tool/reference/settings/import-export/sharing>
-
-If the user doesn't have the Chrome extension yet, invoke `HandoffToExtensionWorkflow` to point them at the install page.
-
-No save endpoint, no API key required to ship the artifact — the path on disk is the contract.
+`BuildNoCodeWorkflow.invoke()` returns a `response.message` that already contains the absolute path and the 4-step import flow. Relay it verbatim to the user. If they don't have the Chrome extension yet, invoke `HandoffToExtensionWorkflow` to point them at the install page.
 
 ### Coded: hand the script back to the user
 

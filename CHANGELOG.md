@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.7.5 — build-axiom is now in-path: BuildNoCodeWorkflow accepts an intent and runs the full pipeline
+
+v0.7.4 added the helper but only documented it in SKILL.md — Claude could still ignore the guidance and hand-compose JSON, in which case the strengthened validator would reject it but Claude might then iterate "fix one error at a time" instead of reaching for the helper. v0.7.5 closes that gap by wiring the helper into the workflow itself.
+
+`BuildNoCodeWorkflow.invoke({intent, outputPath})` now runs the full pipeline internally:
+
+```
+buildAxiom(intent)            ← clone canonical shape from widgetActionList
+  → validateAutomationTemplate ← structural + schema check
+  → writeFileSync(outputPath)  ← persist to disk
+  → return import-flow message
+```
+
+SKILL.md Step 3 directs Claude through the workflow (not the standalone scripts). The standalone `scripts/build-axiom.js` and `scripts/validate-no-code.js` are retained as power-user / CI escape hatches.
+
+The legacy `opts.artifactPath` shape is preserved as a validate-only mode for re-checking files Claude already wrote — but the strengthened validator still rejects hand-composed shapes and the workflow's error message now nudges back toward `opts.intent` for the fix.
+
+`~` in `opts.outputPath` is expanded to the user's home dir so paths like `~/Downloads/axiom-bbc.json` work without extra shell preprocessing.
+
+New: `test/workflows/build-no-code.spec.ts` — 8 specs covering build-via-intent (with disk side-effect), unknown widget rejection, wrong-param-key rejection, missing outputPath guidance, validate-only acceptance of canonical files, hand-composed rejection with recompose hint, and missing-input guidance. Suite total: 197 → 205 across 16 → 17 suites.
+
 ## 0.7.4 — build-axiom helper, strengthened validator, regenerated examples
 
 Live install on a clean machine surfaced a structural bug that affected every no-code axiom the skill produced: the generated JSON imported into the Chrome extension with every step rendering as `undefined: <name>` because the canonical step shape — `original_name`, the full param list with the widget's declared types and metadata — was missing. The schema validator passed because the schema's step item is wide-open (`properties: {}`, `required: []`); the structural mismatch only surfaces at import time.
