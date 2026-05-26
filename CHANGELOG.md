@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.7.7 — fix: all bundled-script invocations in skill docs use the announced skill base directory
+
+Every `node plugins/axiom/skills/axiom/<x>` instruction across the skill docs was a relative path that only resolved when the bash tool's CWD happened to match the marketplace source root — which it usually doesn't. Real-world symptom: every new conversation opened with a scary `Cannot find module …/plugins/axiom/skills/axiom/scripts/check-for-updates.js` error before the skill proceeded normally. The same shape silently broke `signup-and-mint-key.js`, `validate-coded.js`, and three `workflows/index.js` examples.
+
+Additionally, the installed cache layout (`<cache>/skills/axiom/...`) has no `plugins/axiom` segment at all, so the relative path was wrong regardless of CWD.
+
+Fix: all 9 `node` invocations across the skill's docs now reference `<SKILL_BASE_DIR>` — the absolute path Claude is told at skill activation ("Base directory for this skill: …") — quoted for paths with spaces. Sites changed:
+
+- `SKILL.md` — `check-for-updates.js`, `signup-and-mint-key.js` (×2), `workflows/index.js invoke build_no_code`, `validate-coded.js`
+- `references/account-setup.md` — `signup-and-mint-key.js` (×2)
+- `references/workflows-index.md` — `workflows/index.js` (`list`, `dispatch`, `invoke run_automation`)
+
+Discovery credit: surfaced by an end-user session — `Cannot find module /mnt/.../plugins/axiom/skills/axiom/scripts/check-for-updates.js` on every new chat.
+
 ## 0.7.5 — build-axiom is now in-path: BuildNoCodeWorkflow accepts an intent and runs the full pipeline
 
 v0.7.4 added the helper but only documented it in SKILL.md — Claude could still ignore the guidance and hand-compose JSON, in which case the strengthened validator would reject it but Claude might then iterate "fix one error at a time" instead of reaching for the helper. v0.7.5 closes that gap by wiring the helper into the workflow itself.

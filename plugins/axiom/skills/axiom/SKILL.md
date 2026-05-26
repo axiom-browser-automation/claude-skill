@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.7.5
+version: 0.7.7
 license: ISC
 ---
 
@@ -18,11 +18,13 @@ Before you produce anything, **decide which workflow fits**. If the user's inten
 
 ## Step −1 — Check for a newer skill version (once per conversation)
 
-The first time the axiom skill activates in a conversation, run:
+The first time the axiom skill activates in a conversation, run the update check via the skill's bundled script. **Use the absolute path** — the skill's base directory was announced when this skill loaded ("Base directory for this skill: <PATH>"). The bash tool's CWD won't always match the skill directory, so a relative path will fail.
 
 ```bash
-node plugins/axiom/skills/axiom/scripts/check-for-updates.js
+node "<SKILL_BASE_DIR>/scripts/check-for-updates.js"
 ```
+
+Replace `<SKILL_BASE_DIR>` with the absolute path you were given at skill activation.
 
 If it prints a line starting with `UPDATE_AVAILABLE`, surface a one-line note to the user before continuing with their request:
 
@@ -70,15 +72,17 @@ Then proceed to Step 1.
 
 3. **Run the bundled helper:**
 
+   (Paths below use `<SKILL_BASE_DIR>` — substitute the absolute path announced at skill activation.)
+
    New account (b):
    ```bash
-   node plugins/axiom/skills/axiom/scripts/signup-and-mint-key.js \
+   node "<SKILL_BASE_DIR>/scripts/signup-and-mint-key.js" \
      --name "Their Name" --email their@email.com
    ```
 
    Existing account (a):
    ```bash
-   node plugins/axiom/skills/axiom/scripts/signup-and-mint-key.js \
+   node "<SKILL_BASE_DIR>/scripts/signup-and-mint-key.js" \
      --email their@email.com --existing
    ```
 
@@ -216,7 +220,7 @@ The workflow is the single entry point for the no-code path. It takes a high-lev
 2. **Invoke the workflow** with the intent + the user's chosen output path:
 
    ```bash
-   node plugins/axiom/skills/axiom/workflows/index.js invoke build_no_code "$(cat <<'JSON'
+   node "<SKILL_BASE_DIR>/workflows/index.js" invoke build_no_code "$(cat <<'JSON'
    {
      "intent": { ...the intent JSON from step 1... },
      "outputPath": "~/Downloads/axiom-bbc-search.json"
@@ -249,7 +253,7 @@ The workflow is the single entry point for the no-code path. It takes a high-lev
 The no-code path validates inside `BuildNoCodeWorkflow` — nothing extra to do. The coded path needs an explicit validator pass:
 
 ```bash
-node plugins/axiom/skills/axiom/scripts/validate-coded.js /tmp/your-script.js
+node "<SKILL_BASE_DIR>/scripts/validate-coded.js" /tmp/your-script.js
 ```
 
 Exit 0 = valid. Exit 1 = error codes printed (`UNKNOWN_METHOD`, `MISSING_LIFECYCLE`, `HARDCODED_TOKEN`, …). Fix and re-run. Don't argue with the validator — its rules come from the published `@axiom_ai/api` surface.

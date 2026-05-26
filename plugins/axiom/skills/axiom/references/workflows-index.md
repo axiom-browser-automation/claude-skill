@@ -39,10 +39,12 @@ rather than guessing.
 
 ## CLI
 
+(Paths use `<SKILL_BASE_DIR>` — substitute the absolute path announced at skill activation.)
+
 ```bash
-node plugins/axiom/skills/axiom/workflows/index.js list
-node plugins/axiom/skills/axiom/workflows/index.js dispatch --message "trigger my Maps scraper"
-node plugins/axiom/skills/axiom/workflows/index.js invoke run_automation '{"name": "My Scraper", "mode": "wait"}'
+node "<SKILL_BASE_DIR>/workflows/index.js" list
+node "<SKILL_BASE_DIR>/workflows/index.js" dispatch --message "trigger my Maps scraper"
+node "<SKILL_BASE_DIR>/workflows/index.js" invoke run_automation '{"name": "My Scraper", "mode": "wait"}'
 ```
 
 The CLI is used by tests (routing/registry assertions go via JSON output) and by power

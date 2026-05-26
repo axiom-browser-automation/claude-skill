@@ -41,10 +41,12 @@ After they set it, you proceed.
 
 **Step 3 — Run the helper.**
 
+(Paths below use `<SKILL_BASE_DIR>` — substitute the absolute path announced at skill activation.)
+
 Existing account:
 
 ```bash
-node plugins/axiom/skills/axiom/scripts/signup-and-mint-key.js \
+node "<SKILL_BASE_DIR>/scripts/signup-and-mint-key.js" \
   --email user@example.com \
   --existing
 ```
@@ -52,7 +54,7 @@ node plugins/axiom/skills/axiom/scripts/signup-and-mint-key.js \
 New account:
 
 ```bash
-node plugins/axiom/skills/axiom/scripts/signup-and-mint-key.js \
+node "<SKILL_BASE_DIR>/scripts/signup-and-mint-key.js" \
   --name "User's Name" \
   --email user@example.com
 ```
