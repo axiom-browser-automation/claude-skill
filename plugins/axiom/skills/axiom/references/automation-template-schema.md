@@ -42,16 +42,21 @@ The Chrome extension importer requires the **full canonical step shape** — eve
 ```jsonc
 {
   "machine_name": "WidgetDriverGoto",     // the widget's canonical key
+  "index": 0,                             // 0-based position; the extension orders steps by it
+  "method": {"driver": "driver.gotoV4070"}, // what the runner dispatches on — copy from the vocabulary
+  "modes": ["driver"],                    // ["driver"] or ["browser"] — copy from the vocabulary
   "name": "Go to page",                   // user-visible display label (defaults to original_name)
   "original_name": "Go to page",          // canonical widget name — the importer renders this
   "description": "Instruct the bot...",   // preserved from widget def at creation time
-  "stepNumber": "1",                      // string, sequential
+  "stepNumber": "1",                      // string, sequential (1-based)
   "token": "",                            // the step's output token name (empty if none)
   "hasErrors": false,
   "metadata": "",
   "params": [/* every param the widget declares */]
 }
 ```
+
+**`method`, `modes`, and `index` are load-bearing at runtime, not cosmetic.** The extension's runner dispatches each step on `method.{driver|browser}` and orders steps by `index`. A step that omits them imports without complaint but **never executes** — the browser sits on `about:blank` and the run hangs. `method` and `modes` come straight from the widget's entry in [`action-vocabulary.json`](./action-vocabulary.json) (`widgetActionList[].method` / `.modes`); `index` is the step's 0-based position. `build-axiom.js` fills all three in for you — this is the main reason not to hand-compose steps.
 
 Each param needs `collapsible`, `configurable`, `default_value`, `description`, `help`, `image`, `name`, `type`, `value` — not just the ones you care about. The importer iterates the canonical param list and missing entries render blank.
 

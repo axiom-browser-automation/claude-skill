@@ -282,7 +282,10 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "index",
         "machine_name",
+        "method",
+        "modes",
         "name",
         "params",
         "stepNumber"
@@ -293,6 +296,9 @@
         },
         "hasErrors": {
           "type": "boolean"
+        },
+        "index": {
+          "type": "number"
         },
         "isLooping": {
           "type": "boolean"

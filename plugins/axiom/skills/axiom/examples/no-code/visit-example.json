@@ -21,8 +21,15 @@
       {
         "description": "Instruct the bot to go to a new page.",
         "hasErrors": false,
+        "index": 0,
         "machine_name": "WidgetDriverGoto",
         "metadata": "",
+        "method": {
+          "driver": "driver.gotoV4070"
+        },
+        "modes": [
+          "driver"
+        ],
         "name": "Go to page",
         "original_name": "Go to page",
         "params": [

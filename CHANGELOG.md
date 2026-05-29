@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.7.8 — fix: generated no-code steps were missing `method`, `modes`, and `index` (axioms imported but hung on about:blank)
+
+A user built a no-code axiom to scrape `https://axiom.ai/`, imported the JSON, and the run hung on `about:blank` — it never navigated. Comparing the generated JSON against a manually-built automation showed every step was missing three fields the Chrome extension's runner needs: `method` (e.g. `{"driver": "driver.gotoV4070"}` — what the runner dispatches on), `modes` (`["driver"]` / `["browser"]`), and `index` (the step's 0-based position). Without `method`/`modes` the step imports cleanly but never executes.
+
+Root cause: `scripts/build-axiom.js`'s `buildStep` constructed each step without those fields, even though `action-vocabulary.json` carries `method`/`modes` for every widget and the function's own docstring claimed it set `index`. The schema, the validator, and the three reference examples all failed to carry or require them too, so nothing caught the gap — and Claude faithfully reproduced the broken example shape.
+
+Fix, across all four guards:
+
+- `scripts/build-axiom.js` — `buildStep` now copies `method`/`modes` from the widget definition and sets `index` to the 0-based step position.
+- `references/automation-template-schema.json` — the widget definition now lists `index` as an allowed property and **requires** `index`, `method`, and `modes` (a correct export carrying `index` previously failed AJV because `additionalProperties: false` didn't permit it).
+- `scripts/_src/validate-no-code.js` (+ rebuilt bundle) — structural check now verifies each step's `method`/`modes` match the canonical widget definition and that `index` equals the step position, with an explicit "the run hangs on about:blank" message.
+- `examples/no-code/*.json` — all three reference axioms regenerated to carry the fields.
+- `references/automation-template-schema.md` — minimal-step example + prose now document the three fields as load-bearing at runtime.
+- Regression pinned: `test/no-code/fixtures/claude-emitted/missing-method-modes-index.json` is a known-bad fixture asserting the validator rejects the exact reported shape.
+
+Discovery credit: surfaced by an end-user smoke test — "ran it via the skill but it just hung on about:blank and never went to https://axiom.ai".
+
 ## 0.7.7 — fix: all bundled-script invocations in skill docs use the announced skill base directory
 
 Every `node plugins/axiom/skills/axiom/<x>` instruction across the skill docs was a relative path that only resolved when the bash tool's CWD happened to match the marketplace source root — which it usually doesn't. Real-world symptom: every new conversation opened with a scary `Cannot find module …/plugins/axiom/skills/axiom/scripts/check-for-updates.js` error before the skill proceeded normally. The same shape silently broke `signup-and-mint-key.js`, `validate-coded.js`, and three `workflows/index.js` examples.

@@ -77,9 +77,12 @@ function findWidget(machineName, vocab) {
  * Build one canonical step from a step intent + the widget definition.
  *
  * The step gets every field axiom-structure.md documents (description,
- * hasErrors, index, machine_name, metadata, name, original_name, params,
- * stepNumber, token) and every param the widget declares (collapsible,
- * configurable, default_value, description, help, image, name, type, value).
+ * hasErrors, index, machine_name, metadata, method, modes, name,
+ * original_name, params, stepNumber, token) and every param the widget
+ * declares (collapsible, configurable, default_value, description, help,
+ * image, name, type, value). method + modes are copied from the widget
+ * definition; the extension's runner dispatches on them, so a step without
+ * them imports but never runs.
  *
  * @param {{machineName: string, values?: Object<string, any>, name?: string, token?: string}} stepIntent
  * @param {number} stepNumber  1-based
@@ -107,8 +110,19 @@ function buildStep(stepIntent, stepNumber, vocab) {
     return {
         description: widget.description || '',
         hasErrors: false,
+        // 0-based position. The extension orders + dispatches steps by index;
+        // omitting it is one of the three fields whose absence makes an imported
+        // axiom hang without running (see method/modes below).
+        index: stepNumber - 1,
         machine_name: widget.machineName,
         metadata: '',
+        // method + modes come straight from the widget definition and are what
+        // the extension's runner dispatches on (e.g. method.driver →
+        // driver.gotoV4070). A step missing them imports fine but never
+        // executes — the browser sits on about:blank. Every widget in the
+        // vocabulary declares both, so copy them verbatim.
+        method: widget.method,
+        modes: widget.modes,
         name: stepIntent.name || widget.name || widget.originalName || '',
         original_name: widget.name || widget.originalName || '',
         params: (widget.params || []).map(p => {

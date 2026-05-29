@@ -132,6 +132,61 @@ function structuralCheck(candidate) {
             })
         }
 
+        // (3.5) method, modes + index. The Chrome extension's runner dispatches
+        // on step.method.{driver|browser} and orders steps by step.index. A step
+        // missing these imports cleanly but never executes — the browser sits on
+        // about:blank and the run hangs. They're deterministic: method/modes are
+        // copied from the widget definition, index is the 0-based position. This
+        // is the regression behind v0.7.8 (build-axiom silently dropped them);
+        // pin it here so it can't come back.
+        if (step.method === undefined || step.method === null) {
+            errors.push({
+                path: `${stepPath}/method`,
+                keyword: 'required',
+                message: `step is missing "method" — the extension's runner dispatches on method.{driver|browser}; without it the imported step never runs (the browser hangs on about:blank). Expected ${JSON.stringify(widget.method)}.`,
+                params: {missingProperty: 'method', expected: widget.method}
+            })
+        } else if (JSON.stringify(step.method) !== JSON.stringify(widget.method)) {
+            errors.push({
+                path: `${stepPath}/method`,
+                keyword: 'param_method',
+                message: `${step.machine_name} method ${JSON.stringify(step.method)} doesn't match the widget's canonical method ${JSON.stringify(widget.method)}.`,
+                params: {expected: widget.method, actual: step.method}
+            })
+        }
+
+        if (step.modes === undefined || step.modes === null) {
+            errors.push({
+                path: `${stepPath}/modes`,
+                keyword: 'required',
+                message: `step is missing "modes" — required alongside method for the step to run. Expected ${JSON.stringify(widget.modes)}.`,
+                params: {missingProperty: 'modes', expected: widget.modes}
+            })
+        } else if (JSON.stringify(step.modes) !== JSON.stringify(widget.modes)) {
+            errors.push({
+                path: `${stepPath}/modes`,
+                keyword: 'param_modes',
+                message: `${step.machine_name} modes ${JSON.stringify(step.modes)} doesn't match the widget's canonical modes ${JSON.stringify(widget.modes)}.`,
+                params: {expected: widget.modes, actual: step.modes}
+            })
+        }
+
+        if (typeof step.index !== 'number') {
+            errors.push({
+                path: `${stepPath}/index`,
+                keyword: 'required',
+                message: `step is missing a numeric "index" — the extension orders steps by it. Expected ${i} (0-based position).`,
+                params: {missingProperty: 'index', expected: i}
+            })
+        } else if (step.index !== i) {
+            errors.push({
+                path: `${stepPath}/index`,
+                keyword: 'param_index',
+                message: `index ${step.index} doesn't match the step's 0-based position ${i}.`,
+                params: {expected: i, actual: step.index}
+            })
+        }
+
         // (4) Params must match the widget's declared param list by count AND
         // position-and-name. This is the check that catches the "I only sent
         // the params I cared about" failure mode.

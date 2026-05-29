@@ -44,6 +44,11 @@ describe('BuildNoCodeWorkflow.invoke — intent path (primary)', () => {
             // Canonical step shape, not the broken minimal shape
             expect(written.data.form[0].original_name).toBe('Go to page')
             expect(written.data.form[0].params).toHaveLength(4)  // widget declares 4
+            // method/modes/index are load-bearing: without them the imported
+            // axiom hangs on about:blank (v0.7.8 regression).
+            expect(written.data.form[0].method).toEqual({driver: 'driver.gotoV4070'})
+            expect(written.data.form[0].modes).toEqual(['driver'])
+            expect(written.data.form[0].index).toBe(0)
 
             expect(result.response.message).toContain(outputPath)
             expect(result.response.message).toMatch(/Cog icon/)

@@ -6629,6 +6629,51 @@ function structuralCheck(candidate) {
         params: { expected: widget.name, actual: step.original_name }
       });
     }
+    if (step.method === void 0 || step.method === null) {
+      errors.push({
+        path: `${stepPath}/method`,
+        keyword: "required",
+        message: `step is missing "method" \u2014 the extension's runner dispatches on method.{driver|browser}; without it the imported step never runs (the browser hangs on about:blank). Expected ${JSON.stringify(widget.method)}.`,
+        params: { missingProperty: "method", expected: widget.method }
+      });
+    } else if (JSON.stringify(step.method) !== JSON.stringify(widget.method)) {
+      errors.push({
+        path: `${stepPath}/method`,
+        keyword: "param_method",
+        message: `${step.machine_name} method ${JSON.stringify(step.method)} doesn't match the widget's canonical method ${JSON.stringify(widget.method)}.`,
+        params: { expected: widget.method, actual: step.method }
+      });
+    }
+    if (step.modes === void 0 || step.modes === null) {
+      errors.push({
+        path: `${stepPath}/modes`,
+        keyword: "required",
+        message: `step is missing "modes" \u2014 required alongside method for the step to run. Expected ${JSON.stringify(widget.modes)}.`,
+        params: { missingProperty: "modes", expected: widget.modes }
+      });
+    } else if (JSON.stringify(step.modes) !== JSON.stringify(widget.modes)) {
+      errors.push({
+        path: `${stepPath}/modes`,
+        keyword: "param_modes",
+        message: `${step.machine_name} modes ${JSON.stringify(step.modes)} doesn't match the widget's canonical modes ${JSON.stringify(widget.modes)}.`,
+        params: { expected: widget.modes, actual: step.modes }
+      });
+    }
+    if (typeof step.index !== "number") {
+      errors.push({
+        path: `${stepPath}/index`,
+        keyword: "required",
+        message: `step is missing a numeric "index" \u2014 the extension orders steps by it. Expected ${i} (0-based position).`,
+        params: { missingProperty: "index", expected: i }
+      });
+    } else if (step.index !== i) {
+      errors.push({
+        path: `${stepPath}/index`,
+        keyword: "param_index",
+        message: `index ${step.index} doesn't match the step's 0-based position ${i}.`,
+        params: { expected: i, actual: step.index }
+      });
+    }
     const widgetParams = widget.params || [];
     const stepParams = Array.isArray(step.params) ? step.params : [];
     if (stepParams.length !== widgetParams.length) {

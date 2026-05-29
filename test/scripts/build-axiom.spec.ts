@@ -44,6 +44,12 @@ describe('buildStep', () => {
         expect(step.hasErrors).toBe(false)
         expect(step.token).toBe('')
         expect(step.metadata).toBe('')
+        // method/modes/index drive the extension's runner — without them an
+        // imported axiom hangs on about:blank (v0.7.8 regression).
+        expect(step.method).toEqual({driver: 'driver.gotoV4070'})
+        expect(step.modes).toEqual(['driver'])
+        expect(step.index).toBe(0)
+        expect(buildStep({machineName: 'WidgetDriverGoto'}, 3).index).toBe(2)
     })
 
     test('overrides only the named param\'s value, leaves others at default', () => {
