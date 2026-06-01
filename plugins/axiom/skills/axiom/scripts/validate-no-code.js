@@ -6659,6 +6659,14 @@ function structuralCheck(candidate) {
         params: { expected: widget.modes, actual: step.modes }
       });
     }
+    if (widget.token !== void 0 && (!step.token || typeof step.token !== "string")) {
+      errors.push({
+        path: `${stepPath}/token`,
+        keyword: "required",
+        message: `${step.machine_name} is an output-producing step (vocab default token "${widget.token}") but ships an empty token \u2014 the scrape/read runs but the output has no name. Set step.token (default "${widget.token}", or any unique non-empty string).`,
+        params: { missingProperty: "token", vocabDefault: widget.token }
+      });
+    }
     if (typeof step.index !== "number") {
       errors.push({
         path: `${stepPath}/index`,

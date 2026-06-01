@@ -90,6 +90,21 @@ describe('buildStep', () => {
         expect(step.name).toBe('Open BBC')
         expect(step.original_name).toBe('Go to page')  // canonical name unchanged
     })
+
+    test('falls back to the widget\'s canonical token when the caller omits one', () => {
+        // 49 of 95 widgets define an output token in the vocabulary — without
+        // this fallback, "Get Data" steps imported with token="" and produced
+        // no referenceable output (v0.7.9 regression).
+        expect(buildStep({machineName: 'WidgetDriverSmartScraper'}, 1).token).toBe('scrape-data')
+        expect(buildStep({machineName: 'WidgetDriverScrapeLinks'}, 1).token).toBe('link-data')
+        // Widgets without a vocab token (sinks like Goto) stay empty.
+        expect(buildStep({machineName: 'WidgetDriverGoto'}, 1).token).toBe('')
+    })
+
+    test('caller-supplied token wins over the vocab default', () => {
+        const step = buildStep({machineName: 'WidgetDriverSmartScraper', token: 'products'}, 1)
+        expect(step.token).toBe('products')
+    })
 })
 
 describe('buildAxiom', () => {
@@ -137,6 +152,22 @@ describe('buildAxiom', () => {
         const a = buildAxiom(intent)
         expect(a.data.form[0].stepNumber).toBe('1')
         expect(a.data.form[1].stepNumber).toBe('2')
+    })
+
+    test('deduplicates collisions when multiple steps inherit the same vocab token', () => {
+        const a = buildAxiom({
+            name: 'Two scrapes',
+            steps: [
+                {machineName: 'WidgetDriverGoto', values: {'Enter URL': 'https://x.test'}},
+                {machineName: 'WidgetDriverSmartScraper'},
+                {machineName: 'WidgetDriverSmartScraper'},
+                {machineName: 'WidgetDriverSmartScraper'}
+            ]
+        })
+        expect(a.data.form[0].token).toBe('')                 // Goto: no vocab token
+        expect(a.data.form[1].token).toBe('scrape-data')
+        expect(a.data.form[2].token).toBe('scrape-data-2')
+        expect(a.data.form[3].token).toBe('scrape-data-3')
     })
 
     test('rejects intent without a name', () => {

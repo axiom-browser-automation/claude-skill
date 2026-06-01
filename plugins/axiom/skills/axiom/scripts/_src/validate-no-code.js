@@ -171,6 +171,20 @@ function structuralCheck(candidate) {
             })
         }
 
+        // (3.55) token. 49 of 95 widgets declare a canonical output token in
+        // the vocabulary (scrape-data, link-data, google-sheet-data, …); for
+        // those, shipping an empty token means the step runs but produces no
+        // named output that downstream steps or the user can reference. We
+        // don't pin the exact name (callers may rename), only that it's set.
+        if (widget.token !== undefined && (!step.token || typeof step.token !== 'string')) {
+            errors.push({
+                path: `${stepPath}/token`,
+                keyword: 'required',
+                message: `${step.machine_name} is an output-producing step (vocab default token "${widget.token}") but ships an empty token — the scrape/read runs but the output has no name. Set step.token (default "${widget.token}", or any unique non-empty string).`,
+                params: {missingProperty: 'token', vocabDefault: widget.token}
+            })
+        }
+
         if (typeof step.index !== 'number') {
             errors.push({
                 path: `${stepPath}/index`,

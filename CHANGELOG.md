@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.7.9 — fix: output-producing steps (SmartScraper, ScrapeLinks, ReadGoogleSheet, …) shipped with an empty `token`
+
+After the 0.7.8 fix unblocked the scrape from running, the next defect surfaced: the "Get Data" step ran but produced no named output — `step.token` was empty, so downstream steps and the user had nothing to reference. This wasn't a 0.7.8 regression; the same shape had been emitted since the helper was introduced.
+
+Same class of defect as 0.7.8: the canonical value lives in the vocabulary (49 of 95 widgets declare a default token — `scrape-data`, `link-data`, `google-sheet-data`, …) and `buildStep` failed to use it. Caller-supplied tokens still win; the vocab default fills the gap when none is passed.
+
+Fix:
+
+- `scripts/build-axiom.js` — `buildStep` now falls back to `widget.token` when the caller doesn't pass one. `buildAxiom` deduplicates collisions across steps (two SmartScraper steps in one axiom become `scrape-data` + `scrape-data-2`).
+- `scripts/_src/validate-no-code.js` (+ rebuilt bundle) — new structural check: a widget that declares a vocab token must ship a non-empty step token. The check is permissive on the *name* (callers may rename) and strict on presence.
+- `examples/no-code/scrape-and-write-sheet.json` — scraper step now carries `token: "scrape-data"`.
+- `references/automation-template-schema.md` — prose now documents the token fallback + dedup behavior.
+
+Discovery credit: end-user smoke test — "the built scraper runs ok, but the Get Data step doesn't give you a token."
+
 ## 0.7.8 — fix: generated no-code steps were missing `method`, `modes`, and `index` (axioms imported but hung on about:blank)
 
 A user built a no-code axiom to scrape `https://axiom.ai/`, imported the JSON, and the run hung on `about:blank` — it never navigated. Comparing the generated JSON against a manually-built automation showed every step was missing three fields the Chrome extension's runner needs: `method` (e.g. `{"driver": "driver.gotoV4070"}` — what the runner dispatches on), `modes` (`["driver"]` / `["browser"]`), and `index` (the step's 0-based position). Without `method`/`modes` the step imports cleanly but never executes.

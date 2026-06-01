@@ -168,7 +168,7 @@
           }
         ],
         "stepNumber": "2",
-        "token": "scrape-data"
+        "token": ""
       },
       {
         "description": "Write/append data to a Google Sheet (use when the user says: save/export/store results to a Google Sheet).",

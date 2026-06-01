@@ -143,7 +143,13 @@ function buildStep(stepIntent, stepNumber, vocab) {
             }
         }),
         stepNumber: String(stepNumber),
-        token: stepIntent.token || ''
+        // 49 of 95 widgets define a canonical output token in the vocabulary
+        // (scrape-data, link-data, google-sheet-data, …). Fall back to it so
+        // a data-producing step without an explicit caller-supplied token still
+        // names its output — otherwise "Get Data" steps import with token="",
+        // run fine, and produce no referenceable output. (Caller's explicit
+        // token still wins; buildAxiom dedups collisions across steps.)
+        token: stepIntent.token || widget.token || ''
     }
 }
 
@@ -172,6 +178,18 @@ function buildAxiom(intent, opts = {}) {
     }
 
     const form = intent.steps.map((s, i) => buildStep(s, i + 1, opts.vocab))
+
+    // Dedup non-empty tokens: when two steps default to the same vocab token
+    // (e.g. two SmartScraper steps both inherit "scrape-data") the importer
+    // would silently coalesce them. First occurrence keeps the bare name;
+    // subsequent get a "-2", "-3", … suffix.
+    const tokenCounts = {}
+    for (const step of form) {
+        if (!step.token) continue
+        const n = (tokenCounts[step.token] || 0) + 1
+        tokenCounts[step.token] = n
+        if (n > 1) step.token = `${step.token}-${n}`
+    }
 
     return {
         id: 0,
