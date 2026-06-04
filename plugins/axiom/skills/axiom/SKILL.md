@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.7.10
+version: 0.7.11
 license: ISC
 ---
 
@@ -234,6 +234,35 @@ The workflow is the single entry point for the no-code path. It takes a high-lev
 3. **Hand the path + import flow back to the user.** That's the end of the no-code path. No separate build / validate / save calls; the workflow does the lot.
 
 > ⚠️ Don't run `scripts/build-axiom.js` or `scripts/validate-no-code.js` directly. They exist as a power-user / CI escape hatch, but the workflow is the supported path. Don't hand-write JSON either — the strengthened validator catches the failure modes and refuses to declare a hand-composed artifact done.
+
+#### Loops — repeat a body of steps once per row of data
+
+When the user wants "for each row in this sheet, do X" / "visit each of these links" / similar, **the no-code JSON has a specific shape** that the helper now supports directly. There is no single "loop" widget; a loop is **a `WidgetBotCreate` step (the start) + body steps + a `WidgetBotComplete` step (the end)**, with three conventions:
+
+1. **Wire the iteration data** with `tokenRefs`, not `values`. The BotCreate step has a `Loop through data` param of type `bot_token`; in the intent, point it at the upstream step's `token`:
+   ```js
+   { machineName: 'WidgetBotCreate',
+     stepNumber: '3',
+     tokenRefs: { 'Loop through data': 'google-sheet-data' } }
+   ```
+   The helper emits `value: ["[google-sheet-data]"]` (the canonical token-reference shape).
+2. **Body steps use sub-numbered `stepNumber` labels** (`"3.1"`, `"3.2"`, …) under the BotCreate's parent number. The helper takes a `stepNumber` override on each body step:
+   ```js
+   { machineName: 'WidgetDriverEnterText', stepNumber: '3.1', values: { ... } }
+   ```
+3. **The closing `WidgetBotComplete` step shares the BotCreate's stepNumber** (both `"3"`). The importer pairs them by matching number.
+
+The helper also handles two BotCreate-only top-level flags (`isLooping: true`, `afterLoopUpdate: true`) — set automatically from the vocab.
+
+See [`examples/no-code/loop-through-sheet.json`](examples/no-code/loop-through-sheet.json) for a fully-wired ReadGoogleSheet → Goto → BotCreate(loop) → Wait → BotComplete flow that round-trips through the validator.
+
+> **Don't** try to emit `TemplateLoopThroughData` directly — that's the extension's *macro* name, not a single widget. The JSON is always the start/body/end triple above.
+
+#### Token references between steps (the general pattern)
+
+Anything in the intent that needs to consume another step's output (Continue widget's `Data to check`, BotCreate's `Loop through data`, etc.) goes through `tokenRefs`, NOT `values`. The helper rejects a `tokenRef` against a non-token-typed param, so typos surface as errors instead of silent literals.
+
+Common token-typed param types: `token`, `token_list`, `merge_token`, `merge_token_list`, `bot_token`. The canonical JSON shape is always a single-element array `["[<upstream-token-name>]"]`, regardless of which token type — the helper builds that for you.
 
 #### Schedules + other top-level shape
 

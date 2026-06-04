@@ -182,7 +182,7 @@
             " "
           ],
           "value": "",
-          "type": "",
+          "type": "hidden",
           "image": "",
           "collapsible": 0,
           "configurable": true,
@@ -217,7 +217,9 @@
           "help": [],
           "default_value": "0"
         }
-      ]
+      ],
+      "isLooping": true,
+      "afterLoopUpdate": true
     },
     {
       "action": "WidgetCatch",

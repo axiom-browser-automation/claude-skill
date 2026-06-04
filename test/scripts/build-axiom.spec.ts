@@ -105,6 +105,73 @@ describe('buildStep', () => {
         const step = buildStep({machineName: 'WidgetDriverSmartScraper', token: 'products'}, 1)
         expect(step.token).toBe('products')
     })
+
+    // ── tokenRefs (P0/P1 — loop-data + Continue / data-flow wiring) ────────
+    test('tokenRefs populates a bot_token param with the canonical ["[name]"] shape', () => {
+        const step = buildStep({
+            machineName: 'WidgetBotCreate',
+            tokenRefs: { 'Loop through data': 'google-sheet-data' },
+        }, 3)
+        const p = step.params.find((x: any) => x.name === 'Loop through data')
+        expect(p.type).toBe('bot_token')
+        expect(p.value).toEqual(['[google-sheet-data]'])
+    })
+
+    test('tokenRefs accepts an array of token names', () => {
+        const step = buildStep({
+            machineName: 'WidgetContinue',
+            tokenRefs: { 'Data to check': ['scrape-data', 'extra-token'] },
+        }, 2)
+        const p = step.params.find((x: any) => x.name === 'Data to check')
+        expect(p.value).toEqual(['[scrape-data]', '[extra-token]'])
+    })
+
+    test('tokenRefs wins over values when both target the same token-typed param', () => {
+        const step = buildStep({
+            machineName: 'WidgetBotCreate',
+            values: { 'Loop through data': [] },
+            tokenRefs: { 'Loop through data': 'links' },
+        }, 1)
+        const p = step.params.find((x: any) => x.name === 'Loop through data')
+        expect(p.value).toEqual(['[links]'])
+    })
+
+    test('tokenRefs rejects a param that is not a token-typed param', () => {
+        // Goto's "Enter URL" is type=current_url, not a token type — should throw.
+        expect(() => buildStep({
+            machineName: 'WidgetDriverGoto',
+            tokenRefs: { 'Enter URL': 'some-token' },
+        }, 1)).toThrow(/not a token-typed param/)
+    })
+
+    test('tokenRefs rejects an unknown param name (same as values)', () => {
+        expect(() => buildStep({
+            machineName: 'WidgetBotCreate',
+            tokenRefs: { 'No Such Param': 'foo' },
+        }, 1)).toThrow(/got a tokenRef for "No Such Param"/)
+    })
+
+    // ── Sub-step labels for loop bodies ──────────────────────────────────
+    test('caller can override stepNumber (used by loop body sub-step labels like "3.1")', () => {
+        const step = buildStep({
+            machineName: 'WidgetDriverGoto',
+            stepNumber: '3.1',
+        }, 3)
+        expect(step.stepNumber).toBe('3.1')
+    })
+
+    // ── isLooping / afterLoopUpdate top-level flags ──────────────────────
+    test('WidgetBotCreate carries isLooping + afterLoopUpdate flags from vocab', () => {
+        const step = buildStep({machineName: 'WidgetBotCreate'}, 1)
+        expect(step.isLooping).toBe(true)
+        expect(step.afterLoopUpdate).toBe(true)
+    })
+
+    test('WidgetBotComplete does NOT carry isLooping (only the start widget does)', () => {
+        const step = buildStep({machineName: 'WidgetBotComplete'}, 1)
+        expect(step.isLooping).toBeUndefined()
+        expect(step.afterLoopUpdate).toBeUndefined()
+    })
 })
 
 describe('buildAxiom', () => {

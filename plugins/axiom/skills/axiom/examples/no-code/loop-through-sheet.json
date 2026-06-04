@@ -1,0 +1,324 @@
+{
+  "id": 0,
+  "openWidgetIndex": -1,
+  "name": "Loop through a Google Sheet, do something per row",
+  "templateId": 0,
+  "triggers": [],
+  "share_status": false,
+  "share_link": "",
+  "stored_cookies": [],
+  "data": {
+    "allowConcurrencyDesktop": true,
+    "builderTemplateId": 0,
+    "context": [
+      {
+        "context": "url",
+        "url": "https://example.com"
+      }
+    ],
+    "disallowConcurrencyCloud": false,
+    "form": [
+      {
+        "description": "Read rows from a Google Sheet to use as an input data source (use when the user says: from a Google Sheet, read a Google Sheet, for each row).",
+        "hasErrors": false,
+        "index": 0,
+        "machine_name": "WidgetReadGoogleSheet",
+        "metadata": "",
+        "method": {
+          "browser": "AxiomApiReadGoogleSheetWithRangeV3170"
+        },
+        "modes": [
+          "browser"
+        ],
+        "name": "Read rows from contacts sheet",
+        "original_name": "Read data from a Google Sheet",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": "",
+            "description": [
+              "Select Google sheet"
+            ],
+            "help": [],
+            "image": "",
+            "name": "Spreadsheet",
+            "type": "spreadsheet_picker",
+            "value": ""
+          },
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": "",
+            "description": [
+              "Specify a sheet name to read from. These are the tabs at the bottom of each spreadsheet."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Sheet name",
+            "type": "sheet_name_dropdown",
+            "value": "contacts"
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": "A1",
+            "description": [
+              "Will use A1 if no value provided"
+            ],
+            "help": [],
+            "image": "",
+            "name": "First cell",
+            "type": "first_cell",
+            "value": "A2"
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": "ZZ",
+            "description": [
+              "Will use ZZ if no value provided"
+            ],
+            "help": [],
+            "image": "",
+            "name": "Last cell",
+            "type": "last_cell",
+            "value": "ZZ"
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "If this is turned on, the automation will proceed even if the input sheet is empty."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Continue when empty",
+            "type": "optional",
+            "value": false
+          }
+        ],
+        "stepNumber": "1",
+        "token": "google-sheet-data"
+      },
+      {
+        "description": "Instruct the bot to go to a new page.",
+        "hasErrors": false,
+        "index": 1,
+        "machine_name": "WidgetDriverGoto",
+        "metadata": "",
+        "method": {
+          "driver": "driver.gotoV4070"
+        },
+        "modes": [
+          "driver"
+        ],
+        "name": "Go to page",
+        "original_name": "Go to page",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": "",
+            "description": [
+              "Enter a URL to go to. You can also plugin data from other steps to provide a URL. Enter (skip) to skip this step."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Enter URL",
+            "type": "current_url",
+            "value": "https://example.com"
+          },
+          {
+            "collapsible": 0,
+            "configurable": false,
+            "default_value": false,
+            "description": [
+              "Cookie detected, store if running in the cloud and you wish to run your automation using the scheduler or the API."
+            ],
+            "help": [
+              {
+                "name": "Learn ",
+                "linkSrc": "https://axiom.ai/docs/tutorials/settings/run-options/store-cookies",
+                "linkText": "more"
+              }
+            ],
+            "image": "",
+            "name": "Store Cookie",
+            "type": "store_cookie",
+            "value": false
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "Check the box to stop Axiom retrieving session data from this URL's localstorage. This will prevent an extra page refresh but can prevent your session from loading fully."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Do not share localstorage",
+            "type": "special_character",
+            "value": false
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "Check the box to open the URL in a new browser tab, the automation will automatically switch to running in the new tab."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Open in new tab",
+            "type": "special_character",
+            "value": false
+          }
+        ],
+        "stepNumber": "2",
+        "token": ""
+      },
+      {
+        "description": "Repeat the sub-steps once for each item in a data set.",
+        "hasErrors": false,
+        "index": 2,
+        "machine_name": "WidgetBotCreate",
+        "metadata": "",
+        "method": {
+          "driver": "DriverNoUrl"
+        },
+        "modes": [
+          "browser"
+        ],
+        "name": "Loop through data",
+        "original_name": "Loop through data",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": "",
+            "description": [
+              " "
+            ],
+            "help": [],
+            "image": "",
+            "name": "driverLaunchOptions",
+            "type": "hidden",
+            "value": ""
+          },
+          {
+            "collapsible": 0,
+            "configurable": false,
+            "default_value": [],
+            "description": [
+              "Repeat for each item in another step's data."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Loop through data",
+            "type": "bot_token",
+            "value": [
+              "[google-sheet-data]"
+            ]
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": "0",
+            "description": [
+              "Enter the time, in seconds, to show tooltips. Enter 0 for no tooltip."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Show tooltips",
+            "type": "pause_time",
+            "value": "0"
+          }
+        ],
+        "stepNumber": "3",
+        "token": "bot-input-data",
+        "isLooping": true,
+        "afterLoopUpdate": true
+      },
+      {
+        "description": "Instruct the bot to wait for the given number of milliseconds. Wait for loading events, animations, page rendering etc.",
+        "hasErrors": false,
+        "index": 3,
+        "machine_name": "WidgetDriverWait",
+        "metadata": "",
+        "method": {
+          "driver": "driver.waitV4000"
+        },
+        "modes": [
+          "driver"
+        ],
+        "name": "Wait between rows",
+        "original_name": "Wait",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": {
+              "waitType": "fixed",
+              "fixedDuration": "",
+              "minDuration": "",
+              "maxDuration": ""
+            },
+            "description": [
+              ""
+            ],
+            "help": [],
+            "image": "",
+            "name": "Wait time",
+            "type": "wait_time",
+            "value": {
+              "waitType": "fixed",
+              "fixedDuration": "",
+              "minDuration": "",
+              "maxDuration": ""
+            }
+          }
+        ],
+        "stepNumber": "3.1",
+        "token": ""
+      },
+      {
+        "description": "Finish and trigger the bot's run!",
+        "hasErrors": false,
+        "index": 4,
+        "machine_name": "WidgetBotComplete",
+        "metadata": "",
+        "method": {
+          "browser": "driver.internalRun"
+        },
+        "modes": [
+          "driver"
+        ],
+        "name": "Loop through data",
+        "original_name": "Loop through data",
+        "params": [],
+        "stepNumber": "3",
+        "token": "loop-data"
+      }
+    ],
+    "headless": false,
+    "incognitoMode": false,
+    "injector": {
+      "injector": "dom",
+      "magic_btn_status": true,
+      "selector": ""
+    },
+    "mode": "browser",
+    "storeCookies": false,
+    "templateId": 0,
+    "templateItem": {
+      "name": "Loop through a Google Sheet, do something per row",
+      "description": "Reads rows from a Google Sheet then iterates over them. The body of the loop is left as a no-op (Wait) — this example demonstrates the loop wiring, not the per-row body."
+    },
+    "templateMode": false,
+    "templateStarted": false,
+    "tokens": null,
+    "viewport": null
+  }
+}

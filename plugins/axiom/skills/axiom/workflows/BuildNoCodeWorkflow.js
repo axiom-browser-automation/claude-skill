@@ -90,7 +90,7 @@ class BuildNoCodeWorkflow {
             return {
                 response: {
                     message: `build-axiom failed: ${err.message}`,
-                    nextSteps: ['Check the intent\'s machineNames against references/action-vocabulary.json\'s widgetActionList', 'Check each step\'s `values` keys are the exact param names (case-sensitive)']
+                    nextSteps: ['Check the intent\'s machineNames against references/action-vocabulary.json\'s widgetActionList', 'Check each step\'s `values` keys are the exact param names (case-sensitive)', 'For token-typed params (bot_token, token, merge_token, …) use `tokenRefs: {paramName: "upstreamTokenName"}` — not `values`']
                 },
                 debug: {route: BuildNoCodeWorkflow.key, error: err.message, phase: 'build'}
             }

@@ -73,6 +73,21 @@ function findWidget(machineName, vocab) {
     return (v.widgetActionList || []).find(w => w.machineName === machineName) || null
 }
 
+// Param `type` values whose populated `value` is a single-element array
+// containing the upstream step's output token name wrapped in square brackets
+// (e.g. `["[google-sheet-data]"]`). Used to translate the caller-friendly
+// `tokenRefs: { paramName: "google-sheet-data" }` shape into the canonical
+// JSON every step expects. Source-of-truth for which param types are
+// token-references is the ParamToken constructor in
+// `axiom_extension/src/axiombuilder/models/params/ParamToken.ts`.
+const TOKEN_REF_PARAM_TYPES = new Set([
+    'token',
+    'token_list',
+    'merge_token',
+    'merge_token_list',
+    'bot_token',
+])
+
 /**
  * Build one canonical step from a step intent + the widget definition.
  *
@@ -84,8 +99,10 @@ function findWidget(machineName, vocab) {
  * definition; the extension's runner dispatches on them, so a step without
  * them imports but never runs.
  *
- * @param {{machineName: string, values?: Object<string, any>, name?: string, token?: string}} stepIntent
- * @param {number} stepNumber  1-based
+ * @param {{machineName: string, values?: Object<string, any>, tokenRefs?: Object<string, string|string[]>, name?: string, token?: string, stepNumber?: string}} stepIntent
+ * @param {number} stepNumber  1-based (numeric index into form). The caller can
+ *   override the string label via stepIntent.stepNumber — needed for sub-steps
+ *   inside loops, which use "3.1", "3.2", … under a parent "3".
  * @param {object} [vocab]     injected for tests
  * @returns {object}           canonical step object
  */
@@ -95,9 +112,11 @@ function buildStep(stepIntent, stepNumber, vocab) {
         throw new Error(`build-axiom: unknown widget machineName "${stepIntent.machineName}". Check references/action-vocabulary.json's widgetActionList.`)
     }
     const values = stepIntent.values || {}
+    const tokenRefs = stepIntent.tokenRefs || {}
 
-    // Sanity-check the caller didn't pass values for params the widget doesn't declare.
-    // This catches typos like "URL" vs "Enter URL" that would otherwise silently no-op.
+    // Sanity-check the caller didn't pass values/tokenRefs for params the
+    // widget doesn't declare. Catches typos like "URL" vs "Enter URL" that
+    // would otherwise silently no-op.
     const widgetParamNames = new Set((widget.params || []).map(p => p.name))
     for (const k of Object.keys(values)) {
         if (!widgetParamNames.has(k)) {
@@ -106,8 +125,21 @@ function buildStep(stepIntent, stepNumber, vocab) {
             )
         }
     }
+    for (const k of Object.keys(tokenRefs)) {
+        if (!widgetParamNames.has(k)) {
+            throw new Error(
+                `build-axiom: step "${stepIntent.machineName}" got a tokenRef for "${k}", but the widget's params are: ${[...widgetParamNames].map(n => `"${n}"`).join(', ')}. Check the param name (it's case-sensitive).`
+            )
+        }
+        const param = (widget.params || []).find(p => p.name === k)
+        if (!TOKEN_REF_PARAM_TYPES.has(param.type)) {
+            throw new Error(
+                `build-axiom: step "${stepIntent.machineName}" tokenRef "${k}" points at a param of type "${param.type}", which is not a token-typed param. tokenRefs only apply to params of type: ${[...TOKEN_REF_PARAM_TYPES].join(', ')}. Use values for ordinary param literals.`
+            )
+        }
+    }
 
-    return {
+    const step = {
         description: widget.description || '',
         hasErrors: false,
         // 0-based position. The extension orders + dispatches steps by index;
@@ -126,10 +158,22 @@ function buildStep(stepIntent, stepNumber, vocab) {
         name: stepIntent.name || widget.name || widget.originalName || '',
         original_name: widget.name || widget.originalName || '',
         params: (widget.params || []).map(p => {
-            const overrideValue = values[p.name]
-            const value = overrideValue !== undefined
-                ? overrideValue
-                : (p.default_value !== undefined ? p.default_value : (p.value !== undefined ? p.value : ''))
+            // tokenRefs win over values for token-typed params. Build the
+            // canonical [["[<name>]"]] shape — one wrapped name per ref. The
+            // caller can pass a single string or an array of names.
+            let value
+            if (tokenRefs[p.name] !== undefined) {
+                const refs = Array.isArray(tokenRefs[p.name]) ? tokenRefs[p.name] : [tokenRefs[p.name]]
+                value = refs.map(r => `[${r}]`)
+            } else if (values[p.name] !== undefined) {
+                value = values[p.name]
+            } else if (p.default_value !== undefined) {
+                value = p.default_value
+            } else if (p.value !== undefined) {
+                value = p.value
+            } else {
+                value = ''
+            }
             return {
                 collapsible: p.collapsible !== undefined ? p.collapsible : 0,
                 configurable: p.configurable !== undefined ? p.configurable : true,
@@ -142,7 +186,10 @@ function buildStep(stepIntent, stepNumber, vocab) {
                 value
             }
         }),
-        stepNumber: String(stepNumber),
+        // stepNumber is a string label. Defaults to the 1-based numeric index
+        // (e.g. "1", "2", …), but the caller can override with a sub-step
+        // label like "3.1" for body steps inside a loop.
+        stepNumber: stepIntent.stepNumber || String(stepNumber),
         // 49 of 95 widgets define a canonical output token in the vocabulary
         // (scrape-data, link-data, google-sheet-data, …). Fall back to it so
         // a data-producing step without an explicit caller-supplied token still
@@ -151,6 +198,13 @@ function buildStep(stepIntent, stepNumber, vocab) {
         // token still wins; buildAxiom dedups collisions across steps.)
         token: stepIntent.token || widget.token || ''
     }
+    // Optional widget-level flags. Currently only WidgetBotCreate carries them
+    // (isLooping=true, afterLoopUpdate=true) — the importer keys off these to
+    // recognise a step as the start of a loop block. Schema permits both as
+    // optional widget properties.
+    if (widget.isLooping !== undefined) step.isLooping = widget.isLooping
+    if (widget.afterLoopUpdate !== undefined) step.afterLoopUpdate = widget.afterLoopUpdate
+    return step
 }
 
 /**
