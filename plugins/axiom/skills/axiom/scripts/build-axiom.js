@@ -89,6 +89,38 @@ const TOKEN_REF_PARAM_TYPES = new Set([
 ])
 
 /**
+ * Normalize a `smart_selector` param value so the runtime can scrape multiple
+ * columns. Accepts the caller-friendly shorthand
+ *   [{selector: "h3 a", resultType: "textContent"},
+ *    {selector: ".price", resultType: "textContent"}]
+ * and fills in the `selectedElements: []` + `rejectedElements: []` UI-only
+ * defaults the importer + runtime tolerate. A `resultType` defaults to
+ * `"textContent"`. Source-of-truth for the runtime's accepted shape is
+ * `axiom_lib/lib/execution/AxiomApiHelper.js#buildSelectorArray` — it reads
+ * `.selector` and `.resultType` from each entry and ignores the rest.
+ *
+ * If `value` isn't an array (e.g. a single string CSS selector), pass it
+ * through unchanged — the runtime also accepts that legacy shape.
+ *
+ * @param {any} value
+ * @returns {any}
+ */
+function normalizeSmartSelectorValue(value) {
+    if (!Array.isArray(value)) return value
+    return value.map(entry => {
+        if (entry && typeof entry === 'object' && typeof entry.selector === 'string') {
+            return {
+                selector: entry.selector,
+                resultType: typeof entry.resultType === 'string' ? entry.resultType : 'textContent',
+                selectedElements: Array.isArray(entry.selectedElements) ? entry.selectedElements : [],
+                rejectedElements: Array.isArray(entry.rejectedElements) ? entry.rejectedElements : [],
+            }
+        }
+        return entry
+    })
+}
+
+/**
  * Build one canonical step from a step intent + the widget definition.
  *
  * The step gets every field axiom-structure.md documents (description,
@@ -173,6 +205,14 @@ function buildStep(stepIntent, stepNumber, vocab) {
                 value = p.value
             } else {
                 value = ''
+            }
+            // smart_selector multi-column shorthand: callers can pass
+            //   [{selector, resultType}, {selector, resultType}, …]
+            // and the helper fills in the UI-only `selectedElements` /
+            // `rejectedElements` defaults the importer + runtime tolerate. A
+            // plain string or already-normalised array passes through.
+            if (p.type === 'smart_selector') {
+                value = normalizeSmartSelectorValue(value)
             }
             return {
                 collapsible: p.collapsible !== undefined ? p.collapsible : 0,

@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.7.11
+version: 0.7.12
 license: ISC
 ---
 
@@ -263,6 +263,25 @@ See [`examples/no-code/loop-through-sheet.json`](examples/no-code/loop-through-s
 Anything in the intent that needs to consume another step's output (Continue widget's `Data to check`, BotCreate's `Loop through data`, etc.) goes through `tokenRefs`, NOT `values`. The helper rejects a `tokenRef` against a non-token-typed param, so typos surface as errors instead of silent literals.
 
 Common token-typed param types: `token`, `token_list`, `merge_token`, `merge_token_list`, `bot_token`. The canonical JSON shape is always a single-element array `["[<upstream-token-name>]"]`, regardless of which token type — the helper builds that for you.
+
+#### Multi-column scraping (SmartScraper / ScrapeLinks)
+
+When a user wants more than one field per row (title + price + stock, etc.), `WidgetDriverSmartScraper`'s `Select` param accepts an **array of column specs**, one per field. Pass it through `values` and the helper fills in the UI-only defaults:
+
+```js
+{ machineName: 'WidgetDriverSmartScraper',
+  values: {
+    'Select': [
+      { selector: 'article.product_pod h3 a',          resultType: 'textContent' },
+      { selector: 'article.product_pod .price_color',  resultType: 'textContent' },
+      { selector: 'article.product_pod .availability', resultType: 'textContent' },
+    ],
+    'Max results': '20',
+  },
+  token: 'scrape-data' }
+```
+
+Each column needs `selector` (CSS) and optionally `resultType` (`"textContent"` by default; can also be `"innerHTML"`, `"link"`, `"axiom-download"`). The runtime extracts those two fields per column and ignores the rest. Scope each column's CSS to a row container (e.g. `article.product_pod h3 a`) so results align across columns. The legacy single-string-selector form (`'Select': 'article.product_pod'`) still works for single-column scrapes — the helper recognises strings and passes them through.
 
 #### Schedules + other top-level shape
 

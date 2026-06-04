@@ -172,6 +172,50 @@ describe('buildStep', () => {
         expect(step.isLooping).toBeUndefined()
         expect(step.afterLoopUpdate).toBeUndefined()
     })
+
+    // ── smart_selector multi-column normalisation (P2) ──────────────────
+    test('smart_selector array of {selector, resultType} columns gets UI defaults filled in', () => {
+        const step = buildStep({
+            machineName: 'WidgetDriverSmartScraper',
+            values: {
+                'Select': [
+                    { selector: 'article.product_pod h3 a',     resultType: 'textContent' },
+                    { selector: 'article.product_pod .price_color' }, // resultType omitted → default
+                ],
+            },
+        }, 1)
+        const p = step.params.find((x: any) => x.name === 'Select')
+        expect(p.type).toBe('smart_selector')
+        expect(p.value).toEqual([
+            { selector: 'article.product_pod h3 a',      resultType: 'textContent', selectedElements: [], rejectedElements: [] },
+            { selector: 'article.product_pod .price_color', resultType: 'textContent', selectedElements: [], rejectedElements: [] },
+        ])
+    })
+
+    test('smart_selector string value (legacy single-selector form) passes through unchanged', () => {
+        const step = buildStep({
+            machineName: 'WidgetDriverSmartScraper',
+            values: { 'Select': 'article.product_pod' },
+        }, 1)
+        const p = step.params.find((x: any) => x.name === 'Select')
+        expect(p.value).toBe('article.product_pod')
+    })
+
+    test('smart_selector preserves pre-populated selectedElements/rejectedElements (UI-built values)', () => {
+        const richValue = [{
+            selector: 'h3 a',
+            resultType: 'textContent',
+            selectedElements: [{some: 'fingerprint'}],
+            rejectedElements: [{other: 'fingerprint'}],
+        }]
+        const step = buildStep({
+            machineName: 'WidgetDriverSmartScraper',
+            values: { 'Select': richValue },
+        }, 1)
+        const p = step.params.find((x: any) => x.name === 'Select')
+        expect(p.value[0].selectedElements).toEqual([{some: 'fingerprint'}])
+        expect(p.value[0].rejectedElements).toEqual([{other: 'fingerprint'}])
+    })
 })
 
 describe('buildAxiom', () => {

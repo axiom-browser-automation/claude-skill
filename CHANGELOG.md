@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.7.12 — feat: `WidgetDriverSmartScraper.Select` now accepts an array of column specs (closes P2 from the harness findings)
+
+The v0.7.11 harness re-run confirmed scenarios 03/07/08 fixed but scenario 02 still failed — Claude scaffolded a SmartScraper step with only the row-container selector (`article.product_pod`) and told the user to wire columns manually. Judge: *"defines no column selectors for title, price, or stock, so the scrape produces no actual structured columns and nothing meaningful is written to the sheet."*
+
+Root cause located in `axiom_lib/lib/execution/AxiomApiHelper.js#buildSelectorArray`: the runtime accepts the `smart_selector` param as **either** a string (legacy single-selector) **or** an array of objects with `{selector, resultType}` per column. The helper had no way to express the array shape — it just passed values through verbatim, so callers had to know the full UI-built shape (including `selectedElements` / `rejectedElements` fingerprints) to populate columns.
+
+Fix in `build-axiom.js`: any value targeting a param of type `smart_selector` is now normalised — callers can pass
+
+```js
+'Select': [
+  { selector: 'article.product_pod h3 a',          resultType: 'textContent' },
+  { selector: 'article.product_pod .price_color',  resultType: 'textContent' },
+  { selector: 'article.product_pod .availability', resultType: 'textContent' },
+]
+```
+
+and the helper fills in `selectedElements: []` + `rejectedElements: []` (UI-only fields the runtime ignores). `resultType` defaults to `"textContent"` when omitted. The legacy single-string form (`'Select': 'article.product_pod'`) still works — strings pass through unchanged.
+
+Also adds a "Multi-column scraping" subsection to SKILL.md Step 3 with the canonical shape + the four valid `resultType` values (`textContent`, `innerHTML`, `link`, `axiom-download`).
+
+Three new unit tests pin the happy path + the string-passthrough + preserving UI-pre-populated `selectedElements`. 221/221 green.
+
 ## 0.7.11 — feat: skill can now produce fully-wired loops and step-to-step data flows (closes the "defer to manual" gap from the v0.7.10 harness run)
 
 The first run of the LLM-driven test harness (`api-publish/test-env/llm-harness/`) caught a consistent pattern: when a user prompt involved "for each row of this sheet, do X" or any step that consumed another step's output, the skill produced a *scaffold* — structurally valid JSON with correct selectors — but left the actual wiring (loop + token references between steps) for the user to finish in the Axiom builder UI. Symptom in the user-facing transcripts:
