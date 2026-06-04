@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.7.9
+version: 0.7.10
 license: ISC
 ---
 
@@ -280,7 +280,15 @@ Exit 0 = valid. Exit 1 = error codes printed (`UNKNOWN_METHOD`, `MISSING_LIFECYC
 | Coded `HARDCODED_TOKEN` | You inlined the API key as a string literal | Replace with `process.env.AXIOM_API_KEY`. |
 | Coded `INTERNAL_METHOD` | You called `axiom.step(...)` directly | Emit the named method (`goto`, `click`, etc.) instead. |
 
+## User-reported runtime errors
+
+If the user pastes or describes one of these *after* their axiom ran (vs failures you encountered while *generating* it), follow the recovery in the right column. Anything not on this list — point them at the dashboard's run reports.
+
+| Symptom | What it means | What to tell the user |
+|---|---|---|
+| "Google access token has expired" / "Your Google access token is invalid or has expired" / Google Sheets steps suddenly returning permission errors after working before | Google has revoked the OAuth token axiom.ai uses on the user's behalf (security rotation, account change, or the user revoked it). Not an axiom bug — Google controls it. | Tell the user to click the **Axiom extension** icon in their browser, open **Google Sheets and API key**, and click **Connect Google Sheets** to re-grant access. Once reconnected, re-run the automation. See [`references/docs/no-code-tool/troubleshooting/errors/integrations/google-sheets.md`](references/docs/no-code-tool/troubleshooting/errors/integrations/google-sheets.md) for the canonical version. |
+
 ## What this skill won't do
 
 - **It doesn't run the axiom.** That's the user's job — either via the dashboard (no-code) or `node script.js` (coded).
-- **It doesn't troubleshoot live runs.** If the user has an existing axiom that's failing, point them at the dashboard's run reports.
+- **It doesn't troubleshoot live runs** *beyond* the table in "User-reported runtime errors" above. For anything else, point the user at the dashboard's run reports.

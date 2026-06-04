@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.10 — docs: skill now handles user-reported Google Sheets auth errors by directing the user to reconnect in the Axiom extension
+
+When a user's existing axiom fails at runtime with a Google Sheets auth error — `"Google access token has expired"` / `"Your Google access token is invalid or has expired"` / Google Sheets steps suddenly returning permission errors after working before — the skill previously fell through to its blanket "I don't troubleshoot live runs; check the dashboard's run reports" stance. That left the user without the specific recovery (which is non-obvious: it's a Google-side token revocation, not an axiom bug, and the fix is a one-click reconnect in the Axiom Chrome extension).
+
+This release adds a new **"User-reported runtime errors"** section to [`SKILL.md`](plugins/axiom/skills/axiom/SKILL.md) listing exactly this case + the recovery: click the Axiom extension icon → open **Google Sheets and API key** → **Connect Google Sheets**. Section is structured as a table so future runtime-error rows can be added cleanly. The "What this skill won't do" line that absolutely refused to troubleshoot live runs is softened to point at the new table.
+
+Source-of-truth for the underlying error semantics remains [`references/docs/no-code-tool/troubleshooting/errors/integrations/google-sheets.md`](plugins/axiom/skills/axiom/references/docs/no-code-tool/troubleshooting/errors/integrations/google-sheets.md); the SKILL.md row links there.
+
+No code changes, no validator changes, no example changes — pure SKILL.md content addition.
+
 ## 0.7.9 — fix: output-producing steps (SmartScraper, ScrapeLinks, ReadGoogleSheet, …) shipped with an empty `token`
 
 After the 0.7.8 fix unblocked the scrape from running, the next defect surfaced: the "Get Data" step ran but produced no named output — `step.token` was empty, so downstream steps and the user had nothing to reference. This wasn't a 0.7.8 regression; the same shape had been emitted since the helper was introduced.
