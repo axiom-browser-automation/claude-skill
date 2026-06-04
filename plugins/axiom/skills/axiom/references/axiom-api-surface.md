@@ -36,7 +36,7 @@ Every coded axiom must wrap step calls in `try { … } finally { await axiom.bro
 
 | Method | Signature |
 |---|---|
-| `scrape(url, selector, pager, max_results, settings)` | Smart-scrape rows. Pass `null` for `url` to scrape the current page. |
+| `scrape(url, selector, pager, max_results, settings)` | Smart-scrape rows. `scrape` navigates to `url` (or to each URL in turn if given an array) and extracts matching rows in the same call — `url` is required, do **not** pass `null` (the cloud driver crashes with a 500). Browser session/cookies persist across the internal navigation, so this works after a login flow too — just pass the post-login page's URL. |
 | `scrapeMetadata(metadata)` | Extract structured page-level fields (title, OG tags, schema.org blocks). |
 | `getClipboardContents()` | Read the cloud browser's clipboard (after a copy step). |
 

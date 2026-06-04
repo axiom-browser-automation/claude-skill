@@ -29,7 +29,7 @@ const result = await axiom.integrateAI(aiOptions);
 **Generate a summary of scraped content:**
 
 ```javascript
-const rows = await axiom.scrape(null, { hierarchy: "article" }, null, 1, {});
+const rows = await axiom.scrape('https://example.com/article', { hierarchy: "article" }, null, 1, {});
 const result = await axiom.integrateAI({
   aiFunction: 'generate',
   prompt: `Summarise this in one sentence:\n\n${rows[0][0]}`
@@ -39,7 +39,7 @@ const result = await axiom.integrateAI({
 **Extract structured fields from a page:**
 
 ```javascript
-const rows = await axiom.scrape(null, { hierarchy: "body" }, null, 1, {});
+const rows = await axiom.scrape('https://example.com/about', { hierarchy: "body" }, null, 1, {});
 const result = await axiom.integrateAI({
   aiFunction: 'extract',
   extractData: rows[0][0],

@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.7.13 — fix: purge `scrape(null)` anti-pattern from bundled examples + docs (closes S1 from the harness findings)
+
+Two scenarios in the latest harness run (16, 19) produced coded axioms that called `axiom.scrape(null, …)` — passing `null` for the `url` argument. The cloud driver rejects this with a 500: `url` is required. The runtime fix shipped in `@axiom_ai/api@1.0.4` (the method now navigates to `url` internally before scraping, so `null` no longer makes sense), but the skill's bundled examples and reference docs still taught the old pattern, and Claude was emitting it verbatim.
+
+Cleaned up across six files:
+
+- `examples/coded/simple-scrape.js` — pulled fresh from `axiom-api/examples/` (now uses a real URL).
+- `examples/coded/login-then-extract.js` — same.
+- `examples/coded/parallel-sessions.js` — same.
+- `references/axiom-api-surface.md` — `scrape()` row rewritten to call out `url` is required + the post-login navigation behaviour (cookies persist across the internal navigation).
+- `references/docs/developer-hub/api/step-functions/integrate-ai.md` — two `scrape(null, …)` examples replaced with real URLs.
+- `references/docs/developer-hub/api/step-functions/step-function-vs-no-code-step.md` — table row rewritten to match the new surface.md text.
+
+Test fixture `test/coded/fixtures/invalid/missing-finally.MISSING_LIFECYCLE.js` also updated — its purpose is to fail on the missing `try/finally`, the `scrape(null)` was incidental.
+
+`api-publish/test-env/axiom-api.tgz` refreshed from `@axiom_ai/api@1.0.4` so the bundled package the container sees matches the latest published surface (the previous tarball was pinned at v1.0.0 and was reinforcing the stale teaching from inside the container).
+
+221/221 tests green.
+
 ## 0.7.12 — feat: `WidgetDriverSmartScraper.Select` now accepts an array of column specs (closes P2 from the harness findings)
 
 The v0.7.11 harness re-run confirmed scenarios 03/07/08 fixed but scenario 02 still failed — Claude scaffolded a SmartScraper step with only the row-container selector (`article.product_pod`) and told the user to wire columns manually. Judge: *"defines no column selectors for title, price, or stock, so the scrape produces no actual structured columns and nothing meaningful is written to the sheet."*

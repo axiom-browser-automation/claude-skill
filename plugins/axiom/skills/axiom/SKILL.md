@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.7.12
+version: 0.7.13
 license: ISC
 ---
 
