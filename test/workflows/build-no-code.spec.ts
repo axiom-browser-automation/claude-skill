@@ -51,9 +51,15 @@ describe('BuildNoCodeWorkflow.invoke — intent path (primary)', () => {
             expect(written.data.form[0].index).toBe(0)
 
             expect(result.response.message).toContain(outputPath)
-            expect(result.response.message).toMatch(/Cog icon/)
-            expect(result.response.message).toMatch(/Import or download/)
+            expect(result.response.message).toMatch(/save .* to your Axiom account/i)
+            expect(result.response.message).toMatch(/Chrome extension/)
+            const nextSteps = result.response.nextSteps.join('\n')
+            expect(nextSteps).toMatch(/Cog icon/)
+            expect(nextSteps).toMatch(/Import or download/)
             expect(result.response.data.artifactPath).toBe(outputPath)
+            expect(result.response.data.automationName).toBe('Visit example')
+            expect(result.response.data.saveCommand).toMatch(/save-automation\.js/)
+            expect(result.response.data.saveCommand).toContain(outputPath)
             expect(result.debug.phase).toBe('built')
         } finally {
             rmSync(dir, {recursive: true, force: true})
@@ -142,7 +148,10 @@ describe('BuildNoCodeWorkflow.invoke — artifactPath path (validate-only escape
             opts: {artifactPath: examplePath}
         })
         expect(result.response.message).toContain(examplePath)
-        expect(result.response.message).toMatch(/Cog icon/)
+        expect(result.response.message).toMatch(/save .* to your Axiom account/i)
+        expect(result.response.data.automationName).toBe('Visit example.com')
+        expect(result.response.data.saveCommand).toMatch(/save-automation\.js/)
+        expect(result.response.nextSteps.join('\n')).toMatch(/Cog icon/)
         expect(result.debug.phase).toBe('validated-existing')
     })
 

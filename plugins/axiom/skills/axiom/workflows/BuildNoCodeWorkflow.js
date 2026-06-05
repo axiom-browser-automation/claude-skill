@@ -24,6 +24,7 @@ const path = require('path')
 const os = require('os')
 
 const IMPORT_DOCS_URL = 'https://axiom.ai/docs/no-code-tool/reference/settings/import-export/sharing'
+const SAVE_SCRIPT_PATH = path.resolve(__dirname, '..', 'scripts', 'save-automation.js')
 
 class BuildNoCodeWorkflow {
     static key = 'build_no_code'
@@ -121,13 +122,15 @@ class BuildNoCodeWorkflow {
 
         return {
             response: {
-                message: importMessage(absOutput),
+                message: saveOrImportMessage(absOutput, axiom.name),
                 artifacts: [absOutput],
-                data: {artifactPath: absOutput, importDocsUrl: IMPORT_DOCS_URL},
-                nextSteps: [
-                    `Import via the Chrome extension — see ${IMPORT_DOCS_URL}`,
-                    'If the extension isn\'t installed yet, invoke HandoffToExtensionWorkflow for install guidance'
-                ]
+                data: {
+                    artifactPath: absOutput,
+                    automationName: axiom.name,
+                    saveCommand: `node "${SAVE_SCRIPT_PATH}" --artifact "${absOutput}"`,
+                    importDocsUrl: IMPORT_DOCS_URL
+                },
+                nextSteps: saveOrImportNextSteps(absOutput, axiom.name)
             },
             debug: {route: BuildNoCodeWorkflow.key, durationMs: Date.now() - start, phase: 'built'}
         }
@@ -159,13 +162,15 @@ class BuildNoCodeWorkflow {
 
         return {
             response: {
-                message: importMessage(absPath),
+                message: saveOrImportMessage(absPath, template.name),
                 artifacts: [absPath],
-                data: {artifactPath: absPath, importDocsUrl: IMPORT_DOCS_URL},
-                nextSteps: [
-                    `Import via the Chrome extension — see ${IMPORT_DOCS_URL}`,
-                    'If the extension isn\'t installed yet, invoke HandoffToExtensionWorkflow for install guidance'
-                ]
+                data: {
+                    artifactPath: absPath,
+                    automationName: template.name,
+                    saveCommand: `node "${SAVE_SCRIPT_PATH}" --artifact "${absPath}"`,
+                    importDocsUrl: IMPORT_DOCS_URL
+                },
+                nextSteps: saveOrImportNextSteps(absPath, template.name)
             },
             debug: {route: BuildNoCodeWorkflow.key, durationMs: Date.now() - start, phase: 'validated-existing'}
         }
@@ -192,4 +197,25 @@ function importMessage(absPath) {
     ].join('\n')
 }
 
-module.exports = {BuildNoCodeWorkflow, IMPORT_DOCS_URL}
+function saveOrImportMessage(absPath, name) {
+    const label = name ? `"${name}"` : 'this axiom'
+    return [
+        `Validated and written to ${absPath}.`,
+        '',
+        `Would you like to save ${label} directly to your Axiom account? If yes, I'll POST it via the REST API and confirm. If no (or it fails), I'll walk you through importing it via the Chrome extension instead.`
+    ].join('\n')
+}
+
+function saveOrImportNextSteps(absPath, name) {
+    const label = name ? `"${name}"` : 'the axiom'
+    return [
+        `Ask the user: "Save ${label} to your Axiom account now?"`,
+        `On "yes": run \`node "${SAVE_SCRIPT_PATH}" --artifact "${absPath}"\` via Bash. The script needs AXIOM_API_KEY in env (already set if the user is past Step 0). Stdout is a single-line JSON: {ok: true, name, id} on success, {ok: false, error, status?} on failure.`,
+        `On {ok: true}: tell the user "Saved '<name>' to your Axiom account ✓". Stop.`,
+        `On {ok: false}: tell the user "Save failed: <error>" then fall through to the import flow below.`,
+        `On user "no" or save failure — show the manual-import steps: open the Chrome extension builder → Cog icon → "Import or download" → "Select file" → pick ${absPath} → Save. Full docs: ${IMPORT_DOCS_URL}.`,
+        'If the user mentions the extension isn\'t installed, invoke HandoffToExtensionWorkflow for install guidance.'
+    ]
+}
+
+module.exports = {BuildNoCodeWorkflow, IMPORT_DOCS_URL, SAVE_SCRIPT_PATH, saveOrImportMessage, saveOrImportNextSteps}

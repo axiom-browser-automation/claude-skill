@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.7.13
+version: 0.8.0
 license: ISC
 ---
 
@@ -308,9 +308,19 @@ Exit 0 = valid. Exit 1 = error codes printed (`UNKNOWN_METHOD`, `MISSING_LIFECYC
 
 ## Step 5 — Hand the artifact back to the user
 
-### No-code: the workflow already did this
+### No-code: offer to save it to their account first
 
-`BuildNoCodeWorkflow.invoke()` returns a `response.message` that already contains the absolute path and the 4-step import flow. Relay it verbatim to the user. If they don't have the Chrome extension yet, invoke `HandoffToExtensionWorkflow` to point them at the install page.
+`BuildNoCodeWorkflow.invoke()` returns a `response.message` that asks the user whether they want to save the axiom directly to their Axiom account. **Relay that message verbatim and wait for their answer.** The workflow's `response.data` carries the `saveCommand` (an absolute `node scripts/save-automation.js --artifact <path>` invocation) and `response.nextSteps` gives you the exact branching logic.
+
+The flow:
+
+1. **User says yes** → run the `saveCommand` via Bash. It prints a single-line JSON to stdout: `{ok: true, name, id}` on success, `{ok: false, error, status?}` on failure.
+   - On `ok: true`: tell the user *"Saved '<name>' to your Axiom account ✓"* and stop.
+   - On `ok: false`: tell the user *"Save failed: <error>"* and fall through to the import flow below.
+2. **User says no, or the save failed** → walk them through the manual-import flow: open the Chrome extension's builder, click the Cog icon, open "Import or download" → "Select file" → pick the JSON path → Save. Docs in `response.data.importDocsUrl`.
+3. **Extension not installed** → invoke `HandoffToExtensionWorkflow` for install guidance, then loop back to step 2.
+
+The save script needs `AXIOM_API_KEY` in env (Step 0 already ensures that) and `AXIOM_LAR_URL` if pointing at a non-prod LAR (defaults to `https://lar.axiom.ai`).
 
 ### Coded: hand the script back to the user
 

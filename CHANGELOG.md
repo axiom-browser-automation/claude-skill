@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.8.0 — feat: skill can now save built no-code axioms directly to the user's Axiom account (AXIOM-6270)
+
+After `BuildNoCodeWorkflow` produces and validates a no-code AutomationTemplate, the skill now offers to save it straight to the user's account via `POST /api/v4/automation` (the endpoint added in axiom_lar's AXIOM-6256). Previously the only handoff was a 4-step manual import via the Chrome extension's Cog → "Import or download" → "Select file" → Save flow — five clicks plus knowing the file path, plus needing the extension installed. Now the user gets a single question — *"save '<name>' to your Axiom account now?"* — and on yes the axiom lands in their account with the same X-API-KEY they already use for `axiom.scrape` and friends.
+
+Wiring:
+
+- New `plugins/axiom/skills/axiom/scripts/save-automation.js` — POSTs the AutomationTemplate JSON to `${AXIOM_LAR_URL}/api/v4/automation` with `X-API-KEY`, returns tagged `{ok: true, name, id}` / `{ok: false, error, status?}` on stdout so the workflow can fall back cleanly. Mirrors the conventions of `run-axiom.js` (`AXIOM_LAR_URL` env, `X-API-KEY` header, single-script CLI). 17 unit tests pinning the headers, payload faithfulness, every error path (401/403/404/5xx/network/non-JSON/unexpected-shape), and the `readTemplate()` helper.
+- `BuildNoCodeWorkflow.js` now returns a `response.message` that leads with the save offer, plus `response.data.{saveCommand, automationName, artifactPath, importDocsUrl}` and a `response.nextSteps` that gives Claude the exact branching logic (`ok:true` → "Saved ✓"; `ok:false` or user "no" → fall through to import flow; extension not installed → `HandoffToExtensionWorkflow`).
+- `SKILL.md` Step 5 rewritten to document the new flow.
+- `references/workflows-index.md` updated to mention `save-automation.js` as a `build_no_code` companion.
+- Manual-import flow preserved verbatim as the fallback path — no regression for users who decline or whose save fails.
+
+Verified end-to-end against `lar-yaseer.axiom.ai` (running axiom_lar on AXIOM-6256): saved a sanity-check axiom and got back `id: 24210` from the live endpoint. 238/238 tests green (221 existing + 17 new).
+
+Out of scope by design: passing `id` to upsert (updates), dashboard deep links, automatic save without asking, and publishing to the marketplace/npm — this is a POC branch, not a release. Stays on bitbucket `origin` only until AXIOM-6256 merges into `kubernetes/prod`.
+
 ## 0.7.13 — fix: purge `scrape(null)` anti-pattern from bundled examples + docs (closes S1 from the harness findings)
 
 Two scenarios in the latest harness run (16, 19) produced coded axioms that called `axiom.scrape(null, …)` — passing `null` for the `url` argument. The cloud driver rejects this with a 500: `url` is required. The runtime fix shipped in `@axiom_ai/api@1.0.4` (the method now navigates to `url` internally before scraping, so `null` no longer makes sense), but the skill's bundled examples and reference docs still taught the old pattern, and Claude was emitting it verbatim.
