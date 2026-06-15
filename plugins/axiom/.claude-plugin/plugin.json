@@ -5,5 +5,8 @@
   "author": {
     "name": "Axiom.ai",
     "email": "hello@axiom.ai"
-  }
+  },
+  "license": "ISC",
+  "homepage": "https://axiom.ai",
+  "repository": "https://github.com/axiom-browser-automation/claude-skill"
 }
