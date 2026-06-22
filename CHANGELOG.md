@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.1 — chore: prepare for marketplace publication
+
+Publication-readiness pass — no functional changes to the skill itself.
+
+- Added an `LICENSE` file (ISC) at the repo root. The `license: ISC` declaration was already in `SKILL.md` frontmatter but the repo carried no license file, which marketplace publication expects.
+- Added `license`, `homepage`, and `repository` fields to `plugins/axiom/.claude-plugin/plugin.json`. `repository` points at the public GitHub distribution mirror (`axiom-browser-automation/claude-skill`).
+- Version bumped to 0.8.1 in lockstep across `plugin.json`, `package.json`, and `SKILL.md`.
+
+Release gate cleared: the 0.8.0 backend dependency (`POST /api/v4/automation`, axiom_lar AXIOM-6256) is now live in `kubernetes/prod`, so the skill is no longer bitbucket-only and can ship to the public mirror. 238/238 tests green.
+
 ## 0.8.0 — feat: skill can now save built no-code axioms directly to the user's Axiom account (AXIOM-6270)
 
 After `BuildNoCodeWorkflow` produces and validates a no-code AutomationTemplate, the skill now offers to save it straight to the user's account via `POST /api/v4/automation` (the endpoint added in axiom_lar's AXIOM-6256). Previously the only handoff was a 4-step manual import via the Chrome extension's Cog → "Import or download" → "Select file" → Save flow — five clicks plus knowing the file path, plus needing the extension installed. Now the user gets a single question — *"save '<name>' to your Axiom account now?"* — and on yes the axiom lands in their account with the same X-API-KEY they already use for `axiom.scrape` and friends.
