@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.8.1
+version: 0.8.2
 license: ISC
 ---
 
@@ -307,6 +307,10 @@ node "<SKILL_BASE_DIR>/scripts/validate-coded.js" /tmp/your-script.js
 Exit 0 = valid. Exit 1 = error codes printed (`UNKNOWN_METHOD`, `MISSING_LIFECYCLE`, `HARDCODED_TOKEN`, …). Fix and re-run. Don't argue with the validator — its rules come from the published `@axiom_ai/api` surface.
 
 ## Step 5 — Hand the artifact back to the user
+
+### Confirm before saving, scheduling, or running
+
+Saving to the user's account, attaching a schedule, and triggering a run (`run_automation`) all either **write to their account** or **consume paid cloud runtime**. Always state plainly what is about to happen and get an explicit yes before doing it — e.g. *"This will save '<name>' to your Axiom account"* or *"This will trigger a run and use your cloud runtime quota."* Never save or trigger a run without a clear go-ahead, and confirm a second time for anything irreversible (placing an order, submitting a form, sending a message). When in doubt, ask.
 
 ### No-code: offer to save it to their account first
 

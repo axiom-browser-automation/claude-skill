@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.2 — docs: confirm before saving / scheduling / triggering paid runs
+
+SKILL.md Step 5 now instructs the skill to get explicit user confirmation before any action that writes to the user's account or consumes paid cloud runtime — saving to the account, attaching a schedule, or triggering a run (`run_automation`) — and to double-confirm anything irreversible (orders, form submissions, messages). Guidance only; no code changes. Added ahead of community-marketplace submission, where destructive/cost-incurring behaviour is a screening concern.
+
 ## 0.8.1 — chore: prepare for marketplace publication
 
 Publication-readiness pass — no functional changes to the skill itself.
