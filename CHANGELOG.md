@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.8.3 — fix: emit correct value shape for every token-typed param (was silently producing the wrong shape)
+
+Every token-typed param the skill produced was wrapped in a JS array — `value: ["[scrape-data]"]`. The axiom_lar runtime's dispatch in `lib/execution/ExecutorJson.ts#buildTokenReplacedParamList` expects different shapes per `p.type`:
+
+- `token_list`, `merge_token` → `tokenReplaceArray(val)`, which does `val.split("\n")` — i.e. a **newline-separated single string** like `"[a]\n[b]"`. Not a JS array.
+- Everything else (`token`, `bot_token`, `merge_token_list`, `row_numbering_token`, `write_google_sheet_token`, `write_csv_data_token`, `write_excel_sheet_token`) → `tokenReplaceString(val)`, which expects a **single bracketed string** like `"[scrape-data]"`.
+
+The array shape passed silently through `tokenReplaceString`'s array-fallback (JSON-stringify then attempt to resolve as a token name — fails, returns the unresolved literal). Downstream steps got the unresolved `["[scrape-data]"]` JSON string instead of the actual upstream data. Writers wrote the literal, BotCreate had no rows to iterate, Continue's conditional ran against the literal string.
+
+The bug stayed latent because the L3 harness scenarios that opted into real-chromium execution (01, 04, 05, 09) didn't use token references — every scenario that did (02, 03, 06, 07, 08, …) had L3 disabled, so axiom_lib runtime never got to reject the bad shape. Surfaced by a maintainer comparing a known-working Chrome-extension-exported axiom against a skill-generated one.
+
+**Fix:**
+
+- `build-axiom.js` — expanded `TOKEN_REF_PARAM_TYPES` to include `row_numbering_token` + the three `write_*_token` types. Added `NEWLINE_SEPARATED_TOKEN_TYPES` set for the two newline-list types. `tokenRefs` emission now goes through `formatTokenRefValue(paramType, refs)` which produces the right shape per type. Multi-ref against a single-slot type now throws clearly. Both helpers are now exported for direct testing.
+- `build-axiom.js` — added `coerceTokenValue(paramType, value)` defensive coercion on every read path (`values`, `default_value`, vocab default `value`). If a caller passes the legacy array shape `["[name]"]` on a token-typed param, it's unwrapped to the runtime-correct shape. Re-importing a pre-0.8.3 axiom through `BuildNoCodeWorkflow` now auto-repairs its values.
+- `SKILL.md` line 265 — the "always a single-element array" claim is gone. Replaced with a per-type shape table, the runtime-dispatch reference, and a note about auto-repair on re-import.
+- `examples/no-code/loop-through-sheet.json` — `bot_token` value `["[google-sheet-data]"]` → `"[google-sheet-data]"`.
+- `examples/no-code/scrape-and-write-sheet.json` — `write_google_sheet_token` DATA wired from empty `[]` → `"[scrape-data]"` (the canonical populated shape).
+- `test/scripts/build-axiom.spec.ts` — three pre-existing tests updated to assert the correct shape; ten new tests added covering `bot_token`/`token`/`write_google_sheet_token` emission, the single-slot multi-ref rejection, defensive coercion for both shape directions, and direct coverage of `formatTokenRefValue`/`coerceTokenValue` for `token_list`/`merge_token` (no widget in the current vocab uses these types but the runtime branches on them).
+
+251 / 251 tests green across 18 suites. No skill behaviour change beyond the value-shape correction.
+
 ## 0.8.2 — docs: confirm before saving / scheduling / triggering paid runs
 
 SKILL.md Step 5 now instructs the skill to get explicit user confirmation before any action that writes to the user's account or consumes paid cloud runtime — saving to the account, attaching a schedule, or triggering a run (`run_automation`) — and to double-confirm anything irreversible (orders, form submissions, messages). Guidance only; no code changes. Added ahead of community-marketplace submission, where destructive/cost-incurring behaviour is a screening concern.

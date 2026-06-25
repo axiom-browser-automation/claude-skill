@@ -9,7 +9,7 @@
  */
 
 // @ts-expect-error — pure JS module
-import {buildAxiom, buildStep, findWidget} from '../../plugins/axiom/skills/axiom/scripts/build-axiom.js'
+import {buildAxiom, buildStep, findWidget, formatTokenRefValue, coerceTokenValue} from '../../plugins/axiom/skills/axiom/scripts/build-axiom.js'
 // @ts-expect-error — pure JS module
 import {validateAutomationTemplate} from '../../plugins/axiom/skills/axiom/scripts/validate-no-code.js'
 
@@ -106,24 +106,49 @@ describe('buildStep', () => {
         expect(step.token).toBe('products')
     })
 
-    // ── tokenRefs (P0/P1 — loop-data + Continue / data-flow wiring) ────────
-    test('tokenRefs populates a bot_token param with the canonical ["[name]"] shape', () => {
+    // ── tokenRefs — value shape per runtime semantics (axiom_lib/ExecutorJson) ─
+    //
+    // Runtime dispatch in axiom_lib/lib/execution/ExecutorJson.ts#buildTokenReplacedParamList:
+    //   token_list, merge_token             → tokenReplaceArray  (newline-separated string)
+    //   everything else                     → tokenReplaceString (single bracketed string)
+    //
+    test('tokenRefs emits a bare "[name]" string for bot_token (string-path type)', () => {
         const step = buildStep({
             machineName: 'WidgetBotCreate',
             tokenRefs: { 'Loop through data': 'google-sheet-data' },
         }, 3)
         const p = step.params.find((x: any) => x.name === 'Loop through data')
         expect(p.type).toBe('bot_token')
-        expect(p.value).toEqual(['[google-sheet-data]'])
+        expect(p.value).toBe('[google-sheet-data]')
     })
 
-    test('tokenRefs accepts an array of token names', () => {
+    test('tokenRefs emits a bare "[name]" string for token (Continue.Data to check)', () => {
         const step = buildStep({
             machineName: 'WidgetContinue',
-            tokenRefs: { 'Data to check': ['scrape-data', 'extra-token'] },
+            tokenRefs: { 'Data to check': 'scrape-data' },
         }, 2)
         const p = step.params.find((x: any) => x.name === 'Data to check')
-        expect(p.value).toEqual(['[scrape-data]', '[extra-token]'])
+        expect(p.type).toBe('token')
+        expect(p.value).toBe('[scrape-data]')
+    })
+
+    test('tokenRefs emits a bare "[name]" string for write_google_sheet_token (Sheet writer DATA)', () => {
+        const step = buildStep({
+            machineName: 'WidgetWriteGoogleSheet',
+            tokenRefs: { DATA: 'scrape-data' },
+        }, 2)
+        const p = step.params.find((x: any) => x.name === 'DATA')
+        expect(p.type).toBe('write_google_sheet_token')
+        expect(p.value).toBe('[scrape-data]')
+    })
+
+    test('tokenRefs against a string-path type rejects multi-token arrays', () => {
+        // token, bot_token, write_*_token, merge_token_list — all single-slot.
+        // Passing 2+ refs should throw so the caller fixes their intent.
+        expect(() => buildStep({
+            machineName: 'WidgetContinue',
+            tokenRefs: { 'Data to check': ['a', 'b'] },
+        }, 1)).toThrow(/at most one token reference/)
     })
 
     test('tokenRefs wins over values when both target the same token-typed param', () => {
@@ -133,7 +158,7 @@ describe('buildStep', () => {
             tokenRefs: { 'Loop through data': 'links' },
         }, 1)
         const p = step.params.find((x: any) => x.name === 'Loop through data')
-        expect(p.value).toEqual(['[links]'])
+        expect(p.value).toBe('[links]')
     })
 
     test('tokenRefs rejects a param that is not a token-typed param', () => {
@@ -149,6 +174,77 @@ describe('buildStep', () => {
             machineName: 'WidgetBotCreate',
             tokenRefs: { 'No Such Param': 'foo' },
         }, 1)).toThrow(/got a tokenRef for "No Such Param"/)
+    })
+
+    // ── values-path defensive coercion ────────────────────────────────────
+    // For callers that bypass tokenRefs and write `values: { DATA: [...] }`
+    // directly with the legacy array shape, build-axiom unwraps to the
+    // runtime-correct shape. Belt-and-braces against re-imports of
+    // pre-v0.8.3 axioms.
+    test('values: legacy array shape unwraps to string for write_google_sheet_token', () => {
+        const step = buildStep({
+            machineName: 'WidgetWriteGoogleSheet',
+            values: { DATA: ['[scrape-data]'] },
+        }, 2)
+        const p = step.params.find((x: any) => x.name === 'DATA')
+        expect(p.value).toBe('[scrape-data]')
+    })
+
+    test('values: legacy array shape unwraps to string for bot_token', () => {
+        const step = buildStep({
+            machineName: 'WidgetBotCreate',
+            values: { 'Loop through data': ['[google-sheet-data]'] },
+        }, 3)
+        const p = step.params.find((x: any) => x.name === 'Loop through data')
+        expect(p.value).toBe('[google-sheet-data]')
+    })
+
+    test('values: a non-token-shaped array on a token param passes through (caller intent honoured)', () => {
+        const step = buildStep({
+            machineName: 'WidgetWriteGoogleSheet',
+            values: { DATA: ['not-a-token-just-a-string'] },
+        }, 2)
+        const p = step.params.find((x: any) => x.name === 'DATA')
+        // Doesn't look like bracketed token refs → leave alone, let the
+        // validator / runtime complain. We don't silently mangle user data.
+        expect(p.value).toEqual(['not-a-token-just-a-string'])
+    })
+
+    // ── formatTokenRefValue + coerceTokenValue — direct helper coverage ───
+    // No widget in the current vocab uses `token_list` or `merge_token`, but
+    // the runtime branches on those types, so we test the helper directly to
+    // pin the newline-separated shape contract for whenever they're added.
+    test('formatTokenRefValue: newline-separated string for token_list multi-ref', () => {
+        expect(formatTokenRefValue('token_list', ['a', 'b', 'c'])).toBe('[a]\n[b]\n[c]')
+    })
+
+    test('formatTokenRefValue: single-ref for token_list still produces just "[name]"', () => {
+        expect(formatTokenRefValue('token_list', ['solo'])).toBe('[solo]')
+    })
+
+    test('formatTokenRefValue: newline-separated string for merge_token', () => {
+        expect(formatTokenRefValue('merge_token', ['rows-a', 'rows-b'])).toBe('[rows-a]\n[rows-b]')
+    })
+
+    test('formatTokenRefValue: empty refs → empty string for string-path types', () => {
+        expect(formatTokenRefValue('bot_token', [])).toBe('')
+    })
+
+    test('coerceTokenValue: ["[a]","[b]"] on token_list joins with newline', () => {
+        expect(coerceTokenValue('token_list', ['[a]', '[b]'])).toBe('[a]\n[b]')
+    })
+
+    test('coerceTokenValue: ["[a]"] on bot_token unwraps to "[a]"', () => {
+        expect(coerceTokenValue('bot_token', ['[a]'])).toBe('[a]')
+    })
+
+    test('coerceTokenValue: already-correct string passes through untouched', () => {
+        expect(coerceTokenValue('write_google_sheet_token', '[scrape-data]')).toBe('[scrape-data]')
+    })
+
+    test('coerceTokenValue: non-token-typed param is left untouched', () => {
+        // Don't accidentally mangle smart_selector arrays etc.
+        expect(coerceTokenValue('smart_selector', [{selector: 'h1'}])).toEqual([{selector: 'h1'}])
     })
 
     // ── Sub-step labels for loop bodies ──────────────────────────────────

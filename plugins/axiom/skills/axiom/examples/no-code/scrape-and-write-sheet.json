@@ -222,7 +222,7 @@
             "image": "",
             "name": "DATA",
             "type": "write_google_sheet_token",
-            "value": []
+            "value": "[scrape-data]"
           },
           {
             "collapsible": 0,

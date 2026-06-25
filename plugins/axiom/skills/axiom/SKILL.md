@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.8.2
+version: 0.8.3
 license: ISC
 ---
 
@@ -245,7 +245,7 @@ When the user wants "for each row in this sheet, do X" / "visit each of these li
      stepNumber: '3',
      tokenRefs: { 'Loop through data': 'google-sheet-data' } }
    ```
-   The helper emits `value: ["[google-sheet-data]"]` (the canonical token-reference shape).
+   The helper emits `value: "[google-sheet-data]"` (the canonical `bot_token` runtime shape — a single bracketed string, not an array; see the per-type shape table below).
 2. **Body steps use sub-numbered `stepNumber` labels** (`"3.1"`, `"3.2"`, …) under the BotCreate's parent number. The helper takes a `stepNumber` override on each body step:
    ```js
    { machineName: 'WidgetDriverEnterText', stepNumber: '3.1', values: { ... } }
@@ -260,9 +260,23 @@ See [`examples/no-code/loop-through-sheet.json`](examples/no-code/loop-through-s
 
 #### Token references between steps (the general pattern)
 
-Anything in the intent that needs to consume another step's output (Continue widget's `Data to check`, BotCreate's `Loop through data`, etc.) goes through `tokenRefs`, NOT `values`. The helper rejects a `tokenRef` against a non-token-typed param, so typos surface as errors instead of silent literals.
+Anything in the intent that needs to consume another step's output (Continue widget's `Data to check`, BotCreate's `Loop through data`, a Sheet/CSV/Excel writer's `DATA`, etc.) goes through `tokenRefs`, NOT `values`. The helper rejects a `tokenRef` against a non-token-typed param, so typos surface as errors instead of silent literals.
 
-Common token-typed param types: `token`, `token_list`, `merge_token`, `merge_token_list`, `bot_token`. The canonical JSON shape is always a single-element array `["[<upstream-token-name>]"]`, regardless of which token type — the helper builds that for you.
+**The value shape is NOT universal** — the runtime in `axiom_lib/lib/execution/ExecutorJson.ts` branches on the param's `type` and expects different shapes. The helper builds the right one for you, but if you're inspecting the output (or hand-patching an axiom), the per-type rules are:
+
+| Param `type` | Value shape the helper emits | Notes |
+|---|---|---|
+| `token` | `"[<name>]"` (single string) | Most common — used by Continue, AI steps, single-input data consumers. |
+| `bot_token` | `"[<name>]"` | BotCreate's `Loop through data`. One token only. |
+| `merge_token_list` | `"[<name>]"` | FilterMerge's `Base data` / `Join data`. Despite the `_list` suffix, takes one token. |
+| `row_numbering_token` | `"[<name>]"` | RowNumbers input. |
+| `write_google_sheet_token` | `"[<name>]"` | Google Sheet writer's `DATA` (single string, not array). |
+| `write_csv_data_token` | `"[<name>]"` | CSV writer's `DATA`. |
+| `write_excel_sheet_token` | `"[<name>]"` | Excel writer's `DATA`. |
+| `token_list` | `"[<name1>]\n[<name2>]"` (newline-separated string) | Multi-token slot. Pass an array of names to the helper; it joins with `\n`. |
+| `merge_token` | `"[<name1>]\n[<name2>]"` | Same — newline-separated string when multiple. |
+
+Pre-v0.8.3 the helper always produced the array shape `["[<name>]"]` for every type, which was silently broken at runtime (downstream steps got the unresolved literal string). If you're maintaining axioms produced by older versions, re-run them through `BuildNoCodeWorkflow` to repair the value shape; the helper's `coerceTokenValue` will unwrap legacy arrays automatically when you re-process the intent.
 
 #### Multi-column scraping (SmartScraper / ScrapeLinks)
 

@@ -218,9 +218,7 @@
             "image": "",
             "name": "Loop through data",
             "type": "bot_token",
-            "value": [
-              "[google-sheet-data]"
-            ]
+            "value": "[google-sheet-data]"
           },
           {
             "collapsible": 1,

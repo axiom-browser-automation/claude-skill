@@ -73,20 +73,95 @@ function findWidget(machineName, vocab) {
     return (v.widgetActionList || []).find(w => w.machineName === machineName) || null
 }
 
-// Param `type` values whose populated `value` is a single-element array
-// containing the upstream step's output token name wrapped in square brackets
-// (e.g. `["[google-sheet-data]"]`). Used to translate the caller-friendly
-// `tokenRefs: { paramName: "google-sheet-data" }` shape into the canonical
-// JSON every step expects. Source-of-truth for which param types are
-// token-references is the ParamToken constructor in
-// `axiom_extension/src/axiombuilder/models/params/ParamToken.ts`.
+// Param `type` values that accept a token reference. Used to translate the
+// caller-friendly `tokenRefs: { paramName: "upstream-token-name" }` shape into
+// the canonical JSON the runtime expects. Source-of-truth: the dispatch in
+// `axiom_lib/lib/execution/ExecutorJson.ts#buildTokenReplacedParamList`.
+//
+// IMPORTANT — value shape is NOT universal across these types. The runtime
+// branches on `p.type`:
+//
+//   - `token_list`, `merge_token`         → tokenCompiler.tokenReplaceArray(val)
+//     `tokenReplaceArray` does `val.split("\n")`, so the value is a
+//     **newline-separated single string** like `"[a]\n[b]"`. NOT a JS array.
+//
+//   - everything else here                → tokenCompiler.tokenReplaceString(val)
+//     `tokenReplaceString` expects a **single bracketed string** like `"[a]"`.
+//
+// Passing a JS array (`["[a]"]`) to either path fails silently at runtime —
+// `tokenReplaceArray` throws on `.split`, `tokenReplaceString` JSON-stringifies
+// the array and then fails to resolve the literal `"[a]"` (with quotes) as a
+// token name. Downstream steps see the unresolved literal. This was a latent
+// bug shipped through v0.8.x until the runtime semantics were cross-checked.
 const TOKEN_REF_PARAM_TYPES = new Set([
     'token',
     'token_list',
     'merge_token',
     'merge_token_list',
     'bot_token',
+    'row_numbering_token',
+    'write_google_sheet_token',
+    'write_csv_data_token',
+    'write_excel_sheet_token',
 ])
+
+// Of those, the types whose runtime path uses `tokenReplaceArray` (and
+// therefore want a newline-separated string for multi-token refs):
+const NEWLINE_SEPARATED_TOKEN_TYPES = new Set([
+    'token_list',
+    'merge_token',
+])
+
+/**
+ * Format the populated value for a token-typed param.
+ *
+ *   refs: ['scrape-data']                              → "[scrape-data]"            (string-path types)
+ *   refs: ['rows-a','rows-b']  + type='token_list'      → "[rows-a]\n[rows-b]"       (newline-list types)
+ *   refs: ['only-one']         + type='token_list'      → "[only-one]"               (single-token list still OK)
+ *
+ * Multi-ref against a non-list type throws — those slots take one token.
+ */
+function formatTokenRefValue(paramType, refs) {
+    const bracketed = refs.map(r => `[${r}]`)
+    if (NEWLINE_SEPARATED_TOKEN_TYPES.has(paramType)) {
+        return bracketed.join('\n')
+    }
+    if (bracketed.length > 1) {
+        throw new Error(
+            `build-axiom: param type "${paramType}" accepts at most one token reference; got ${refs.length}. ` +
+            `Multi-token slots are only "token_list" and "merge_token".`
+        )
+    }
+    return bracketed[0] || ''
+}
+
+/**
+ * Defensive coercion for callers passing raw `values: {paramName: …}` directly
+ * (rather than the recommended tokenRefs path) on a token-typed param. We
+ * accept the old broken array shape and coerce to the correct runtime shape
+ * so axioms emitted before this fix can still be re-imported and re-saved
+ * without manual repair.
+ *
+ *   ["[scrape-data]"]           on a string-path type  → "[scrape-data]"
+ *   ["[a]","[b]"]               on a newline-list type → "[a]\n[b]"
+ *   "[scrape-data]"             on any token-typed type → unchanged
+ *   []                          → "" (string-path) or "" (newline-list)
+ *
+ * Non-string, non-array, non-empty values pass through untouched.
+ */
+function coerceTokenValue(paramType, value) {
+    if (!TOKEN_REF_PARAM_TYPES.has(paramType)) return value
+    if (Array.isArray(value)) {
+        // Only coerce if every entry looks like a bracketed token reference.
+        // A heterogeneous array is something a caller passed deliberately; we
+        // surface that to the validator rather than mangle it silently.
+        const allLookTokens = value.every(v => typeof v === 'string' && v.startsWith('[') && v.endsWith(']'))
+        if (!allLookTokens) return value
+        if (NEWLINE_SEPARATED_TOKEN_TYPES.has(paramType)) return value.join('\n')
+        return value[0] || ''
+    }
+    return value
+}
 
 /**
  * Normalize a `smart_selector` param value so the runtime can scrape multiple
@@ -191,18 +266,22 @@ function buildStep(stepIntent, stepNumber, vocab) {
         original_name: widget.name || widget.originalName || '',
         params: (widget.params || []).map(p => {
             // tokenRefs win over values for token-typed params. Build the
-            // canonical [["[<name>]"]] shape — one wrapped name per ref. The
-            // caller can pass a single string or an array of names.
+            // shape the runtime expects PER TYPE (see formatTokenRefValue) —
+            // string `"[name]"` for the common case, newline-separated
+            // `"[a]\n[b]"` for `token_list` / `merge_token` multi-token slots.
             let value
             if (tokenRefs[p.name] !== undefined) {
                 const refs = Array.isArray(tokenRefs[p.name]) ? tokenRefs[p.name] : [tokenRefs[p.name]]
-                value = refs.map(r => `[${r}]`)
+                value = formatTokenRefValue(p.type, refs)
             } else if (values[p.name] !== undefined) {
-                value = values[p.name]
+                // Defensive: coerce the legacy array shape for token-typed
+                // params so callers (and previously-emitted axioms) don't
+                // ship a value the runtime silently rejects.
+                value = coerceTokenValue(p.type, values[p.name])
             } else if (p.default_value !== undefined) {
-                value = p.default_value
+                value = coerceTokenValue(p.type, p.default_value)
             } else if (p.value !== undefined) {
-                value = p.value
+                value = coerceTokenValue(p.type, p.value)
             } else {
                 value = ''
             }
@@ -318,7 +397,7 @@ function buildAxiom(intent, opts = {}) {
     }
 }
 
-module.exports = {buildAxiom, buildStep, findWidget, loadVocabulary}
+module.exports = {buildAxiom, buildStep, findWidget, loadVocabulary, formatTokenRefValue, coerceTokenValue}
 
 // ---- CLI ----
 if (require.main === module) {
