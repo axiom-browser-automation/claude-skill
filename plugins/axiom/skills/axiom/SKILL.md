@@ -278,6 +278,42 @@ Anything in the intent that needs to consume another step's output (Continue wid
 
 Pre-v0.8.3 the helper always produced the array shape `["[<name>]"]` for every type, which was silently broken at runtime (downstream steps got the unresolved literal string). If you're maintaining axioms produced by older versions, re-run them through `BuildNoCodeWorkflow` to repair the value shape; the helper's `coerceTokenValue` will unwrap legacy arrays automatically when you re-process the intent.
 
+#### Referencing a single COLUMN of row data inside a text field or script (`?*&` format)
+
+This is a DIFFERENT mechanism from the token-typed params above, and it is the one most likely to be gotten wrong. The tables above cover token-typed *params* (`bot_token`, `token`, …) that consume a whole upstream token. But when you need one **specific column** of a sheet-read / loop row plugged into a **plain literal param** — an `Enter text` step's `Text` (type `long_text_required`), a `Go to page` URL, a `Write javascript` `Script`, a `Display a message`, etc. — you embed a **column reference** directly in the `values` string. These params are NOT token-typed, so `tokenRefs` does not apply; the reference is literal text the runtime resolves.
+
+**The correct format is index-based, zero-based, with a `?*&` separator:**
+
+```
+[<token>?*&<0-based-column-index>]
+```
+
+Examples for a `WidgetReadGoogleSheet` step whose `token` is `google-sheet-data`, columns `First Name | Last Name | Email | Gender | Mobile | … | Current Address`:
+
+| Column (header) | Index | Reference to embed |
+|---|---|---|
+| First Name | 0 | `[google-sheet-data?*&0]` |
+| Last Name | 1 | `[google-sheet-data?*&1]` |
+| Email | 2 | `[google-sheet-data?*&2]` |
+| Gender | 3 | `[google-sheet-data?*&3]` |
+| Mobile | 4 | `[google-sheet-data?*&4]` |
+| Current Address | 9 | `[google-sheet-data?*&9]` |
+
+```js
+// Enter text step — plug column 0 (First Name) of the current loop row:
+{ machineName: 'WidgetDriverEnterText',
+  values: { 'Select text field': '#firstName', 'Text': '[google-sheet-data?*&0]' } }
+
+// Inside a Write javascript step — the runtime substitutes the cell value before running:
+// var g = `[google-sheet-data?*&3]`.trim();   // Gender column
+```
+
+- **Do NOT use `[google-sheet-data:Column Name]`** (colon + header name). That is wrong — it renders as literal text in the field and the step does nothing useful. The separator is `?*&` and the selector is a **numeric index**, not the header string.
+- Inside a `Loop through data`, `[<read-step-token>?*&N]` resolves to column N of the **current row**. Reference the **read step's token** (e.g. `google-sheet-data`), not the loop's own output token.
+- When you use index-based column refs, set the read step's **`First cell` to `A2`** so the header row isn't looped as a bogus data row (there's no header-name lookup to preserve).
+- The whole-row reference (no `?*&`) is `[google-sheet-data]` — used for `bot_token`-typed params like the loop's `Loop through data`.
+- If a value must be bound in the extension instead, leave it blank; the user picks the column via **Insert Data**. But prefer emitting the correct `?*&` reference so the axiom runs on import.
+
 #### Multi-column scraping (SmartScraper / ScrapeLinks)
 
 When a user wants more than one field per row (title + price + stock, etc.), `WidgetDriverSmartScraper`'s `Select` param accepts an **array of column specs**, one per field. Pass it through `values` and the helper fills in the UI-only defaults:
