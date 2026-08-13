@@ -38,6 +38,11 @@ each consumer's own skill — not here.
   by passing `resultType` anywhere else (settings, a bare string): a plain
   string selector is always scraped as `textContent` — the array-of-objects
   shape above is the ONLY way to request `href`.
+- **Candidate selectors are columns too.** Comparing `.title a` against
+  `.row > a`? Put every candidate in the same call as its own column and
+  read counts/samples side by side from one sweep. A candidate that matches
+  nothing yields empty strings — it cannot fail the call (verified live).
+  An entire research phase should rarely need more than 1-2 scrape calls.
 
 ## Cookie/consent overlays
 
