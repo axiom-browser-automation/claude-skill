@@ -19,6 +19,25 @@ each consumer's own skill — not here.
 - Probe before you commit: a `scrape(url, selector, null, 1–3, {})` call is a
   cheap selector test. Keep `max_results` small — larger probes waste the
   user's time and money.
+- **Probe ALL columns in ONE call, zipped, with per-column result types.**
+  The `selector` argument accepts an array of `{selector, resultType}`
+  objects — the same shape the final extract step runs — and returns the
+  columns zipped into rows:
+
+      await axiom.scrape(url, [
+          {selector: '.item .title > a', resultType: 'textContent'},
+          {selector: '.item .title > a', resultType: 'href'},
+          {selector: '.item .score',     resultType: 'textContent'},
+      ], null, 3, {})
+
+  One call verifies every selector, the href extraction, AND the row
+  alignment (mismatched counts corrupt the zip) exactly as the automation
+  will run it. Do NOT probe one selector at a time — every `scrape()` call
+  re-navigates and re-scrolls the whole page, so N single-selector probes
+  cost N page sweeps and N waits for nothing extra. Do NOT try to get URLs
+  by passing `resultType` anywhere else (settings, a bare string): a plain
+  string selector is always scraped as `textContent` — the array-of-objects
+  shape above is the ONLY way to request `href`.
 
 ## Cookie/consent overlays
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.1 — zipped multi-column probes
+
+browser-automation-rules.md: document that `scrape()`'s selector argument
+accepts an array of `{selector, resultType}` objects — one call probes every
+column zipped (verifying selectors, hrefs, and row alignment together,
+exactly as the final extract runs), and it is the ONLY way to request
+`href` (bare string selectors are always textContent). Forbids
+one-selector-at-a-time probing: each scrape call re-navigates and re-sweeps
+the whole page.
+
 ## 0.9.0 — shared browser-automation core rules
 
 New `references/browser-automation-rules.md`: the actor-independent rules for
