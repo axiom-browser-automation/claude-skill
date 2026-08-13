@@ -1,6 +1,16 @@
 # Changelog
 
-## 0.8.3 — fix: emit correct value shape for every token-typed param (was silently producing the wrong shape)
+## 0.9.0 — shared browser-automation core rules
+
+New `references/browser-automation-rules.md`: the actor-independent rules for
+building browser automations — probe in the real runtime, consent overlays
+must be dismissed in the automation itself (not just during research),
+selector craft (semantic, smallest-unique, random-id ban), multi-column
+count alignment, single-session probing etiquette, and
+verification-is-a-run. This file is the single source of truth shared with
+Axiom's OpenHands setup agent (a copy is baked into its sandbox image);
+lessons learned on either side land here. SKILL.md Step 2 now requires it
+for any automation that touches a live page.
 
 Every token-typed param the skill produced was wrapped in a JS array — `value: ["[scrape-data]"]`. The axiom_lar runtime's dispatch in `lib/execution/ExecutorJson.ts#buildTokenReplacedParamList` expects different shapes per `p.type`:
 

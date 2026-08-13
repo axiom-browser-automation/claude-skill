@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.8.3
+version: 0.9.0
 license: ISC
 ---
 
@@ -145,6 +145,13 @@ session state (pending operations, hook bus, return stack) that has no analog in
 Claude session.
 
 ## Step 2 — Read the relevant reference material
+
+**For BOTH paths, whenever the automation touches a live page** (any scrape,
+click, or fill): `references/browser-automation-rules.md` — the shared core
+rules on probing in the real runtime, consent overlays (dismiss them in the
+automation, not just while researching), selector craft, column alignment,
+and session etiquette. These rules are shared verbatim with Axiom's setup
+agent; treat them as non-negotiable.
 
 **For the no-code path:**
 
