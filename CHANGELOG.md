@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.0 — MCP-first tool manuals
+
+references/tools/ rewritten around the expanded Axiom MCP surface (browser
+tools landed): discovery via get_page_html (read the DOM, no sweeps), page
+driving and count-verification scrapes via step, save_automation now takes
+IR directly (compile+save in one call, warnings surfaced), run_automation
+blocks and returns outcomes inline (no trigger/poll loops). @axiom_ai/api
+node scripts are documented as the fallback layer.
+
 ## 0.10.0 — per-tool knowledge system
 
 New `references/tools/` — the generalized tool-knowledge system: one file

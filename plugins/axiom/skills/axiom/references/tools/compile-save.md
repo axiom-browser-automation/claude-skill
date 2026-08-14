@@ -1,41 +1,54 @@
 # Compile, save, verify
 
 ## When to use
-The end of every configure/build task: filled IR → compile → save → verify
-run. The deliverable is a SAVED automation that has been seen to run.
+The end of every configure/build task: filled IR → save → verify run. The
+deliverable is a SAVED automation that has been seen to run.
 
-## Call shapes
-- **Compile**: the `axiom-mcp_compile_ir` MCP tool is the ONLY compiler.
-  There is no compile HTTP endpoint — `/api/v4/compile` and `/api/v5/compile`
-  do not exist (they return the login page).
-- **Extract steps** compile from `columns`: one entry per scraped field,
-  each an ABSOLUTE CSS selector:
+## Call shapes (MCP tools — they act as the user)
+- **`save_automation`** — pass your completed IR via `ir` (+ `name`): it is
+  compiled AND saved in one call and returns the saved task id. Treat any
+  `warnings` on the result as real defects: fix the IR and re-save with the
+  SAME `id` (omitting `id` creates a new automation; passing it updates).
+  `data` exists only for automation JSON that came from outside the session
+  (e.g. supplied by the user); anything you author goes through `ir`.
+- **`compile_ir`** — standalone validation of an IR without saving. Useful
+  for checking column shapes mid-flight; never required before
+  save_automation (which compiles internally).
+- **`run_automation`** — THE way to verify: pass the saved `task_id`. It
+  BLOCKS until the run finishes and returns status plus full error context
+  inline — no triggering, no polling. Scraped data is never returned
+  through tools; the automation delivers it to its configured destination
+  (sheet, webhook, email) — a Success status is the verification.
+- **`get_run_report`** — run history/detail: `task_id` (or `name`) alone
+  for the newest report, `+ count` for the last N, `id` for one exact
+  report.
+- **`trigger_bot` / `get_run_status` / `stop_run`** — fire-and-forget
+  cloud runs monitored separately. Not needed for normal verification.
+
+## IR rules that decide success
+- Extract steps compile from `columns`: one entry per scraped field, each
+  an ABSOLUTE CSS selector:
   ```json
   "columns": [{"name": "<field>", "selector": "<absolute css>", "resultType": "textContent"}]
   ```
-  The runtime scrapes each column across the page and zips by index — the
-  alignment rule in scrape.md applies verbatim to the final automation, so
-  only ship columns whose counts you verified equal.
-- **maxResults**: the compiler defaults configured extracts to 100; set it
-  explicitly only when the user named a count.
-- **Save**: `POST <backend>/api/v4/automation` with your API key. Verify the
-  response contains the task id; the document you save must be the COMPILED
-  output, not the IR.
-- **Verify**: trigger a run of the saved task and poll its run report. A
-  first-run Failure is information, not defeat: read the report, fix the
-  document, re-run. Success = the report says Success AND the output
-  contains the expected rows.
+  Columns zip positionally — the alignment rule in scrape.md applies to the
+  final automation verbatim: only ship columns whose match counts you
+  verified equal.
+- An extract whose selector/columns are empty compiles to an EMPTY scraper
+  — a failed deliverable even when everything else passes.
+- maxResults defaults to 100 for configured extracts; set it only when the
+  user named a count.
 
 ## Failure modes
-- Compiler column warnings are real: an extract that compiles with an empty
-  selector produces an EMPTY scraper — a failed deliverable even if
-  everything else passes.
+- `warnings` on save_automation are the compiler telling you a field will
+  not work — never ship without resolving them.
 - Runs fail legitimately at steps whose values only the user can supply —
   an expected failure at a user-owned empty field is not your bug; a
   failure at a field you filled is.
 
 ## Anti-patterns
-- Inventing compile endpoints.
-- Saving the IR instead of the compiled document.
+- Copying compiled JSON between tools — save_automation takes the IR.
+- Saving through raw HTTP when the MCP tools are available (the HTTP path
+  is the documented fallback, not the default).
 - Declaring success without a verify run, or with a verify run that wrote
   the wrong shape/amount of data.

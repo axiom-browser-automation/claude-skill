@@ -5,7 +5,15 @@ One session per research phase. Open (or attach to) a session before any
 page work; every probe and navigation rides the same session; close once
 when research ends.
 
-## Call shapes
+## Call shapes — MCP tools first
+The session handle is a `cdp_link` string. When your runtime pre-opened a
+session, the handle is saved for you (OpenHands sandboxes: /tmp/.axiom-session).
+- `open_browser` () → returns a fresh `cdp_link` (only when none exists or
+  the old one died)
+- `step` / `get_page_html` (…, cdp_link) → all page work rides the handle
+- `close_browser` (cdp_link) → once, when research ends
+
+## Call shapes — @axiom_ai/api fallback
 ```js
 const {AxiomApi} = await import('@axiom_ai/api')
 const axiom = new AxiomApi(API_KEY)

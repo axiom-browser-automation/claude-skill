@@ -5,6 +5,9 @@ Every task. The automation runs inside Axiom's cloud browser — what renders
 THERE is the only truth.
 
 ## Call shapes
+MCP: `step` with `method` goto / click / enterText / getCurrentUrl and
+positional `params` (same signatures as the api methods below), plus
+`get_page_html` to read the resulting DOM. Api fallback:
 ```js
 await axiom.goto('https://example.com')          // navigate current session
 await axiom.click('#accept-cookies', 'left')     // dismiss overlays, click

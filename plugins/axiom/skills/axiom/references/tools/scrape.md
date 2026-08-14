@@ -1,10 +1,14 @@
 # scrape() — probing and extracting page data
 
 ## When to use
-Selector research AND data extraction. A scrape call **navigates to the URL
-and sweeps (auto-scrolls) the whole page on every call** — so the unit of
-efficiency is: as few calls as possible, each answering as many questions
-as possible.
+VERIFICATION, not discovery. Discover selectors by READING the DOM — the
+`get_page_html` MCP tool returns the current page's HTML (scoped by
+`selector`, no navigation, no sweep). Then use ONE scrape to verify counts,
+hrefs, and zip alignment. A scrape call **navigates to the URL and sweeps
+(auto-scrolls) the whole page on every call** — so the unit of efficiency
+is: as few calls as possible, each answering as many questions as possible.
+Via MCP, scrape is `step` with `method: "scrape"` and the same positional
+params as below; via @axiom_ai/api it is `axiom.scrape(...)`.
 
 ## Call shapes
 ```js
