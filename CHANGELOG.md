@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.10.0 — per-tool knowledge system
+
+New `references/tools/` — the generalized tool-knowledge system: one file
+per tool area (sessions, scrape, navigation, outputs, compile-save + INDEX),
+each with the same shape: When to use / Call shapes / Failure modes /
+Anti-patterns. Only live-verified facts. Includes the scrape ALIGNMENT RULE
+(zips are positional with no padding; unequal column counts misalign
+silently — verified), the session idle/error-close semantics, and the
+consent-wall obligations. browser-automation-rules.md remains the
+principles layer; tool mechanics now live here and both actor skills point
+at the same files.
+
 ## 0.9.1 — zipped multi-column probes
 
 browser-automation-rules.md: document that `scrape()`'s selector argument
