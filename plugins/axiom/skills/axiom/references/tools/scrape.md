@@ -46,6 +46,20 @@ independently across the page and rows are formed by index. Therefore:
   scrape the whole containing element as ONE text column and let the
   consumer split it; or drop the optional column.
 
+## The href-container rule (verified live, silent failure)
+A column with `resultType: 'href'` locks row-grouping to ITS container:
+any column whose selector lives in a DIFFERENT container is silently
+dropped from the rows (you asked for 4 columns, rows come back 2-wide —
+no error). Text-only columns may span containers (subject to the
+alignment rule); the moment an href column is present, every other column
+must live in the SAME repeating container as it. On pages that split a
+record across sibling elements (e.g. a title row and a details row), your
+options: keep href + same-container columns only; take the other
+container's fields in a SEPARATE text-only scrape and join the results;
+or scrape the other container as one text blob column and split it
+downstream. ALWAYS check the row width of a multi-column result equals
+the number of columns you asked for.
+
 ## Failure modes
 - Zero-match column in a multi-column call → that column returns empty
   strings; the call succeeds (safe for candidates).
