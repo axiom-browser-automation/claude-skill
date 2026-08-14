@@ -29,11 +29,13 @@ await axiom.browserClose()
 ```
 
 ## Failure modes
-- **Sessions die fast when idle.** `idleTimeoutMs` is requested but the pod
-  currently enforces its own ~60s idle window regardless. Any gap over a
-  minute between calls can kill the session. Recovery: `SESSION_CLOSED` /
-  HTTP 409 "No running browser session" → `browserOpen()` again and continue.
-  Never treat it as fatal.
+- **Sessions die when idle.** On backends with AXIOM-6354 (our dev slice)
+  the requested `idleTimeoutMs` is honoured (clamp [5s, 600s]); older pods
+  enforce ~60s regardless. Any gap beyond the window kills the session.
+  Recovery: `SESSION_CLOSED` / HTTP 409 "No running browser session" →
+  reopen and continue — with `browserOpen({reuse: '<old handle>'})` where
+  supported, which returns the old session if it is actually still alive
+  instead of stacking a new browser. Never treat it as fatal.
 - **A failed step can close the session.** A selector that matches nothing
   can return HTTP 500 "Couldn't find content during run" AND tear the
   session down. The next call then gets `SESSION_CLOSED`. Recovery: reopen;

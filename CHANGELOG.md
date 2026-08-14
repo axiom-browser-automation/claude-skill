@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.0 — AXIOM-6354 backend primitives
+
+tools/ manuals teach the new backend surface (dev slice; general once pods
+ship the branch): scrapeProbe (current-page counts+samples+aligned, zero
+matches is data), scrapeV4600 (positional zip, rows always full width),
+reporting step variants gotoV4600/clickV4600/enterTextV4600
+({ok, matched, currentUrl, title}), honoured idleTimeoutMs, and idempotent
+browserOpen reuse. All verified live before documenting.
+
 ## 0.11.0 — MCP-first tool manuals
 
 references/tools/ rewritten around the expanded Axiom MCP surface (browser

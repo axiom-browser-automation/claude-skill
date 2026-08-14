@@ -1,14 +1,23 @@
 # scrape() — probing and extracting page data
 
-## When to use
-VERIFICATION, not discovery. Discover selectors by READING the DOM — the
-`get_page_html` MCP tool returns the current page's HTML (scoped by
-`selector`, no navigation, no sweep). Then use ONE scrape to verify counts,
-hrefs, and zip alignment. A scrape call **navigates to the URL and sweeps
-(auto-scrolls) the whole page on every call** — so the unit of efficiency
-is: as few calls as possible, each answering as many questions as possible.
-Via MCP, scrape is `step` with `method: "scrape"` and the same positional
-params as below; via @axiom_ai/api it is `axiom.scrape(...)`.
+## The research loop (backends with AXIOM-6354, incl. our dev slice)
+1. `get_page_html` — read the current DOM, find candidate selectors.
+2. `step` method **`scrapeProbe`** (params: `[selectors, sample?]`) — the
+   purpose-built probe: CURRENT page, no navigation, no sweep, zero matches
+   is a RESULT (`count: 0`), never an error. Returns per-column
+   `{count, sample}` plus an **`aligned`** verdict (all non-zero counts
+   equal). Candidates and hrefs all in one call:
+   `[".title a", {"selector": ".title a", "resultType": "href"}, ".score"]`
+3. ONE `step` method **`scrapeV4600`** (same params as scrape) as the final
+   verification sweep: positional zip, rows ALWAYS full width, short
+   columns pad with `''` — no silent narrowing, no phantom rows.
+
+## When to use classic scrape()
+Older backends only. VERIFICATION, not discovery. A scrape call
+**navigates to the URL and sweeps (auto-scrolls) the whole page on every
+call** — so the unit of efficiency is: as few calls as possible, each
+answering as many questions as possible. Via MCP, `step` with
+`method: "scrape"`; via @axiom_ai/api, `axiom.scrape(...)`.
 
 ## Call shapes
 ```js
