@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.13.0 — troubleshooter knowledge import (phase 1)
+
+First distillation of the extension troubleshooter's knowledge into the
+canonical manuals (shared-knowledge-architecture-plan.md, phase 1):
+compile-save.md gains the widget-choice rules (extract vs ScrapeMetadata
+vs ScrapeLinks, the visit-each-link loop pattern, Sheets read vs write,
+evaluate only on explicit code requests); outputs.md gains Drive-widget
+vs local download/upload targeting and the five user-side causes of
+sheet-write failures (visibility, write access, .xls format, no Google
+account, not a Sheets URL). Sources: the extension IR-planner rules and
+the prereq sheet-validation causes — both production-proven; the sheet
+causes verified live by the AXIOM-6354 test-write validation.
+
 ## 0.12.0 — AXIOM-6354 backend primitives
 
 tools/ manuals teach the new backend surface (dev slice; general once pods

@@ -39,6 +39,21 @@ deliverable is a SAVED automation that has been seen to run.
 - maxResults defaults to 100 for configured extracts; set it only when the
   user named a count.
 
+## Widget choice (the wrong widget fails silently)
+- Page CONTENT (articles, products, listings, tables, prices) → an extract
+  step. NEVER `WidgetDriverScrapeMetadata` for content: it reads META TAGS
+  only (title, og:/twitter:) and is right only when the user explicitly
+  asked for page metadata.
+- A LIST OF LINKS as the deliverable → `WidgetDriverScrapeLinks`
+  (purpose-built for link output). But when each link must then be
+  VISITED, extract the links into a named output instead and loop over it
+  (goto each link → extract inside the loop body).
+- Google Sheets: data FROM a sheet → `WidgetReadGoogleSheet` (usually with
+  a per-row loop); results TO a sheet → extract, then
+  `WidgetWriteGoogleSheet`. They are not interchangeable.
+- Write-javascript steps (`evaluate`) only when the user explicitly asked
+  for code/JS — never as a workaround for a selector you have not found.
+
 ## Failure modes
 - `warnings` on save_automation are the compiler telling you a field will
   not work — never ship without resolving them.
