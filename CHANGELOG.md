@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.13.0 — AXIOM-6357 sandbox runtime discipline
+
+Platform heartbeat probe (public GET /api/platform/heartbeat on Laravel,
+/api/v2/heartbeat on the pod) + two sandbox lessons from run triage: the
+terminal tool rejects heredocs; no axiom skill is seeded in the sandbox
+registry, so never invoke_skill for axiom tooling.
+
 ## 0.12.0 — AXIOM-6354 backend primitives
 
 tools/ manuals teach the new backend surface (dev slice; general once pods

@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.12.0
+version: 0.13.0
 license: ISC
 ---
 
@@ -375,3 +375,11 @@ If the user pastes or describes one of these *after* their axiom ran (vs failure
 
 - **It doesn't run the axiom.** That's the user's job — either via the dashboard (no-code) or `node script.js` (coded).
 - **It doesn't troubleshoot live runs** *beyond* the table in "User-reported runtime errors" above. For anything else, point the user at the dashboard's run reports.
+
+## Sandbox runtime discipline (OpenHands / agent sandboxes)
+
+Three facts that save wasted cycles when this skill runs inside an agent sandbox:
+
+- **Probe slice liveness with the platform heartbeat** before blaming credentials: `GET <laravel>/api/platform/heartbeat` is public and answers `{service:"laravel", feature:"platform-heartbeat", slice, …}`. The user's cloud pod exposes the same contract at `/api/v2/heartbeat`.
+- **Never write files with heredocs** (`cat > f << EOF`) — the sandbox terminal rejects them as "multiple commands" and retrying the same call wastes turns. Write files with `printf`/`echo` appends, or `base64 -d`.
+- **Do not `invoke_skill` for axiom tooling** — no axiom skill is seeded in the sandbox skill registry (the many generic skills you may see are not this one). Axiom capabilities come from the MCP tools and the job brief.
