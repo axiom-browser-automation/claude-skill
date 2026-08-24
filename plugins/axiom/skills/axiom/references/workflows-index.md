@@ -1,11 +1,11 @@
 # Skill workflow index
 
-The skill exposes **five workflows** — discrete capabilities Claude routes between
+The skill exposes **six workflows** — discrete capabilities Claude routes between
 based on the user's prompt. They live in `plugins/axiom/skills/axiom/workflows/`
 as a code-based registry: `key`, `description`, `getRoutes()`, `invoke()`. Single-turn
 shape — no hook bus, no return stack, no multi-turn state.
 
-## The five workflows
+## The six workflows
 
 | Order | Key | Description | Wraps |
 |---|---|---|---|
@@ -14,6 +14,11 @@ shape — no hook bus, no return stack, no multi-turn state.
 | 3 | `build_coded` | Emit a Node script using `@axiom_ai/api`. User runs it from their own code. | `scripts/validate-coded.js` |
 | 4 | `run_automation` | Trigger a saved axiom by name, poll binary status, surface results. | `scripts/run-axiom.js` (existing `/v3/v4` REST surface — see [run-automation caveats](#run_automation-caveats)) |
 | 5 | `handoff_to_extension` | Tell the user how to install the Axiom Chrome extension so they can find and run their saved axioms. | (inline guidance — no script) |
+| 6 | `setup_desktop_mcp` | Install the Axiom desktop app and register its built-in MCP server with Claude — the "MCP mode" upgrade (SKILL.md Step 0.5). Guidance on macOS/Windows (tray → "Set up Claude MCP…"); fully scripted on Linux. | `scripts/setup-desktop-mcp.js` (`resolve` / `download` / `extract` / `register` — key over stdin, never argv) |
+
+In MCP mode (Step 0.5), `build_no_code`'s save and `run_automation`'s trigger/poll are
+superseded by `mcp__axiom__save_automation` and `mcp__axiom__run_automation`; the workflows
+above remain the standalone-mode path and the fallback.
 
 ## How Claude uses them
 
@@ -70,12 +75,12 @@ These caveats are stable — they're properties of the underlying REST surface, 
 - **Not a copy of the in-app builder's dispatcher.** That system uses a hook bus, a return
   stack, and multi-turn session state — none of which survive the translation to a
   single-turn skill.
-- **Not user-extensible at runtime.** Adding a sixth workflow means committing a new
+- **Not user-extensible at runtime.** Adding a workflow means committing a new
   `*Workflow.js` to the registry + adding tests. There's no plugin-of-a-plugin layer.
 
 ## Future: extension ↔ Claude live channel
 
 The handoff workflow is one-way: skill → extension. The natural follow-up is two-way
 iteration where the extension publishes edit events back to Claude. The registry pattern
-introduced here is the extension point — a sixth workflow `extension_event_stream` would
-slot in without disturbing the existing five.
+introduced here is the extension point — a seventh workflow `extension_event_stream` would
+slot in without disturbing the existing six.

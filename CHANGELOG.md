@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.14.0 — desktop-app MCP integration (AXIOM-6277)
+
+The skill now uses the desktop app's MCP server when it is there and keeps
+working exactly as before when it isn't. SKILL.md Step 0.5 detects the
+mcp__axiom__* tools in-session — "MCP mode": probe selectors live via
+open_browser / step / get_page_html before authoring, validate IR with
+compile_ir, save via save_automation, verify via run_automation, all behind
+the existing confirm-before-paid-actions gate; no tools means standalone
+mode, unchanged. The orphaned references/tools/ manuals are finally wired
+into Step 2's read list (MCP mode). The standard registration flow gains
+the desktop-app leg: a sixth workflow `setup_desktop_mcp` plus
+scripts/setup-desktop-mcp.js (resolve the newest published artifact →
+download → extract the bundled axiom-mcp sidecar from the .deb → register
+via `axiom-mcp setup save-key`, the key read from AXIOM_API_KEY and sent
+over stdin, never argv). macOS / Windows get instructions for the app's tray
+"Set up Claude MCP…" key entry. One key story: settings.json stays
+canonical, MCP client configs are derived copies, and the rotation warning
+now covers them. Docs corrected: desktop-app-server.md (tray path, stdio
+not a port, plain-text client configs, restart semantics) and
+register-with-claude.md (built-in-server users don't need it). plugin.json
+version drift (stuck at 0.8.3) fixed. No change to the fanned-out canon
+(references/tools/*, browser-automation-rules.md) — no consumer resync
+needed for this release.
+
 ## 0.13.0 — troubleshooter knowledge import (phase 1)
 
 First distillation of the extension troubleshooter's knowledge into the
