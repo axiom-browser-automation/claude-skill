@@ -86,7 +86,7 @@ If you want to extend or customise the tool surface, see [Build your own (TypeSc
 ## Notes
 ***
 
-- The MCP server is launched by your MCP client, so most tools work whether or not the desktop app window is open. The exception is `run_automation` on your own machine, which needs the desktop app running.
+- The MCP server is launched by your MCP client, but the browser tools (`open_browser`, `step`, `get_page_html`, `close_browser`) and `run_automation` execute through the desktop app's own local server — so the desktop app must be running for them (enable **Launch at Login** in its tray menu to keep it available). Authoring tools such as `compile_ir` and `save_automation`, and the trigger / status tools, work without the app.
 - Each API call from the LLM counts against the standard [rate limits](/docs/developer-hub/api/usage-and-limits/rate-limits) and [runtime allowance](/docs/developer-hub/api/usage-and-limits/remaining-runtime). LLMs that poll aggressively can trip rate limits; if you see `429` errors in the desktop app logs, tell the LLM to slow down.
 - The MCP server is local-only. It talks to the client that spawned it over stdio — it doesn't listen on any network port and isn't reachable from the public internet.
 - Your API key lives in each MCP client's own config file (the `env` block of its `axiom` server entry). Those files are plain text — treat them as secrets and don't commit them.

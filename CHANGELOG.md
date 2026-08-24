@@ -8,7 +8,11 @@ mcp__axiom__* tools in-session — "MCP mode": probe selectors live via
 open_browser / step / get_page_html before authoring, validate IR with
 compile_ir, save via save_automation, verify via run_automation, all behind
 the existing confirm-before-paid-actions gate; no tools means standalone
-mode, unchanged. The orphaned references/tools/ manuals are finally wired
+mode, unchanged. On the desktop host the browser tools and run_automation
+execute through the app's own local server, so Step 0.5 teaches the
+app-must-be-running rule (relay the "isn't running" answer, never fall back
+to raw HTTP or a cloud run) — verified against the axiom_mcp main build the
+desktop app bundles. The orphaned references/tools/ manuals are finally wired
 into Step 2's read list (MCP mode). The standard registration flow gains
 the desktop-app leg: a sixth workflow `setup_desktop_mcp` plus
 scripts/setup-desktop-mcp.js (resolve the newest published artifact →

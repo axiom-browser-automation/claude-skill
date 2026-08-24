@@ -124,11 +124,13 @@ Check your **in-session tool list** for tools named `mcp__axiom__*` (e.g. `mcp__
 
 | Capability | Standalone mode (no MCP) | MCP mode |
 |---|---|---|
-| Selector research | Docs + user-supplied selectors | `mcp__axiom__open_browser` → `step` (`goto`, `scrapeProbe`) → `get_page_html`, on the live page |
+| Selector research | Docs + user-supplied selectors | `mcp__axiom__open_browser` → `step` (`goto`, `scrapeProbe`) → `get_page_html`, on the live page — a real browser on the user's machine |
 | Validate a no-code axiom | AJV inside `BuildNoCodeWorkflow` | Author IR, validate with `mcp__axiom__compile_ir` |
 | Save to the account | `saveCommand` (`scripts/save-automation.js`, raw HTTP) | `mcp__axiom__save_automation` (takes the IR; upserts by name) |
-| Run / verify | Not done — the user runs it | `mcp__axiom__run_automation` (blocks; needs the desktop app open) — only after the Step 5 confirmation |
+| Run / verify | Not done — the user runs it | `mcp__axiom__run_automation` (blocks until the run finishes) — only after the Step 5 confirmation |
 | Tool manuals | — | **Read `references/tools/INDEX.md` and follow its read order** (Step 2) |
+
+**The desktop app must be running** for the browser tools (`open_browser`, `step`, `get_page_html`, `close_browser`) and for `run_automation` — they execute through the app's local server, not in the cloud. If a tool answers that the Axiom desktop app isn't running, relay that verbatim and ask the user to open it (its tray menu has "Launch at Login"), then retry; do not fall back to raw HTTP or a cloud run. `compile_ir`, `save_automation`, `list_actions` and the operator tools work without the app.
 
 **If the tools are absent**, offer the upgrade **once** after Step 0 completes — the desktop app ships the MCP server — and don't nag if the user declines. If they accept (or ask for it directly: "set up the desktop app", "install the MCP server"), follow the next section; that's the `setup_desktop_mcp` workflow.
 
