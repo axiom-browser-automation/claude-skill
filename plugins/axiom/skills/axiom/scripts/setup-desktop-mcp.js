@@ -9,10 +9,14 @@
  * app's tray "Set up Claude MCP…" drives — registering through this script
  * and through the GUI are equivalent.
  *
- *   node setup-desktop-mcp.js resolve  [--platform linux|darwin|win32] [--arch x64|arm64]
- *   node setup-desktop-mcp.js download [--url <artifact-url>] [--dest <dir>]
+ *   node setup-desktop-mcp.js resolve  [--platform linux|darwin|win32] [--arch x64|arm64] [--index <url>]
+ *   node setup-desktop-mcp.js download [--url <artifact-url>] [--dest <dir>] [--index <url>]
  *   node setup-desktop-mcp.js extract  --deb <path> [--dest <dir>]        (Linux: dpkg-deb -x, no root)
  *   node setup-desktop-mcp.js register --sidecar <path-to-axiom-mcp>
+ *
+ * The artifact index defaults to the published releases; `--index <url>` or the
+ * AXIOM_DESKTOP_INDEX_URL env var points resolve/download at another one (e.g.
+ * release candidates at https://site.axiom.ai/axiom_desktop/rc/).
  *
  * Every subcommand prints a single-line JSON result on stdout and exits 0
  * only on `{ok: true}` — the same contract as save-automation.js.
@@ -32,6 +36,10 @@ const {spawn, spawnSync} = require('child_process')
 const DOWNLOAD_INDEX_URL = 'https://axiom.ai/axiom_desktop/'
 const DEFAULT_LAR_URL = 'https://lar.axiom.ai'
 
+// Published names are `AxiomDesktop_<ver>_<suffix>`; builds since the display-name
+// change are `Axiom Desktop_<ver>_<suffix>` (URL-encoded `Axiom%20Desktop_…` in hrefs).
+const ARTIFACT_NAME = String.raw`(?:Axiom%20Desktop|Axiom Desktop|AxiomDesktop)_(\d+)\.(\d+)\.(\d+)_`
+
 /**
  * Artifact suffix per platform/arch — only what Jenkins actually publishes to
  * the index today (Linux x86_64, macOS Apple Silicon, Windows x64; see
@@ -44,18 +52,24 @@ const ARTIFACTS = {
     win32:  {x64: '_x64-setup.exe'}
 }
 
-/** Distinct AxiomDesktop_* filenames linked from the (Apache-style) index page. */
+/** Distinct artifact hrefs (as linked, i.e. still URL-encoded) from the Apache-style index page. */
 function parseIndex(html) {
     const files = new Set()
-    const re = /href="(AxiomDesktop_\d+\.\d+\.\d+_[^"/]+)"/g
+    const re = new RegExp(`href="(${ARTIFACT_NAME}[^"/]+)"`, 'g')
     let m
     while ((m = re.exec(html)) !== null) files.add(m[1])
     return [...files]
 }
 
 function parseVersion(file) {
-    const m = /^AxiomDesktop_(\d+)\.(\d+)\.(\d+)_/.exec(file)
+    const m = new RegExp(`^${ARTIFACT_NAME}`).exec(file)
     return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null
+}
+
+/** Resolve the index to use: --index flag, then AXIOM_DESKTOP_INDEX_URL, then the published releases. */
+function indexUrlFrom(flagValue, env = process.env) {
+    const raw = flagValue || env.AXIOM_DESKTOP_INDEX_URL || DOWNLOAD_INDEX_URL
+    return raw.endsWith('/') ? raw : raw + '/'
 }
 
 function compareSemver(a, b) {
@@ -76,7 +90,7 @@ function resolveArtifact(html, platform = process.platform, arch = process.arch,
     if (candidates.length === 0) return {ok: false, error: `no ${suffix} artifact in the index`, available: files}
     candidates.sort((a, b) => compareSemver(parseVersion(a), parseVersion(b)))
     const file = candidates[candidates.length - 1]
-    return {ok: true, file, version: parseVersion(file).join('.'), url: indexUrl + file, platform, arch}
+    return {ok: true, file, name: decodeURIComponent(file), version: parseVersion(file).join('.'), url: indexUrl + file, platform, arch, index: indexUrl}
 }
 
 /** AXIOM_API_BASE the sidecar should be registered with, or null when prod (the binary's baked default). */
@@ -98,7 +112,8 @@ async function download(url, destDir, fetchImpl = fetch) {
     const res = await fetchImpl(url)
     if (!res.ok || !res.body) throw new Error(`HTTP ${res.status} fetching ${url}`)
     fs.mkdirSync(destDir, {recursive: true})
-    const dest = path.resolve(destDir, path.basename(new URL(url).pathname))
+    // Local name: decoded, with spaces dashed so the path is shell-friendly.
+    const dest = path.resolve(destDir, decodeURIComponent(path.basename(new URL(url).pathname)).replace(/\s+/g, '-'))
     await pipeline(Readable.fromWeb(res.body), fs.createWriteStream(dest))
     return {dest, bytes: fs.statSync(dest).size}
 }
@@ -189,7 +204,7 @@ function register(sidecarPath, env = process.env) {
     })
 }
 
-module.exports = {parseIndex, compareSemver, resolveArtifact, deriveApiBase, fetchIndex, download, extractDeb, findSidecar, register, DOWNLOAD_INDEX_URL, ARTIFACTS}
+module.exports = {parseIndex, compareSemver, resolveArtifact, deriveApiBase, indexUrlFrom, fetchIndex, download, extractDeb, findSidecar, register, DOWNLOAD_INDEX_URL, ARTIFACTS}
 
 // ---- CLI ----
 function flag(args, name) {
@@ -214,14 +229,16 @@ async function main(argv) {
 
     switch (cmd) {
         case 'resolve': {
-            const r = resolveArtifact(await fetchIndex(), flag(argv, 'platform') || process.platform, flag(argv, 'arch') || process.arch)
+            const index = indexUrlFrom(flag(argv, 'index'))
+            const r = resolveArtifact(await fetchIndex(index), flag(argv, 'platform') || process.platform, flag(argv, 'arch') || process.arch, index)
             emit(r)
             return r.ok ? 0 : 1
         }
         case 'download': {
             let url = flag(argv, 'url')
             if (!url) {
-                const r = resolveArtifact(await fetchIndex())
+                const index = indexUrlFrom(flag(argv, 'index'))
+                const r = resolveArtifact(await fetchIndex(index), process.platform, process.arch, index)
                 if (!r.ok) {
                     emit(r)
                     return 1
@@ -263,8 +280,8 @@ function usage() {
     console.error(`setup-desktop-mcp.js — install the Axiom desktop app's MCP server and register it with Claude
 
 Usage:
-  node setup-desktop-mcp.js resolve  [--platform linux|darwin|win32] [--arch x64|arm64]
-  node setup-desktop-mcp.js download [--url <artifact-url>] [--dest <dir>]
+  node setup-desktop-mcp.js resolve  [--platform linux|darwin|win32] [--arch x64|arm64] [--index <url>]
+  node setup-desktop-mcp.js download [--url <artifact-url>] [--dest <dir>] [--index <url>]
   node setup-desktop-mcp.js extract  --deb <path> [--dest <dir>]
   AXIOM_API_KEY=... node setup-desktop-mcp.js register --sidecar <path-to-axiom-mcp>
 
@@ -273,8 +290,10 @@ Output (stdout, single-line JSON; exit code 0 only on ok), e.g.
   {"ok": false, "error": "AXIOM_API_KEY is not set in the environment — …"}
 
 Env:
-  AXIOM_API_KEY   the user's API key; sent to the sidecar over stdin (never argv). Required by register.
-  AXIOM_LAR_URL   base URL; a non-default value is forwarded to the registration as AXIOM_API_BASE.
+  AXIOM_API_KEY             the user's API key; sent to the sidecar over stdin (never argv). Required by register.
+  AXIOM_LAR_URL             base URL; a non-default value is forwarded to the registration as AXIOM_API_BASE.
+  AXIOM_DESKTOP_INDEX_URL   artifact index for resolve/download (default https://axiom.ai/axiom_desktop/;
+                            release candidates: https://site.axiom.ai/axiom_desktop/rc/). --index wins.
 `)
 }
 

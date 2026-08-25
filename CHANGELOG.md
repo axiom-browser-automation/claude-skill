@@ -18,7 +18,10 @@ the desktop-app leg: a sixth workflow `setup_desktop_mcp` plus
 scripts/setup-desktop-mcp.js (resolve the newest published artifact →
 download → extract the bundled axiom-mcp sidecar from the .deb → register
 via `axiom-mcp setup save-key`, the key read from AXIOM_API_KEY and sent
-over stdin, never argv). macOS / Windows get instructions for the app's tray
+over stdin, never argv; AXIOM_DESKTOP_INDEX_URL / --index point resolve and
+download at another artifact index, e.g. release candidates, and the
+"Axiom Desktop_<ver>" filename form is understood alongside the classic
+"AxiomDesktop_<ver>"). macOS / Windows get instructions for the app's tray
 "Set up Claude MCP…" key entry. One key story: settings.json stays
 canonical, MCP client configs are derived copies, and the rotation warning
 now covers them. Docs corrected: desktop-app-server.md (tray path, stdio
