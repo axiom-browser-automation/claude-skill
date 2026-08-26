@@ -1,11 +1,23 @@
 # Changelog
 
-## 0.13.0 — AXIOM-6357 sandbox runtime discipline
+## 0.13.0 — troubleshooter knowledge import (phase 1) + AXIOM-6357 sandbox runtime discipline
 
-Platform heartbeat probe (public GET /api/platform/heartbeat on Laravel,
-/api/v2/heartbeat on the pod) + two sandbox lessons from run triage: the
-terminal tool rejects heredocs; no axiom skill is seeded in the sandbox
-registry, so never invoke_skill for axiom tooling.
+First distillation of the extension troubleshooter's knowledge into the
+canonical manuals (shared-knowledge-architecture-plan.md, phase 1):
+compile-save.md gains the widget-choice rules (extract vs ScrapeMetadata
+vs ScrapeLinks, the visit-each-link loop pattern, Sheets read vs write,
+evaluate only on explicit code requests); outputs.md gains Drive-widget
+vs local download/upload targeting and the five user-side causes of
+sheet-write failures (visibility, write access, .xls format, no Google
+account, not a Sheets URL). Sources: the extension IR-planner rules and
+the prereq sheet-validation causes — both production-proven; the sheet
+causes verified live by the AXIOM-6354 test-write validation.
+
+Plus sandbox runtime discipline (AXIOM-6357): platform heartbeat probe
+(public GET /api/platform/heartbeat on Laravel, /api/v2/heartbeat on the
+pod) + two sandbox lessons from run triage: the terminal tool rejects
+heredocs; no axiom skill is seeded in the sandbox registry, so never
+invoke_skill for axiom tooling.
 
 ## 0.12.0 — AXIOM-6354 backend primitives
 

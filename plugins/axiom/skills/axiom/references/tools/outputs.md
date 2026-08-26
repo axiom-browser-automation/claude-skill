@@ -19,12 +19,21 @@ A WriteGoogleSheet step's `value` object:
   (`[articles]`), not literal data and not `{{mustache}}` syntax in the
   compiled document.
 - The extract step it references must set that output name.
+- Google Drive destinations use the dedicated widgets
+  (`WidgetDriverDownloadToGoogleDrive` / `WidgetDriverUploadFromGoogleDrive`);
+  the plain download/upload actions target the user's LOCAL computer. The
+  wrong side ships a run that puts files in the wrong place and still
+  reports Success.
 
 ## Failure modes
-- Wrong/foreign spreadsheet URL at run time → the run fails with a sheet
-  resolution error. If this happens on your verify run, the USER supplied a
-  bad link: stop and ask for a corrected link (your job protocol has a
-  question mechanism) instead of burning repair rounds guessing.
+- A failure at the sheet-write step almost always has one of five
+  USER-side causes: the connected Google account cannot see the sheet
+  (bad/foreign link) · it can see but cannot WRITE (view-only share) ·
+  the file is .xls/.xlsx, not a real Google Sheet (needs File → Save as
+  Google Sheets) · no Google account is connected to Axiom at all · the
+  value is not a Sheets URL. Identify which and ask the user (your job
+  protocol has a question mechanism) instead of burning repair rounds
+  re-guessing the link.
 - Sheet tab names you never verified: leave `sheetName` empty rather than
   inventing one.
 
