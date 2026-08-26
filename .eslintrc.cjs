@@ -1,6 +1,14 @@
 /** Linting for the skill's own scripts + example JS files. Tests use ts-jest's own checks. */
 module.exports = {
   root: true,
+  // The generated esbuild bundles carry a DO-NOT-EDIT banner; their real sources
+  // live in scripts/_src/ and are linted there. Linting the bundled UMD output
+  // (ajv etc.) just yields spurious no-undef/unknown-rule errors, so skip them.
+  ignorePatterns: [
+    'node_modules/',
+    'plugins/**/skills/**/scripts/validate-no-code.js',
+    'plugins/**/skills/**/scripts/validate-coded.js'
+  ],
   env: {
     node: true,
     es2022: true

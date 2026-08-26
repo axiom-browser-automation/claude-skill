@@ -15,7 +15,8 @@
     "signup": "node plugins/axiom/skills/axiom/scripts/signup-and-mint-key.js",
     "run": "node plugins/axiom/skills/axiom/scripts/run-axiom.js",
     "dispatch": "node plugins/axiom/skills/axiom/workflows/index.js",
-    "lint": "eslint plugins/**/skills/**/examples plugins/**/skills/**/scripts test"
+    "lint": "eslint plugins/**/skills/**/examples plugins/**/skills/**/scripts test",
+    "verify": "npm run build:scripts:check && npm run lint && npm test"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",

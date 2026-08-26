@@ -29,6 +29,9 @@ Rules when editing knowledge here:
   it; parked warm slots self-invalidate via prompt_hash) and a sandbox
   image rebake for on-disk copies. Batch edits; bump the version in
   `package.json` and add a CHANGELOG entry — consumers pin to it.
+- **Verify headlessly before shipping**: `npm run verify` — the single gate
+  (generated-copy drift check + lint + the full jest suite; no network, no
+  key). A change here isn't done until it's green.
 - `references/action-vocabulary.json` is also bundled into axiom_mcp's
   `list_actions` tool: treat its schema as an API.
 - Agent precedence, by design: job brief > actor skill > tool manuals.
