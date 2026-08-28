@@ -38,6 +38,11 @@ deliverable is a SAVED automation that has been seen to run.
   — a failed deliverable even when everything else passes.
 - maxResults defaults to 100 for configured extracts; set it only when the
   user named a count.
+- `context.url` is the START PAGE for browser steps and is optional: set it
+  only when a step works on a page. An automation of AI, sheet, REST or
+  data widgets has no page — omit `context`. A spreadsheet or document URL
+  is that widget's param, never the start page (as the start page it just
+  compiles to a goto that opens a tab nothing reads).
 
 ## Widget choice (the wrong widget fails silently)
 - Page CONTENT (articles, products, listings, tables, prices) → an extract
