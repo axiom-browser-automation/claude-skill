@@ -53,6 +53,12 @@ deliverable is a SAVED automation that has been seen to run.
   `WidgetWriteGoogleSheet`. They are not interchangeable.
 - Write-javascript steps (`evaluate`) only when the user explicitly asked
   for code/JS — never as a workaround for a selector you have not found.
+- A calendar/date picker → `WidgetDatePicker`, never N clicks on the next
+  arrow plus a day click: the clicks encode the month the widget opened on
+  when you authored and land wrong any other day; the widget pages until
+  the month title matches at run time. A dropdown → `WidgetDriverSelectList`,
+  not an open-click and an option-click. The same click step repeated in
+  your IR is the signal to look for the dedicated step.
 
 ## Failure modes
 - `warnings` on save_automation are the compiler telling you a field will

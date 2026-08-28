@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.13.1 — AXIOM-6315: dedicated steps over click sequences (date picker)
+
+Agents were reproducing their live session as the automation: N clicks on
+a calendar's next arrow plus a day click, which encodes the month the
+widget opened on and lands wrong on any other day. browser-automation-rules
+gains a "Dedicated steps over hand-built click sequences" section
+(datePicker/WidgetDatePicker, selectList/WidgetDriverSelectList; a
+repeated click step is the signal); compile-save.md's widget-choice list
+and navigation.md's call shapes carry the same rule. Pairs with the
+axiom_mcp AXIOM-6315 change (datePicker gets a real step signature and the
+WidgetDatePicker spelling, the catalog lists it in the first tier, and
+compile_ir/save_automation warn on a run of identical clicks).
+
 ## 0.13.0 — troubleshooter knowledge import (phase 1)
 
 First distillation of the extension troubleshooter's knowledge into the
