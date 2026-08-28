@@ -16,7 +16,11 @@ deliverable is a SAVED automation that has been seen to run.
   save_automation (which compiles internally).
 - **`run_automation`** — THE way to verify: pass the saved `task_id`. It
   BLOCKS until the run finishes and returns status plus full error context
-  inline — no triggering, no polling. Scraped data is never returned
+  inline — no triggering, no polling. Passing `name` + `ir` instead bundles
+  the save and the run in one call — the same save as save_automation, then
+  a run. The automation is saved whatever the run does; the result carries
+  the save (`saved`, `task_id`, `name`) on success and failure alike. Never
+  follow it with save_automation for the same IR — that is a duplicate. Scraped data is never returned
   through tools; the automation delivers it to its configured destination
   (sheet, webhook, email) — a Success status is the verification.
 - **`get_run_report`** — run history/detail: `task_id` (or `name`) alone
