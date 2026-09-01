@@ -34,11 +34,11 @@ Enter the data you want to join with the base data.
 
 ### Column
 
-Specify a particular column of the base data to always match against. Leave this blank to match with any column.
+The column of the **join** data to match against (the section above sets the base data's column). Leave it blank and the first column is used.
 
 ### Fuzzyness of the match
 
-Specify a particular column of the base data to always match against. Leave this blank to match with any column.
+Ranges from 0 to 1. 0 means the match must be exact, 1 means anything will match. Start with a low value.
 
 ### Output
 

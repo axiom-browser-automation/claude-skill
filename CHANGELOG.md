@@ -31,6 +31,36 @@ version drift (stuck at 0.8.3) fixed. The desktop-app work itself makes no
 change to the fanned-out canon (references/tools/*,
 browser-automation-rules.md); the AXIOM-6315 corrections below do.
 
+Also in this release — AXIOM-6315, the widget-documentation audit. The canon
+vocabulary had drifted from the widget catalogue the MCP actually ships (its
+nested axiom_builder_ir): ten widgets were documented that compile_ir rejects
+as unknown (WidgetNavigate, WidgetChatGPT, WidgetCode, WidgetCurrentUrl,
+WidgetDriverPassword, WidgetExportCSV, WidgetRandomWait, WidgetInstructions,
+WidgetChatGPTGenerateText, WidgetDriverClipboardContents), five authorable
+ones were missing (WidgetDriverUnattendedLogin, WidgetGenerateAuthenticatorCode,
+WidgetDeleteFromGoogleDrive and the group pair), and the base list still
+carried the dead `waitForSelector` alias in place of `wait`. It is now
+generated — `npm run build:vocabulary`, with `:check` as the drift detector
+(tools/build-action-vocabulary.js) — from that checkout, carrying forward the
+fields this repo adds on top of the source (WidgetBotCreate's isLooping /
+afterLoopUpdate). The regeneration corrected WidgetBotCreate's
+driverLaunchOptions type, which exposed two follow-ons: the example
+loop-through-sheet.json declared the same wrong type, and validate-no-code's
+schema patch skipped empty param types as falsy, so a legitimately typeless
+display param failed validation.
+
+Step pages corrected against the runtime: mouse-click-and-drag documented the
+Gmail-search step's params instead of its own start/end coordinates;
+remove-results-that-contain-certain-words had its polarity inverted (it
+removes the rows that DO contain the words); join-different-data-sources
+repeated the Column text in place of the fuzziness description, and its
+Column section described the base data when the param selects the join
+data's column (blank means the first column, not any column);
+write-data-to-an-excel-sheet documented a Write method param that widget does
+not have; save-page-as-html claimed it saves to Google Drive when the folder
+is local; close-tab described switching rather than closing, and neither tab
+page explained that position 0 means the last (rightmost) tab.
+
 Also in this release — AXIOM-6315, agent-doc corrections. Agents were
 reproducing their live session as the automation: N clicks on a calendar's
 next arrow plus a day click, which encodes the month the widget opened on

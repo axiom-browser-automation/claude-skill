@@ -43,6 +43,3 @@ The data token that contains the data that you wish to write to the Excel sheet.
 
 The cell that you wish to start writing on. _Note: failure to change this will cause the cell to be re-written during subsequent runs_.
 
-### Write method
-
-To write formulas, set this option to "User entered".

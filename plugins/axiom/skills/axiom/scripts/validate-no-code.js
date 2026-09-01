@@ -6561,7 +6561,7 @@ function patchSchema(schema2) {
     const typesFromVocab = /* @__PURE__ */ new Set();
     for (const w of vocab.widgetActionList || []) {
       for (const p of w.params || []) {
-        if (p.type) typesFromVocab.add(p.type);
+        if (typeof p.type === "string") typesFromVocab.add(p.type);
       }
     }
     if (schema2.$defs && schema2.$defs.param && schema2.$defs.param.properties) {
