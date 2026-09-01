@@ -19,15 +19,32 @@ app with the built-in MCP server is a **release candidate** at
 git clone -b AXIOM-6277 git@bitbucket.org:thegreatwebco/claude-skill.git ~/axiom-claude-skill
 ```
 
-In Claude Code, as **two separate messages**:
+In Claude Code, as **separate messages** (the third one matters — see the warning below):
 
 ```
 /plugin marketplace add ~/axiom-claude-skill
 /plugin install axiom@axiom-skills
+/plugin update axiom
 ```
 
-Restart Claude Code. Check: ask *"list the workflows the axiom skill exposes"* — you should
-see six, including `setup_desktop_mcp`.
+Restart Claude Code. **Verify before going further** — from a shell:
+
+```bash
+claude plugin list                 # axiom@axiom-skills must say Version: 0.14.0
+claude plugin marketplace list     # axiom-skills must say Source: Directory (…/axiom-claude-skill)
+```
+
+> ⚠️ **Why the `update`:** the public GitHub marketplace has the *same name*
+> (`axiom-skills`). If you ever installed the published plugin, the `marketplace add`
+> silently repoints the source at your clone but the installed copy **stays at the old
+> version**, and `install` then reports "already installed" and does nothing — you'd be
+> testing v0.8.x (five workflows, no `setup_desktop_mcp`) with no error anywhere.
+> `/plugin update axiom` re-resolves from your clone. Same after a `git pull` in the
+> clone: directory sources don't auto-refresh — run `/plugin update axiom` and restart.
+
+Then in a fresh session: ask *"list the workflows the axiom skill exposes"* — you should
+see six, including `setup_desktop_mcp`. (Deterministic check:
+`node ~/axiom-claude-skill/plugins/axiom/skills/axiom/workflows/index.js list`.)
 
 If your API key isn't set yet, add it to `~/.claude/settings.json`:
 
@@ -71,6 +88,17 @@ it downloads, extracts and registers by itself. Point it at the RC index first:
 | 4 | With the MCP **not** registered (or in a session before step 3): repeat 1 | The old behaviour: a JSON file + an offer to save, and a single offer to set up the desktop app. |
 | 5 | *"set up the Axiom desktop app"* | Routes to the setup workflow: download link, tray instructions, "restart Claude Code". |
 | 6 | Look at the transcript and `~/.claude.json` | The key never appears in chat; it sits in `mcpServers.axiom.env`. |
+
+## Troubleshooting
+
+- **Only five workflows / no `setup_desktop_mcp`** → you're running the published skill,
+  not the branch. `claude plugin list` will show a version below 0.14.0. Fix:
+  `/plugin marketplace add ~/axiom-claude-skill`, `/plugin update axiom`, restart. Also
+  confirm the clone: `git -C ~/axiom-claude-skill branch --show-current` → `AXIOM-6277`.
+- **`/mcp` doesn't list `axiom`** → redo step 3 and restart; `axiom-mcp setup status`
+  shows what's registered where.
+- **Browser tools answer "desktop app isn't running"** → open the app (tray icon must be
+  visible); that's expected behaviour, not a bug (see step 2).
 
 ## 5. Report
 
