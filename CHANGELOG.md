@@ -27,9 +27,25 @@ canonical, MCP client configs are derived copies, and the rotation warning
 now covers them. Docs corrected: desktop-app-server.md (tray path, stdio
 not a port, plain-text client configs, restart semantics) and
 register-with-claude.md (built-in-server users don't need it). plugin.json
-version drift (stuck at 0.8.3) fixed. No change to the fanned-out canon
-(references/tools/*, browser-automation-rules.md) — no consumer resync
-needed for this release.
+version drift (stuck at 0.8.3) fixed. The desktop-app work itself makes no
+change to the fanned-out canon (references/tools/*,
+browser-automation-rules.md); the AXIOM-6315 corrections below do.
+
+Also in this release — AXIOM-6315, agent-doc corrections. Agents were
+reproducing their live session as the automation: N clicks on a calendar's
+next arrow plus a day click, which encodes the month the widget opened on
+and lands wrong on any other day. browser-automation-rules gains a
+"Dedicated steps over hand-built click sequences" section
+(datePicker/WidgetDatePicker, selectList/WidgetDriverSelectList; a repeated
+click step is the signal). compile-save.md carries that rule in its
+widget-choice list, plus two more the same transcripts produced: context.url
+is the optional START PAGE for browser steps (an automation of AI, sheet or
+REST widgets has none, and a spreadsheet URL belongs in that widget's param),
+and run_automation name+ir IS save_automation plus a run — never follow it
+with a save of the same IR, which is how duplicates get made. navigation.md
+gains the datePicker call shape. Pairs with the axiom_mcp AXIOM-6315 changes.
+Because these ARE canon edits, consumers (the lar system-prompt embed and the
+sandbox copies) need a resync when this release is deployed.
 
 ## 0.13.0 — troubleshooter knowledge import (phase 1)
 

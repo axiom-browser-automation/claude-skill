@@ -16,7 +16,11 @@ deliverable is a SAVED automation that has been seen to run.
   save_automation (which compiles internally).
 - **`run_automation`** — THE way to verify: pass the saved `task_id`. It
   BLOCKS until the run finishes and returns status plus full error context
-  inline — no triggering, no polling. Scraped data is never returned
+  inline — no triggering, no polling. Passing `name` + `ir` instead bundles
+  the save and the run in one call — the same save as save_automation, then
+  a run. The automation is saved whatever the run does; the result carries
+  the save (`saved`, `task_id`, `name`) on success and failure alike. Never
+  follow it with save_automation for the same IR — that is a duplicate. Scraped data is never returned
   through tools; the automation delivers it to its configured destination
   (sheet, webhook, email) — a Success status is the verification.
 - **`get_run_report`** — run history/detail: `task_id` (or `name`) alone
@@ -38,6 +42,11 @@ deliverable is a SAVED automation that has been seen to run.
   — a failed deliverable even when everything else passes.
 - maxResults defaults to 100 for configured extracts; set it only when the
   user named a count.
+- `context.url` is the START PAGE for browser steps and is optional: set it
+  only when a step works on a page. An automation of AI, sheet, REST or
+  data widgets has no page — omit `context`. A spreadsheet or document URL
+  is that widget's param, never the start page (as the start page it just
+  compiles to a goto that opens a tab nothing reads).
 
 ## Widget choice (the wrong widget fails silently)
 - Page CONTENT (articles, products, listings, tables, prices) → an extract
@@ -53,6 +62,12 @@ deliverable is a SAVED automation that has been seen to run.
   `WidgetWriteGoogleSheet`. They are not interchangeable.
 - Write-javascript steps (`evaluate`) only when the user explicitly asked
   for code/JS — never as a workaround for a selector you have not found.
+- A calendar/date picker → `WidgetDatePicker`, never N clicks on the next
+  arrow plus a day click: the clicks encode the month the widget opened on
+  when you authored and land wrong any other day; the widget pages until
+  the month title matches at run time. A dropdown → `WidgetDriverSelectList`,
+  not an open-click and an option-click. The same click step repeated in
+  your IR is the signal to look for the dedicated step.
 
 ## Failure modes
 - `warnings` on save_automation are the compiler telling you a field will
