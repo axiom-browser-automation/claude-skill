@@ -32,8 +32,16 @@ Rules when editing knowledge here:
   it; parked warm slots self-invalidate via prompt_hash) and a sandbox
   image rebake for on-disk copies. Batch edits; bump the version in
   `package.json` and add a CHANGELOG entry — consumers pin to it.
-- `references/action-vocabulary.json` is also bundled into axiom_mcp's
-  `list_actions` tool: treat its schema as an API.
+- `references/action-vocabulary.json` is GENERATED, never hand-edited:
+  `npm run build:vocabulary` derives it from the widget catalogue axiom_mcp
+  ships (its nested `axiom_builder_ir` submodule, not the sibling checkout of
+  the same repo). **Run it whenever that pin moves** — otherwise agents author
+  widgets `compile_ir` rejects as unknown, and never learn about new ones.
+  `npm run build:vocabulary:check` is the drift detector and runs in the test
+  suite, so CI catches a stale file on its own. Fields this repo adds on top of
+  the source (WidgetBotCreate's `isLooping`/`afterLoopUpdate`) are carried
+  forward by the generator. Its schema is also an API: axiom_mcp's
+  `list_actions` reads the same catalogue.
 - Agent precedence, by design: job brief > actor skill > tool manuals.
   Brief-level policy (never-invent user values, ask-on-ambiguity) lives in
   `axiom_lar` `AgentJobBrief`, not here.
