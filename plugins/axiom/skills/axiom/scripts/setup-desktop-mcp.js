@@ -13,6 +13,11 @@
  *   node setup-desktop-mcp.js download [--url <artifact-url>] [--dest <dir>] [--index <url>]
  *   node setup-desktop-mcp.js extract  --deb <path> [--dest <dir>]        (Linux: dpkg-deb -x, no root)
  *   node setup-desktop-mcp.js register --sidecar <path-to-axiom-mcp>
+ *   node setup-desktop-mcp.js verify
+ *
+ * `verify` compares redacted fingerprints of the key in ~/.claude/settings.json,
+ * the process env, and the MCP client config (~/.claude.json) — the split-key /
+ * rotation hazard behind "MCP tools answer 401". It never prints the key.
  *
  * The artifact index defaults to the published releases; `--index <url>` or the
  * AXIOM_DESKTOP_INDEX_URL env var points resolve/download at another one (e.g.
@@ -204,7 +209,51 @@ function register(sidecarPath, env = process.env) {
     })
 }
 
-module.exports = {parseIndex, compareSemver, resolveArtifact, deriveApiBase, indexUrlFrom, fetchIndex, download, extractDeb, findSidecar, register, DOWNLOAD_INDEX_URL, ARTIFACTS}
+/** "axm_…(len 24)" — enough for a human to compare keys without ever seeing one. */
+function keyFingerprint(key) {
+    const k = (key || '').trim()
+    if (!k) return null
+    return `${k.slice(0, 4)}…(len ${k.length})`
+}
+
+function readJsonSafe(p) {
+    try {
+        return JSON.parse(fs.readFileSync(p, 'utf8'))
+    } catch (_) {
+        return null
+    }
+}
+
+/**
+ * Compare every place the key lives: the canonical source (settings.json env
+ * block), the process env (what the skill's scripts use right now), and the
+ * delivery copy the MCP server is actually launched with (~/.claude.json,
+ * written by `register` / the app's tray setup). A mismatch is the usual cause
+ * of "MCP tools answer 401": a key was minted or re-pasted after registration.
+ */
+function verifyKeys({home = os.homedir(), env = process.env} = {}) {
+    const settingsJson = readJsonSafe(path.join(home, '.claude', 'settings.json'))
+    const claudeJson = readJsonSafe(path.join(home, '.claude.json'))
+    const keys = {
+        settings: (settingsJson && settingsJson.env && settingsJson.env.AXIOM_API_KEY) || null,
+        processEnv: env.AXIOM_API_KEY || null,
+        mcpConfig: (claudeJson && claudeJson.mcpServers && claudeJson.mcpServers.axiom && claudeJson.mcpServers.axiom.env && claudeJson.mcpServers.axiom.env.AXIOM_API_KEY) || null
+    }
+    const fingerprints = {}
+    for (const [name, k] of Object.entries(keys)) fingerprints[name] = keyFingerprint(k)
+    const present = Object.values(keys).filter(Boolean).map(k => k.trim())
+    const mismatch = new Set(present).size > 1
+    const registered = Boolean(keys.mcpConfig)
+    const result = {ok: !mismatch && registered, registered, mismatch, fingerprints}
+    if (!registered) {
+        result.error = 'no axiom MCP server registered for Claude Code (~/.claude.json has no mcpServers.axiom) — run the register subcommand or the app\'s tray "Set up Claude MCP…"'
+    } else if (mismatch) {
+        result.error = 'the keys disagree — the MCP server was registered with a different key than the one in use (minting a key rotates it and silently breaks the registered copy). Re-run register (or the tray setup) with the current key, then restart Claude Code.'
+    }
+    return result
+}
+
+module.exports = {parseIndex, compareSemver, resolveArtifact, deriveApiBase, indexUrlFrom, fetchIndex, download, extractDeb, findSidecar, register, keyFingerprint, verifyKeys, DOWNLOAD_INDEX_URL, ARTIFACTS}
 
 // ---- CLI ----
 function flag(args, name) {
@@ -259,6 +308,11 @@ async function main(argv) {
             emit(r)
             return r.ok ? 0 : 1
         }
+        case 'verify': {
+            const r = verifyKeys()
+            emit(r)
+            return r.ok ? 0 : 1
+        }
         case 'register': {
             const sidecar = flag(argv, 'sidecar')
             if (!sidecar) {
@@ -284,6 +338,7 @@ Usage:
   node setup-desktop-mcp.js download [--url <artifact-url>] [--dest <dir>] [--index <url>]
   node setup-desktop-mcp.js extract  --deb <path> [--dest <dir>]
   AXIOM_API_KEY=... node setup-desktop-mcp.js register --sidecar <path-to-axiom-mcp>
+  node setup-desktop-mcp.js verify
 
 Output (stdout, single-line JSON; exit code 0 only on ok), e.g.
   {"ok": true, "file": "AxiomDesktop_5.2.0_amd64.deb", "url": "https://axiom.ai/axiom_desktop/AxiomDesktop_5.2.0_amd64.deb"}

@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.14.1 — no-fallback rule + key verify (AXIOM-6277 tester feedback)
+
+Field testing caught Claude rerouting around MCP failures: a blocked
+run_automation sometimes became a trigger_bot cloud run (paid runtime without
+deliberate consent), and a 401 became a raw curl against an invented endpoint.
+Step 0.5 now carries an explicit no-fallback rule — app-not-running → reopen
+and retry the same tool; 401 → verify + re-register; trigger_bot only on an
+explicit cloud-run request; raw HTTP never in MCP mode — mirrored in Step 5
+and the failure-modes table. New `setup-desktop-mcp.js verify` compares key
+fingerprints (first 4 chars + length, never the key) across settings.json,
+the shell env, and the MCP client config: the split-key/rotation hazard the
+tester's 401s traced back to (a key minted or re-pasted after registration
+leaves the MCP holding a dead copy). MCP mode also no longer writes a
+Downloads JSON alongside save_automation unless the user asked for a file.
+
 ## 0.14.0 — desktop-app MCP integration (AXIOM-6277)
 
 The skill now uses the desktop app's MCP server when it is there and keeps

@@ -99,6 +99,11 @@ it downloads, extracts and registers by itself. Point it at the RC index first:
   shows what's registered where.
 - **Browser tools answer "desktop app isn't running"** → open the app (tray icon must be
   visible); that's expected behaviour, not a bug (see step 2).
+- **MCP tools answer 401 / "key rejected"** → the key registered with the MCP differs from
+  your current one (minting a key rotates it and silently breaks the registered copy). Run
+  `node ~/axiom-claude-skill/plugins/axiom/skills/axiom/scripts/setup-desktop-mcp.js verify`
+  — it prints redacted fingerprints of the key in `settings.json`, your shell, and the MCP
+  config. On a mismatch, redo step 3 with the current key and restart Claude Code.
 
 ## 5. Report
 
