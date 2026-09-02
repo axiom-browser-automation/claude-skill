@@ -1,5 +1,5 @@
 {
-  "_sourceCommit": "172192d2ddc06af9f4b7032f4782f4affe8ab61a",
+  "_sourceCommit": "0e642d6b83ef35fff85b7a308aff6616c86ebba9",
   "baseActionList": [
     {
       "action": "goto",
@@ -168,6 +168,8 @@
       "name": "Loop through data",
       "originalName": "Loop through data",
       "description": "Repeat the sub-steps once for each item in a data set.",
+      "isLooping": true,
+      "afterLoopUpdate": true,
       "method": {
         "driver": "DriverNoUrl"
       },
@@ -217,9 +219,7 @@
           "help": [],
           "default_value": "0"
         }
-      ],
-      "isLooping": true,
-      "afterLoopUpdate": true
+      ]
     },
     {
       "action": "WidgetCatch",
@@ -3196,6 +3196,7 @@
       "name": "Group steps",
       "originalName": "Group steps",
       "description": "Group steps into a collapsible block and collect their data into a new variable.",
+      "isLooping": false,
       "method": {
         "driver": "GroupStart"
       },
