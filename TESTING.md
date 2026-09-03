@@ -58,13 +58,29 @@ Download your platform's installer from <https://site.axiom.ai/axiom_desktop/rc/
 install it (macOS: if Gatekeeper objects, right-click → Open). Launch it — the Axiom icon
 appears in the menu bar / tray. The app must be **running** for the browser tools.
 
-## 3. Connect Claude to it
+## 3. Connect Claude to it — use the updated MCP binary, not the tray
 
-Open the app's tray menu → **Set up Claude MCP…** → toggle on → paste the same API key →
-**Save and activate**. The status line should report Claude Code as registered.
+The RC bundles an older MCP server; an updated build (fixes the local/cloud
+inconsistency and the stale-key 401s) is at
+<https://axiom.ai/axiom_desktop/rc/axiom-mcp-6277/> (checksums in `SHA256SUMS`).
+Download yours, then — from a shell where your **current** API key is exported:
+
+```bash
+chmod +x axiom-mcp-*            # macOS also: xattr -d com.apple.quarantine axiom-mcp-*
+echo "$AXIOM_API_KEY" | ./axiom-mcp-<your-platform> setup save-key
+```
+
+> ⚠️ Don't use the app's tray "Set up Claude MCP…" for this round — it registers the
+> app's *bundled* (older) server and would undo the swap.
 
 Then **restart Claude Code** (the tools only appear in a new session). Check: `/mcp` shows
-`axiom` connected; asking *"what mcp__axiom tools do you have?"* lists 17.
+`axiom` connected; asking *"what mcp__axiom tools do you have?"* lists 17; and
+
+```bash
+node ~/axiom-claude-skill/plugins/axiom/skills/axiom/scripts/setup-desktop-mcp.js verify
+```
+
+returns `"ok": true`.
 
 Alternative without the tray UI (any platform, from a shell where the key is exported):
 
@@ -83,8 +99,8 @@ it downloads, extracts and registers by itself. Point it at the RC index first:
 | # | Say to Claude | You should see |
 |---|---|---|
 | 1 | *"build an axiom that scrapes the h1 of example.com and save it to my account"* | Claude probes the page through the MCP (`open_browser`, `step`), authors + validates the IR (`compile_ir`), **asks before saving**, saves via `save_automation`. The automation appears in your Axiom dashboard. |
-| 2 | *"run it and tell me what it scraped"* | Asks for a go-ahead (paid runtime), then `run_automation` returns the result. |
-| 3 | Quit the desktop app, repeat 1 | Claude says the desktop app isn't running and asks you to open it — no fallback to raw HTTP or a cloud run. |
+| 2 | Verify the save: run it from the **Axiom dashboard's Run button** | The automation runs and delivers its output. *(MCP-driven runs — `run_automation` — are parked this round: they depend on backend pieces deployed to staging but not yet released to live, so "not found" / "Could not load task" there is a known blocker, not a finding.)* |
+| 3 | Quit the desktop app, ask Claude to run it locally | Claude says the desktop app isn't running and asks you to open it — no fallback to raw HTTP or a cloud run. |
 | 4 | With the MCP **not** registered (or in a session before step 3): repeat 1 | The old behaviour: a JSON file + an offer to save, and a single offer to set up the desktop app. |
 | 5 | *"set up the Axiom desktop app"* | Routes to the setup workflow: download link, tray instructions, "restart Claude Code". |
 | 6 | Look at the transcript and `~/.claude.json` | The key never appears in chat; it sits in `mcpServers.axiom.env`. |
