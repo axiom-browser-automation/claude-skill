@@ -94,13 +94,36 @@ echo "$AXIOM_API_KEY" | <path-to-app>/axiom-mcp setup save-key   # key over stdi
 it downloads, extracts and registers by itself. Point it at the RC index first:
 `export AXIOM_DESKTOP_INDEX_URL=https://site.axiom.ai/axiom_desktop/rc/`.
 
+## 3b. Running automations locally — the staging stack
+
+MCP-driven local runs need two backend pieces that are on **staging** but not yet released
+to live, plus a newer app runtime. Until that ships, run the local-run scenarios against
+staging with two swap-ins from <https://axiom.ai/axiom_desktop/rc/axiom-mcp-6277/>
+(staging shares the production database, so your normal key and automations are there):
+
+1. **Quit the Axiom desktop app** (it would hold port 3333).
+2. Run the staging engine in a terminal and leave it running (`darwin-arm64` for Apple
+   Silicon, `darwin-x64` for Intel):
+   ```bash
+   chmod +x axiom-server-stag-*; xattr -d com.apple.quarantine axiom-server-stag-*
+   AXIOM_CHROMIUM_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" ./axiom-server-stag-darwin-arm64
+   ```
+   (`curl http://127.0.0.1:3333/axiom/isrunning` should answer with a version.)
+3. Point the MCP at staging — re-register with the API base in the env:
+   ```bash
+   AXIOM_API_BASE=https://lar-stag.axiom.ai/api sh -c 'echo "$AXIOM_API_KEY" | ./axiom-mcp-<your-platform> setup save-key'
+   ```
+   Restart Claude Code. (To go back to live later: re-run `setup save-key` *without* `AXIOM_API_BASE`, and relaunch the real app.)
+
+Automations you save while on staging land in the same account you see in the dashboard.
+
 ## 4. Try it
 
 | # | Say to Claude | You should see |
 |---|---|---|
 | 1 | *"build an axiom that scrapes the h1 of example.com and save it to my account"* | Claude probes the page through the MCP (`open_browser`, `step`), authors + validates the IR (`compile_ir`), **asks before saving**, saves via `save_automation`. The automation appears in your Axiom dashboard. |
-| 2 | Verify the save: run it from the **Axiom dashboard's Run button** | The automation runs and delivers its output. *(MCP-driven runs — `run_automation` — are parked this round: they depend on backend pieces deployed to staging but not yet released to live, so "not found" / "Could not load task" there is a known blocker, not a finding.)* |
-| 3 | Quit the desktop app, ask Claude to run it locally | Claude says the desktop app isn't running and asks you to open it — no fallback to raw HTTP or a cloud run. |
+| 2 | *"run it and tell me what it scraped"* — **on the staging stack, see step 3b** | Asks for a go-ahead, `run_automation` runs it **locally** (a Chrome window opens on your machine) and returns a Success/Failure summary. *(Against live this is a known blocker — "not found" / "Could not load task" — until the backend release; not a finding.)* |
+| 3 | Quit the stag server (Ctrl-C in its terminal), ask Claude to run it locally | Claude says the desktop app isn't running and asks you to open it — no fallback to raw HTTP or a cloud run. |
 | 4 | With the MCP **not** registered (or in a session before step 3): repeat 1 | The old behaviour: a JSON file + an offer to save, and a single offer to set up the desktop app. |
 | 5 | *"set up the Axiom desktop app"* | Routes to the setup workflow: download link, tray instructions, "restart Claude Code". |
 | 6 | Look at the transcript and `~/.claude.json` | The key never appears in chat; it sits in `mcpServers.axiom.env`. |
