@@ -1,6 +1,6 @@
 /**
  * Workflow registry invariants:
- *  - Five workflows, in the documented routing order
+ *  - Six workflows, in the documented routing order
  *  - Keys are unique
  *  - Every workflow has key + description + getRoutes
  *  - Every getRoutes() entry's key matches the workflow's own key
@@ -10,14 +10,15 @@
 import {WORKFLOWS, list, byKey, route} from '../../plugins/axiom/skills/axiom/workflows/WorkflowRegistry.js'
 
 describe('WorkflowRegistry', () => {
-    test('contains exactly the five workflows in routing order', () => {
+    test('contains exactly the six workflows in routing order', () => {
         const keys = WORKFLOWS.map((W: any) => W.key)
         expect(keys).toEqual([
             'signup',
             'build_no_code',
             'build_coded',
             'run_automation',
-            'handoff_to_extension'
+            'handoff_to_extension',
+            'setup_desktop_mcp'
         ])
     })
 
@@ -47,7 +48,7 @@ describe('WorkflowRegistry', () => {
 
     test('list() and byKey() round-trip', () => {
         const items = list()
-        expect(items).toHaveLength(5)
+        expect(items).toHaveLength(6)
         for (const item of items as any[]) {
             const found = byKey(item.key)
             expect(found).not.toBeNull()

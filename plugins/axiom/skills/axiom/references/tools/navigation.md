@@ -15,6 +15,9 @@ you skip the read-back call after every action. Api fallback:
 await axiom.goto('https://example.com')          // navigate current session
 await axiom.click('#accept-cookies', 'left')     // dismiss overlays, click
 await axiom.scrapeMetadata(['title', 'url'])     // cheap "where am I" check
+await axiom.datePicker('.cal .title', '.cal .next', 'December, 2026', '5')
+// calendars: pages until the title matches — never a run of arrow clicks,
+// which only work from the month the widget showed when you authored
 ```
 Note: scrape() navigates by itself — a goto before a scrape of the same URL
 is redundant (and a scrape straight after an unrelated goto can detach the

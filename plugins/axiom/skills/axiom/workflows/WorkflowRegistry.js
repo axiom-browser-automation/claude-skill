@@ -13,13 +13,15 @@ const {BuildNoCodeWorkflow} = require('./BuildNoCodeWorkflow')
 const {BuildCodedWorkflow} = require('./BuildCodedWorkflow')
 const {RunAutomationWorkflow} = require('./RunAutomationWorkflow')
 const {HandoffToExtensionWorkflow} = require('./HandoffToExtensionWorkflow')
+const {SetupDesktopMcpWorkflow} = require('./SetupDesktopMcpWorkflow')
 
 const WORKFLOWS = [
     SignupWorkflow,
     BuildNoCodeWorkflow,
     BuildCodedWorkflow,
     RunAutomationWorkflow,
-    HandoffToExtensionWorkflow
+    HandoffToExtensionWorkflow,
+    SetupDesktopMcpWorkflow
 ]
 
 function list() {

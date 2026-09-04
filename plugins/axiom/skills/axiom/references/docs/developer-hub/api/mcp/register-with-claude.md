@@ -7,6 +7,8 @@ order: 4
 
 Once you've built an MCP server (in [Python](/docs/developer-hub/api/mcp/build-your-own-server-python) or [TypeScript](/docs/developer-hub/api/mcp/build-your-own-server-typescript)), point your MCP client at it. The configuration is similar across clients but the file location and field names differ. This page shows the snippet for each.
 
+> **Using the desktop app's built-in server?** Skip this page — the app registers itself. Open its tray menu → **Set up Claude MCP…**, paste your API key, and restart your client (see [Desktop app MCP server](/docs/developer-hub/api/mcp/desktop-app-server)). Everything below is for a custom server you built yourself.
+
 ## Claude Desktop
 ***
 
