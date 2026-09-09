@@ -8,8 +8,10 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
+import * as os from 'os'
+
 // @ts-expect-error — pure JS module
-import {parseIndex, resolveArtifact, deriveApiBase, indexUrlFrom, DOWNLOAD_INDEX_URL} from '../../plugins/axiom/skills/axiom/scripts/setup-desktop-mcp.js'
+import {parseIndex, resolveArtifact, deriveApiBase, indexUrlFrom, keyFingerprint, verifyKeys, DOWNLOAD_INDEX_URL} from '../../plugins/axiom/skills/axiom/scripts/setup-desktop-mcp.js'
 
 const INDEX_HTML = fs.readFileSync(path.join(__dirname, 'fixtures', 'axiom-desktop-index.html'), 'utf8')
 
@@ -105,5 +107,49 @@ describe('release-candidate index (https://site.axiom.ai/axiom_desktop/rc/)', ()
         expect(indexUrlFrom(null, {})).toBe(DOWNLOAD_INDEX_URL)
         expect(indexUrlFrom(null, {AXIOM_DESKTOP_INDEX_URL: 'https://site.axiom.ai/axiom_desktop/rc'})).toBe(RC_INDEX)
         expect(indexUrlFrom('https://example.test/idx/', {AXIOM_DESKTOP_INDEX_URL: RC_INDEX})).toBe('https://example.test/idx/')
+    })
+})
+
+describe('key verification (the split-key / rotation hazard behind MCP 401s)', () => {
+    function fakeHome(settingsKey: string | null, mcpKey: string | null): string {
+        const home = fs.mkdtempSync(path.join(os.tmpdir(), 'axiom-verify-'))
+        fs.mkdirSync(path.join(home, '.claude'), {recursive: true})
+        if (settingsKey !== null) {
+            fs.writeFileSync(path.join(home, '.claude', 'settings.json'), JSON.stringify({env: {AXIOM_API_KEY: settingsKey}}))
+        }
+        if (mcpKey !== null) {
+            fs.writeFileSync(path.join(home, '.claude.json'), JSON.stringify({mcpServers: {axiom: {command: 'x', env: {AXIOM_API_KEY: mcpKey}}}}))
+        } else {
+            fs.writeFileSync(path.join(home, '.claude.json'), JSON.stringify({mcpServers: {}}))
+        }
+        return home
+    }
+
+    test('keyFingerprint never exposes the key', () => {
+        expect(keyFingerprint('axm_abcdefghijklmnopqrst')).toBe('axm_…(len 24)')
+        expect(keyFingerprint('  axm_short  ')).toBe('axm_…(len 9)')
+        expect(keyFingerprint('')).toBeNull()
+        expect(keyFingerprint(undefined)).toBeNull()
+    })
+
+    test('all sources agree → ok', () => {
+        const k = 'axm_abcdefghijklmnopqrst'
+        const r = verifyKeys({home: fakeHome(k, k), env: {AXIOM_API_KEY: k}})
+        expect(r).toMatchObject({ok: true, registered: true, mismatch: false})
+        expect(JSON.stringify(r)).not.toContain(k)
+    })
+
+    test('MCP holds a different (rotated) key → mismatch, remediation names re-register', () => {
+        const r = verifyKeys({home: fakeHome('axm_new_keyaaaaaaaaaaaaa', 'axm_old_keybbbbbbbbbbbbb'), env: {}})
+        expect(r.ok).toBe(false)
+        expect(r.mismatch).toBe(true)
+        expect(r.error).toMatch(/rotates|Re-run register/i)
+        expect(JSON.stringify(r)).not.toMatch(/axm_new_keyaaaaaaaaaaaaa|axm_old_keybbbbbbbbbbbbb/)
+    })
+
+    test('no MCP registration → ok:false, registered:false', () => {
+        const r = verifyKeys({home: fakeHome('axm_new_keyaaaaaaaaaaaaa', null), env: {}})
+        expect(r).toMatchObject({ok: false, registered: false})
+        expect(r.error).toMatch(/register/i)
     })
 })
