@@ -20,22 +20,14 @@ You can use this step to:
 ## How to configure the Mouse click and drag step
 ***
 
-### Keywords
+### Start coordinates
 
-Enter a list of keywords to search on, each separated by a comma.
+Coordinates of the location for the initial mouse click. You should disable any ad blockers or other browser extensions which may change the page layout before recording the coordinates, as extensions are not loaded when the automation is run.
 
-### Email address
+### End coordinates
 
-Enter the email address of the Gmail account to be searched, leave blank to use the default Gmail address. You must be logged into a Gmail account in order to search it, if you are not logged into the specified account then the default Gmail account will be searched instead.
-
-### Folder
-
-Set a folder to download into (please note currently only one new folder can be created at a time)
-
-### Max results
-
-Set a maximum number of emails to retrieve.
+Coordinates of the location to drag the mouse to. If left blank the same coordinates will be used as for the start click location, performing a single click without dragging.
 
 ### Output
 
-A preview of the Gmail data gathered.
+No data — the step performs the drag and passes any incoming data through unchanged.

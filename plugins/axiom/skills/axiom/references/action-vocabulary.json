@@ -1,5 +1,5 @@
 {
-  "_sourceCommit": "d1dd5f0502e22a3bb27bae358978e044fa8ff084",
+  "_sourceCommit": "0e642d6b83ef35fff85b7a308aff6616c86ebba9",
   "baseActionList": [
     {
       "action": "goto",
@@ -22,9 +22,9 @@
       "description": "Type text into an input or text area."
     },
     {
-      "action": "waitForSelector",
+      "action": "wait",
       "machineName": "WidgetDriverWait",
-      "description": "Wait for an element to appear before continuing."
+      "description": "Pause for a fixed time. Only use when the automatic waiting built into every action is not enough — e.g. a timed animation, debounce, or a delayed background update. Set `value` to the duration in milliseconds (e.g. \"3000\")."
     },
     {
       "action": "extract",
@@ -168,6 +168,8 @@
       "name": "Loop through data",
       "originalName": "Loop through data",
       "description": "Repeat the sub-steps once for each item in a data set.",
+      "isLooping": true,
+      "afterLoopUpdate": true,
       "method": {
         "driver": "DriverNoUrl"
       },
@@ -182,7 +184,7 @@
             " "
           ],
           "value": "",
-          "type": "hidden",
+          "type": "",
           "image": "",
           "collapsible": 0,
           "configurable": true,
@@ -217,9 +219,7 @@
           "help": [],
           "default_value": "0"
         }
-      ],
-      "isLooping": true,
-      "afterLoopUpdate": true
+      ]
     },
     {
       "action": "WidgetCatch",
@@ -235,157 +235,6 @@
       ],
       "token": "error-message",
       "params": []
-    },
-    {
-      "action": "WidgetChatGPT",
-      "machineName": "WidgetChatGPT",
-      "name": "Extract data with ChatGPT",
-      "originalName": "Extract data with ChatGPT",
-      "description": "Extract and structure data from any unformatted text.",
-      "method": {
-        "browser": "AxiomApiChatGPTV450"
-      },
-      "modes": [
-        "browser"
-      ],
-      "token": "chat-gpt",
-      "params": [
-        {
-          "name": "Override default API key",
-          "description": [
-            "Enter an Open AI key here to be used only on this step."
-          ],
-          "value": "",
-          "type": "api_key_vault",
-          "image": "",
-          "collapsible": 1,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        },
-        {
-          "name": "Open AI API key",
-          "description": [
-            ""
-          ],
-          "value": "",
-          "type": "external_api_key",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        },
-        {
-          "type": "token",
-          "value": [],
-          "maxTokens": 1,
-          "collapsible": 0,
-          "image": "",
-          "tokenType": "",
-          "description": [
-            "Enter data to extract values from"
-          ],
-          "name": "Data",
-          "configurable": false,
-          "help": [],
-          "default_value": []
-        },
-        {
-          "name": "Extract values",
-          "description": [
-            "Enter a comma-separated list of items you want to extract from the given data, or select a template."
-          ],
-          "value": "",
-          "type": "gpt_prompt_builder",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        },
-        {
-          "name": "Select model",
-          "description": [
-            "Choose the model you want to use."
-          ],
-          "value": "gpt-3.5-turbo",
-          "type": "gpt_model",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": "gpt-3.5-turbo"
-        }
-      ]
-    },
-    {
-      "action": "WidgetChatGPTGenerateText",
-      "machineName": "WidgetChatGPTGenerateText",
-      "name": "Generate text with ChatGPT",
-      "originalName": "Generate text with ChatGPT",
-      "description": "Use ChatGPT to generate a passage of text, given any prompt.",
-      "method": {
-        "driver": "driver.chatGPTGenerateTextV450"
-      },
-      "modes": [
-        "driver"
-      ],
-      "token": "chatgpt-output",
-      "params": [
-        {
-          "name": "Override default API key",
-          "description": [
-            "Enter an Open AI key here to be used only on this step."
-          ],
-          "value": "",
-          "type": "api_key_vault",
-          "image": "",
-          "collapsible": 1,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        },
-        {
-          "name": "Open AI API key",
-          "description": [
-            ""
-          ],
-          "value": "",
-          "type": "external_api_key",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        },
-        {
-          "name": "Prompt",
-          "description": [
-            "Enter a prompt for ChatGPT to respond to."
-          ],
-          "value": "",
-          "type": "long_text_required",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        },
-        {
-          "name": "Select model",
-          "description": [
-            "Choose the model you want to use."
-          ],
-          "value": "gpt-3.5-turbo",
-          "type": "gpt_model",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": "gpt-3.5-turbo"
-        }
-      ]
     },
     {
       "action": "WidgetClearGoogleSheet",
@@ -492,41 +341,6 @@
           "configurable": true,
           "help": [],
           "default_value": "Unlike, Following, Liked, true, UPVOTED, Following"
-        }
-      ]
-    },
-    {
-      "action": "WidgetCode",
-      "machineName": "WidgetCode",
-      "name": "Write javascript",
-      "originalName": "Write javascript",
-      "description": "Are you a coder? Write some custom javascript to do any kind of operation you can think of.",
-      "method": {
-        "browser": "AxiomApiRunCodeV3180"
-      },
-      "modes": [
-        "browser"
-      ],
-      "token": "code-data",
-      "params": [
-        {
-          "name": "Script",
-          "description": [
-            "You can return values as an array of arrays from this step, for use in other steps."
-          ],
-          "value": "",
-          "type": "code",
-          "image": "",
-          "collapsible": 0,
-          "configurable": false,
-          "help": [
-            {
-              "name": "See tips on how to ",
-              "linkSrc": "https://axiom.ai/docs/tutorials/javascript#the-write-javascript-step",
-              "linkText": "use javascript"
-            }
-          ],
-          "default_value": ""
         }
       ]
     },
@@ -759,35 +573,6 @@
       ]
     },
     {
-      "action": "WidgetCurrentUrl",
-      "machineName": "WidgetCurrentUrl",
-      "name": "Current Url",
-      "originalName": "Current Url",
-      "description": "Grab the current URL at the time that the automation starts running, and store it as data.",
-      "method": {
-        "browser": "AxiomApiGrabCurrentUrl"
-      },
-      "modes": [
-        "browser"
-      ],
-      "token": "current-url",
-      "params": [
-        {
-          "name": "Get current url",
-          "description": [
-            "When Axiom starts running, the page you have it open on will be stored in this step's output data."
-          ],
-          "value": "",
-          "type": "",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        }
-      ]
-    },
-    {
       "action": "WidgetDatePicker",
       "machineName": "WidgetDatePicker",
       "name": "Date picker",
@@ -922,11 +707,40 @@
       ]
     },
     {
+      "action": "WidgetDeleteFromGoogleDrive",
+      "machineName": "WidgetDeleteFromGoogleDrive",
+      "name": "Delete from Google Drive",
+      "originalName": "Delete from Google Drive",
+      "description": "Instruct the bot to delete a file or folder from Google Drive.",
+      "method": {
+        "browser": "AxiomApiDeleteFromGoogleDrive"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "",
+      "params": [
+        {
+          "name": "Google Drive URL",
+          "description": [
+            "Enter the URL of the file or folder in Google Drive to delete."
+          ],
+          "value": "",
+          "type": "google_file_url",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
       "action": "WidgetDisplayMessage",
       "machineName": "WidgetDisplayMessage",
       "name": "Display a message",
       "originalName": "Display a message",
-      "description": "Show a message to the user's browser window. Can contain any text or data from previous steps - useful for checking if things are working!",
+      "description": "Show a runtime notification popup in the user's browser during automation execution. ONLY use when the user explicitly asks the automation to display/alert/notify/popup a message at runtime. NEVER use to answer the user's question, give instructions, or hold explanatory text — those belong outside the IR, not inside a step's value field.",
       "method": {
         "browser": "AxiomApiDisplayMessage"
       },
@@ -1111,21 +925,6 @@
           "default_value": 0
         }
       ]
-    },
-    {
-      "action": "WidgetDriverClipboardContents",
-      "machineName": "WidgetDriverClipboardContents",
-      "name": "Get clipboard contents",
-      "originalName": "Get clipboard contents",
-      "description": "Get the contents of the clipboard to use in subsequent steps.",
-      "method": {
-        "driver": "driver.readClipboardContents"
-      },
-      "modes": [
-        "driver"
-      ],
-      "token": "clipboard-contents",
-      "params": []
     },
     {
       "action": "WidgetDriverCloseTab",
@@ -1614,7 +1413,7 @@
         {
           "name": "Text",
           "description": [
-            "Sending DMs in apps like Instagram? Configure a custom line break below - <a target=\"_blank\" class=\"link\" href=\"undefined/docs/guides/general/form-filling/line-breaks\">click to learn why</a>"
+            "Sending DMs in apps like Instagram? Configure a custom line break below - <a target=\"_blank\" class=\"link\" href=\"https://axiom.ai/docs/guides/general/form-filling/line-breaks\">click to learn why</a>"
           ],
           "value": "",
           "type": "long_text_required",
@@ -1629,13 +1428,13 @@
           "description": [
             "Delay between each key press in miliseconds."
           ],
-          "value": "0",
+          "value": "10",
           "type": "delay",
           "image": "h-text-input",
           "collapsible": 1,
           "configurable": true,
           "help": [],
-          "default_value": "0"
+          "default_value": "10"
         },
         {
           "name": "Append to existing",
@@ -1974,60 +1773,6 @@
       ]
     },
     {
-      "action": "WidgetDriverPassword",
-      "machineName": "WidgetDriverPassword",
-      "name": "Log In",
-      "originalName": "Log In",
-      "description": "Tell the bot to log into a site by entering the page and username. The bot will hand over to you to enter a password.",
-      "method": {
-        "driver": "driver.login"
-      },
-      "modes": [
-        "driver"
-      ],
-      "params": [
-        {
-          "name": "URL",
-          "description": [
-            " "
-          ],
-          "value": "",
-          "type": "current_url",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        },
-        {
-          "name": "Username",
-          "description": [
-            " "
-          ],
-          "value": "",
-          "type": "textfield",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        },
-        {
-          "name": "Username field",
-          "description": [
-            "Choose the field that the username should be entered into."
-          ],
-          "value": "",
-          "type": "selector_single_optional",
-          "image": "h-login-user",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        }
-      ]
-    },
-    {
       "action": "WidgetDriverSaveHTML",
       "machineName": "WidgetDriverSaveHTML",
       "name": "Save page HTML",
@@ -2260,7 +2005,7 @@
       "machineName": "WidgetDriverScrapeLinks",
       "name": "Get a list of links to pages from bot's current page",
       "originalName": "Get a list of links to pages from bot's current page",
-      "description": "Scrape links from the page the bot is currently on. Use the scraped links to visit those pages and perform further actions.",
+      "description": "Scrape/get/extract a list of links (URLs) from the current page. Use this whenever the user wants a list of links as output, or as the first step before visiting those pages to perform further actions.",
       "method": {
         "driver": "driver.linkScraperV4400"
       },
@@ -2346,13 +2091,28 @@
           "description": [
             "Select the metadata to scrape from the page."
           ],
-          "value": "",
+          "value": [],
           "type": "select_metadata",
           "image": "",
           "collapsible": 0,
           "configurable": true,
           "help": [],
-          "default_value": ""
+          "default_value": [
+            {
+              "name": "Title",
+              "value": "title",
+              "description": "<title> tag",
+              "category": "General Metadata",
+              "id": "general_metadata_title"
+            },
+            {
+              "name": "Description",
+              "value": "meta[name='description']",
+              "description": "<meta name=\"description\" content=\"...\">",
+              "category": "General Metadata",
+              "id": "general_metadata_description"
+            }
+          ]
         }
       ]
     },
@@ -2710,49 +2470,6 @@
           ],
           "value": "",
           "type": "long_text",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        }
-      ]
-    },
-    {
-      "action": "WidgetExportCSV",
-      "machineName": "WidgetExportCSV",
-      "name": "Export to CSV",
-      "originalName": "Export to CSV",
-      "description": "Export data to a CSV file. It will be downloaded to your Chrome downloads folder when the automation runs. Please note that the CSV will not download if triggered from an external service or API.",
-      "method": {
-        "browser": "AxiomApiExportCsvV3190"
-      },
-      "modes": [
-        "browser"
-      ],
-      "params": [
-        {
-          "type": "token",
-          "value": [],
-          "maxTokens": 1,
-          "collapsible": 0,
-          "image": "",
-          "tokenType": "token",
-          "description": [
-            "Select the data to convert into a CSV file."
-          ],
-          "name": "Export to CSV",
-          "configurable": false,
-          "help": [],
-          "default_value": []
-        },
-        {
-          "name": "File name",
-          "description": [
-            "Enter a name to save the file as. If the file already exists it will be renamed by the browser download process."
-          ],
-          "value": "",
-          "type": "file_name",
           "image": "",
           "collapsible": 0,
           "configurable": true,
@@ -3474,6 +3191,79 @@
       ]
     },
     {
+      "action": "WidgetGroupSteps",
+      "machineName": "WidgetGroupSteps",
+      "name": "Group steps",
+      "originalName": "Group steps",
+      "description": "Group steps into a collapsible block and collect their data into a new variable.",
+      "isLooping": false,
+      "method": {
+        "driver": "GroupStart"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "group-input-data",
+      "params": [
+        {
+          "name": "driverLaunchOptions",
+          "description": [
+            " "
+          ],
+          "value": "",
+          "type": "",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "type": "bot_token",
+          "value": "",
+          "maxTokens": 1,
+          "collapsible": 1,
+          "image": "",
+          "tokenType": "bot_token",
+          "description": [
+            "Repeat for each item in another step's data."
+          ],
+          "name": "Loop through data",
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Show tooltips",
+          "description": [
+            "Enter the time, in seconds, to show tooltips. Enter 0 for no tooltip."
+          ],
+          "value": "0",
+          "type": "pause_time",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "0"
+        }
+      ]
+    },
+    {
+      "action": "WidgetGroupStepsEnd",
+      "machineName": "WidgetGroupStepsEnd",
+      "name": "End group",
+      "originalName": "End group",
+      "description": "",
+      "method": {
+        "browser": "driver.groupEnd"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "group-data",
+      "params": []
+    },
+    {
       "action": "WidgetHoverEvent",
       "machineName": "WidgetHoverEvent",
       "name": "Rollover element",
@@ -3651,32 +3441,6 @@
       ]
     },
     {
-      "action": "WidgetInstructions",
-      "machineName": "WidgetInstructions",
-      "name": "How to use this recipe",
-      "originalName": "How to use this recipe",
-      "description": "How to use this recipe",
-      "method": {
-        "browser": "AxiomApiNothing"
-      },
-      "modes": [
-        "browser"
-      ],
-      "params": [
-        {
-          "name": "Instructions",
-          "description": [],
-          "value": "",
-          "type": "",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": ""
-        }
-      ]
-    },
-    {
       "action": "WidgetJump",
       "machineName": "WidgetJump",
       "name": "Conditionally jump to another step",
@@ -3771,34 +3535,6 @@
       ]
     },
     {
-      "action": "WidgetNavigate",
-      "machineName": "WidgetNavigate",
-      "name": "Open a new tab",
-      "originalName": "Open a new tab",
-      "description": "Opens a new tab in your main browser and navigates to that URL.",
-      "method": {
-        "browser": "AxiomApiNavigate"
-      },
-      "modes": [
-        "browser"
-      ],
-      "params": [
-        {
-          "name": "URL",
-          "description": [
-            "Enter the url of the page you wish to open."
-          ],
-          "value": "",
-          "type": "current_url",
-          "image": "",
-          "collapsible": 0,
-          "help": [],
-          "default_value": "",
-          "configurable": true
-        }
-      ]
-    },
-    {
       "action": "WidgetRadomPassword",
       "machineName": "WidgetRadomPassword",
       "name": "Generate random password",
@@ -3837,47 +3573,6 @@
           "configurable": true,
           "help": [],
           "default_value": ""
-        }
-      ]
-    },
-    {
-      "action": "WidgetRandomWait",
-      "machineName": "WidgetRandomWait",
-      "name": "Random Wait",
-      "originalName": "Random Wait",
-      "description": "Waits a random amount of time between the specified minimum and maximum.",
-      "method": {
-        "driver": "driver.randomWait"
-      },
-      "modes": [
-        "driver"
-      ],
-      "params": [
-        {
-          "name": "Min wait",
-          "description": [
-            "Wait time in miliseconds"
-          ],
-          "value": "100",
-          "type": "pause_time",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": "100"
-        },
-        {
-          "name": "Max wait",
-          "description": [
-            "Wait time in miliseconds"
-          ],
-          "value": "10000",
-          "type": "pause_time",
-          "image": "",
-          "collapsible": 0,
-          "configurable": true,
-          "help": [],
-          "default_value": "10000"
         }
       ]
     },
@@ -4985,6 +4680,92 @@
           "configurable": true,
           "help": [],
           "default_value": "raw"
+        }
+      ]
+    },
+    {
+      "action": "WidgetDriverUnattendedLogin",
+      "machineName": "WidgetDriverUnattendedLogin",
+      "name": "Log in with credentials",
+      "originalName": "Log in with credentials",
+      "description": "Log in to a site automatically using saved credentials. Fills the username and password fields unattended. Use before a 'Generate authenticator code' step if the site requires 2FA.",
+      "method": {
+        "driver": "driver.unattendedLogin"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "",
+      "params": [
+        {
+          "name": "Credentials",
+          "description": [
+            "Select the saved login credentials to use."
+          ],
+          "value": "",
+          "type": "login_credential_picker",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Username field",
+          "description": [
+            "Choose the field that the username should be entered into.",
+            "Leave empty if the credentials do not have a username stored."
+          ],
+          "value": "",
+          "type": "selector_single_optional",
+          "image": "",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        },
+        {
+          "name": "Password field",
+          "description": [
+            "Choose the field that the password should be entered into.",
+            "Leave empty if the credentials do not have a password stored."
+          ],
+          "value": "",
+          "type": "selector_single_optional",
+          "image": "",
+          "collapsible": 0,
+          "configurable": false,
+          "help": [],
+          "default_value": ""
+        }
+      ]
+    },
+    {
+      "action": "WidgetGenerateAuthenticatorCode",
+      "machineName": "WidgetGenerateAuthenticatorCode",
+      "name": "Generate authenticator code",
+      "originalName": "Generate authenticator code",
+      "description": "Generate an authenticator app 2FA code from saved login credentials. Outputs the code as the [totp-code] token for use in a downstream 'Enter text' step. Use after a login step when the site requires an authenticator app code.",
+      "method": {
+        "browser": "AxiomApiGenerateAuthenticatorCode"
+      },
+      "modes": [
+        "browser"
+      ],
+      "token": "totp-code",
+      "params": [
+        {
+          "name": "Credentials",
+          "description": [
+            "Select the saved login credentials to generate an authenticator app code for."
+          ],
+          "value": "",
+          "type": "login_credential_picker",
+          "image": "",
+          "collapsible": 0,
+          "configurable": true,
+          "help": [],
+          "default_value": ""
         }
       ]
     }

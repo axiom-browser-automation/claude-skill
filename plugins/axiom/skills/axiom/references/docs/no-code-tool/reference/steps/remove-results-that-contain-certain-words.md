@@ -29,7 +29,7 @@ Select the data you wish to remove rows from.
 
 Enter either a list of any number of words to check for, separated by commas, or data containing a list of words, one in each row.
 
-Any row that does not contain the given word will be removed.
+Any row that contains the given word will be removed. To keep only the rows that match instead, use [Remove results which do not contain certain words](/docs/no-code-tool/reference/steps/remove-results-which-do-not-contain-certain-words).
 
 ### Word matching mode
 

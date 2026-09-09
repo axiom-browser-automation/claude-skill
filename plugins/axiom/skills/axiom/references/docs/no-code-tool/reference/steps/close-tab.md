@@ -23,4 +23,4 @@ You can use this step to:
 
 ### Select Tab
 
-Set the position of the tab to switch to. 1 chooses the tab on the farthest left, 2 the second left etc.
+Set the position of the tab to close. 1 chooses the tab on the farthest left, 2 the second left etc. Left at 0, the last tab is closed — the one on the farthest right, which is normally the one that just opened.

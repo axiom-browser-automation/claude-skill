@@ -25,7 +25,7 @@ You can use this step to:
 
 ### Select Tab
 
-Set the position of the tab to switch to. 1 chooses the tab on the farthest left, 2 the second left etc.
+Set the position of the tab to switch to. 1 chooses the tab on the farthest left, 2 the second left etc. Left at 0, the bot switches to the last tab — the one on the farthest right, which is normally the one that just opened.
 
 ## Additional information
 
