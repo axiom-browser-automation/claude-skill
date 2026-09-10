@@ -12,7 +12,8 @@ each consumer's own skill — not here.
 
 ## The runtime is the only truth
 
-- The automation runs inside Axiom's cloud browser. Static HTML fetched any
+- The automation runs inside Axiom's runtime browser — a cloud pod, or the
+  desktop app's local browser on the desktop host. Static HTML fetched any
   other way lies: content may be rendered by JavaScript, gated behind consent
   banners, or differ by viewport. Never trust a selector you have not seen
   match in an Axiom browser session.
