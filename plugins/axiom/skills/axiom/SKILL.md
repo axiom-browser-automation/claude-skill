@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Also handles "set up the Axiom desktop app" / "install the Axiom MCP server" / "connect Claude to Axiom" by walking through the desktop-app download and MCP registration that upgrade this skill with live mcp__axiom__* tools. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.14.1
+version: 0.14.2
 license: ISC
 ---
 
@@ -124,7 +124,7 @@ Check your **in-session tool list** for tools named `mcp__axiom__*` (e.g. `mcp__
 
 | Capability | Standalone mode (no MCP) | MCP mode |
 |---|---|---|
-| Selector research | Docs + user-supplied selectors | `mcp__axiom__open_browser` → `step` (`goto`, `scrapeProbe`) → `get_page_html`, on the live page — a real browser on the user's machine |
+| Browser session | None — the `@axiom_ai/api` step API ("cloud browser" in `axiom-api-surface.md` and the step-function docs) is a cloud pod, standalone mode only | `mcp__axiom__open_browser` → `step` (`goto`, `scrapeProbe`) → `get_page_html` — a real browser on the user's machine, never the cloud |
 | Validate a no-code axiom | AJV inside `BuildNoCodeWorkflow` | Author IR, validate with `mcp__axiom__compile_ir` |
 | Save to the account | `saveCommand` (`scripts/save-automation.js`, raw HTTP) | `mcp__axiom__save_automation` (takes the IR; upserts by name) |
 | Run / verify | Not done — the user runs it | `mcp__axiom__run_automation` (blocks until the run finishes) — only after the Step 5 confirmation |

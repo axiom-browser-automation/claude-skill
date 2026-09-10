@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.2 — browser sessions are local on the desktop host
+
+The MCP browser tools open a real browser on the user's machine; only the
+`@axiom_ai/api` step API (standalone mode) opens a cloud pod. SKILL.md's
+MCP-mode table now says so, and browser-automation-rules.md describes the
+runtime browser host-neutrally (cloud pod, or the desktop app's local
+browser) instead of "cloud browser".
+
 ## 0.14.1 — no-fallback rule + key verify (AXIOM-6277 tester feedback)
 
 Field testing caught Claude rerouting around MCP failures: a blocked
