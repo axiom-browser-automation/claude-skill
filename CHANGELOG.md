@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.14.3 — run_automation is a local run on the desktop host
+
+SKILL.md's MCP-mode table and the confirm-before-running gate now say where
+each run tool executes: `run_automation` on the user's machine through the
+desktop app, `trigger_bot` in the cloud; both count against the account's
+runtime allowance.
+
 ## 0.14.2 — browser sessions are local on the desktop host
 
 The MCP browser tools open a real browser on the user's machine; only the
