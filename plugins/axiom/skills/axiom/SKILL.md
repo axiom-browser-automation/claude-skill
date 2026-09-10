@@ -1,7 +1,7 @@
 ---
 name: axiom
 description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Also handles "set up the Axiom desktop app" / "install the Axiom MCP server" / "connect Claude to Axiom" by walking through the desktop-app download and MCP registration that upgrade this skill with live mcp__axiom__* tools. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.14.2
+version: 0.14.3
 license: ISC
 ---
 
@@ -127,7 +127,7 @@ Check your **in-session tool list** for tools named `mcp__axiom__*` (e.g. `mcp__
 | Browser session | None — the `@axiom_ai/api` step API ("cloud browser" in `axiom-api-surface.md` and the step-function docs) is a cloud pod, standalone mode only | `mcp__axiom__open_browser` → `step` (`goto`, `scrapeProbe`) → `get_page_html` — a real browser on the user's machine, never the cloud |
 | Validate a no-code axiom | AJV inside `BuildNoCodeWorkflow` | Author IR, validate with `mcp__axiom__compile_ir` |
 | Save to the account | `saveCommand` (`scripts/save-automation.js`, raw HTTP) | `mcp__axiom__save_automation` (takes the IR; upserts by name) |
-| Run / verify | Not done — the user runs it | `mcp__axiom__run_automation` (blocks until the run finishes) — only after the Step 5 confirmation |
+| Run / verify | Not done — the user runs it | `mcp__axiom__run_automation` runs it **on the user's machine** through the desktop app and blocks until it finishes; `trigger_bot` is the cloud run (paid) — only after the Step 5 confirmation |
 | Tool manuals | — | **Read `references/tools/INDEX.md` and follow its read order** (Step 2) |
 
 **The desktop app must be running** for the browser tools (`open_browser`, `step`, `get_page_html`, `close_browser`) and for `run_automation` — they execute through the app's local server, not in the cloud. `compile_ir`, `save_automation`, `list_actions` and the operator tools work without the app.
@@ -401,7 +401,7 @@ Exit 0 = valid. Exit 1 = error codes printed (`UNKNOWN_METHOD`, `MISSING_LIFECYC
 
 ### Confirm before saving, scheduling, or running
 
-Saving to the user's account (the `saveCommand` or `mcp__axiom__save_automation`), attaching a schedule, and triggering a run (`mcp__axiom__run_automation` or `trigger_bot`) all either **write to their account** or **consume paid cloud runtime**. Always state plainly what is about to happen and get an explicit yes before doing it — e.g. *"This will save '<name>' to your Axiom account"* or *"This will trigger a run and use your cloud runtime quota."* Never save or trigger a run without a clear go-ahead, and confirm a second time for anything irreversible (placing an order, submitting a form, sending a message). When in doubt, ask.
+Saving to the user's account (the `saveCommand` or `mcp__axiom__save_automation`), attaching a schedule, and triggering a run all either **write to their account** or **consume runtime allowance** — `mcp__axiom__run_automation` runs on the user's machine through the desktop app, `trigger_bot` runs in the cloud; both count against the account's runtime. Always state plainly what is about to happen and get an explicit yes before doing it — e.g. *"This will save '<name>' to your Axiom account"* or *"This will trigger a run and use your cloud runtime quota."* Never save or trigger a run without a clear go-ahead, and confirm a second time for anything irreversible (placing an order, submitting a form, sending a message). When in doubt, ask.
 
 **MCP mode:** after the user's yes, call `mcp__axiom__save_automation` with the IR instead of the `saveCommand` — it compiles and upserts by name (iterating never creates duplicates). Resolve any `warnings` it returns before declaring done. To verify with a run, `mcp__axiom__run_automation` blocks until the run finishes and returns the outcome inline, but it **requires the desktop app to be open** — if it answers that the app isn't running, relay that message verbatim and stop; do not reroute the run to the cloud. The same discipline applies to auth failures: a 401 from any `mcp__axiom__*` tool means the registered key is stale — go to Step 0.5's `verify` + re-registration; never fall back to `trigger_bot`, the bundled REST scripts, or invented endpoints.
 
