@@ -1,5 +1,5 @@
 {
-  "_sourceCommit": "0e642d6b83ef35fff85b7a308aff6616c86ebba9",
+  "_sourceCommit": "1e3bf66ada2d71989867b3b2260bd2e3dfd6b0f1",
   "baseActionList": [
     {
       "action": "goto",
@@ -4344,6 +4344,35 @@
         "browser"
       ],
       "params": []
+    },
+    {
+      "action": "WidgetWaitForTwoFactorCode",
+      "machineName": "WidgetWaitForTwoFactorCode",
+      "name": "Wait for 2FA code",
+      "originalName": "Wait for 2FA code",
+      "description": "Pause the automation and wait for a 2FA / verification code to be delivered to your account via the Axiom API. The received code is output as a token you can enter in a later step.",
+      "method": {
+        "executor": "executor.waitForTwoFactorCodeV100"
+      },
+      "modes": [
+        "driver"
+      ],
+      "token": "two-factor-code",
+      "params": [
+        {
+          "name": "Timeout (seconds)",
+          "description": [
+            "How long to wait for the code before failing the run. Defaults to 120 seconds."
+          ],
+          "value": "120",
+          "type": "integer",
+          "image": "",
+          "collapsible": 1,
+          "configurable": true,
+          "help": [],
+          "default_value": "120"
+        }
+      ]
     },
     {
       "action": "WidgetWebhookReceive",

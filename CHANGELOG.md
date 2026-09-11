@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.15.0 — sandbox runtime discipline (AXIOM-6357)
+
+Platform heartbeat probe (public GET /api/platform/heartbeat on Laravel,
+/api/v2/heartbeat on the pod) and two sandbox lessons from run triage: the
+terminal tool rejects heredocs; no axiom skill is seeded in the sandbox
+registry, so never invoke_skill for axiom tooling.
+
 ## 0.14.3 — run_automation is a local run on the desktop host
 
 SKILL.md's MCP-mode table and the confirm-before-running gate now say where

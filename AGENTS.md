@@ -42,6 +42,9 @@ Rules when editing knowledge here:
   the source (WidgetBotCreate's `isLooping`/`afterLoopUpdate`) are carried
   forward by the generator. Its schema is also an API: axiom_mcp's
   `list_actions` reads the same catalogue.
+- **Verify headlessly before shipping**: `npm run verify` — the single gate
+  (generated-copy drift check + lint + the full jest suite; no network, no
+  key). A change here isn't done until it's green.
 - Agent precedence, by design: job brief > actor skill > tool manuals.
   Brief-level policy (never-invent user values, ask-on-ambiguity) lives in
   `axiom_lar` `AgentJobBrief`, not here.

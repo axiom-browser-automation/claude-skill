@@ -66,6 +66,37 @@ Each param needs `collapsible`, `configurable`, `default_value`, `description`, 
 
 `machine_name` MUST be a value in [`action-vocabulary.json`](./action-vocabulary.json)'s `widgetActionList[].machineName`. The strengthened validator (`scripts/validate-no-code.js`) rejects unknown values plus mismatches between the step's param list and the widget's declared params.
 
+## Referencing a token from another step
+
+`token` names an output; **referencing it is a separate grammar**, and getting it wrong
+fails silently — the runtime passes an unrecognised reference through as literal text, so
+the step runs with the string `[SheetData*]` in place of the data and nothing errors.
+Observed in the wild: an agent connected Google Sheet data as `[SheetData*]`, which is
+wrong twice over — invented token name, invented modifier.
+
+The grammar the runtime accepts (`TokenCompiler` in the extension):
+
+```
+[token-name]                whole dataset
+[token-name?rows&cols]      filtered — rows before the &, columns after
+```
+
+- **The name must be the producing step's actual token**, i.e. the vocabulary default
+  (`google-sheet-data` for ReadGoogleSheet, `scrape-data` for SmartScraper, `link-data`
+  for ScrapeLinks, …) or the custom name you passed, including any dedupe suffix
+  (`scrape-data-2`). Never invent a camel-case alias.
+- **Rows**: `all` (or `*`) for every row, otherwise an index, a comma list (`0,2,5`) or a
+  range (`0-4`).
+- **Cols**: same forms; `[scrape-data?all&0]` is "column 0 of every row".
+- **No `=` anywhere** — a reference containing one is not treated as a token at all.
+- Omit the query entirely (`[scrape-data]`) to pass the whole dataset, e.g. into a
+  JavaScript step.
+
+Nothing validates this: `compile_ir` / `save_automation` normalise a single-token param
+from array to string, but neither checks the token name nor the query grammar, and the
+runtime silently passes unknown references through. A reference that looks plausible but
+names a token no step produces will reach production as literal text.
+
 ## Triggers (only present for scheduled axioms)
 
 ```jsonc

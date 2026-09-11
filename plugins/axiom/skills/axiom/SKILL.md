@@ -448,3 +448,11 @@ If the user pastes or describes one of these *after* their axiom ran (vs failure
 
 - **In standalone mode it doesn't run the axiom.** That's the user's job — either via the dashboard (no-code) or `node script.js` (coded). In **MCP mode** it *can* run and verify via `mcp__axiom__run_automation` — but only after the explicit Step 5 confirmation (paid runtime; the desktop app must be open).
 - **It doesn't troubleshoot live runs** *beyond* the table in "User-reported runtime errors" above. For anything else, point the user at the dashboard's run reports.
+
+## Sandbox runtime discipline (OpenHands / agent sandboxes)
+
+Three facts that save wasted cycles when this skill runs inside an agent sandbox:
+
+- **Probe slice liveness with the platform heartbeat** before blaming credentials: `GET <laravel>/api/platform/heartbeat` is public and answers `{service:"laravel", feature:"platform-heartbeat", slice, …}`. The user's cloud pod exposes the same contract at `/api/v2/heartbeat`.
+- **Never write files with heredocs** (`cat > f << EOF`) — the sandbox terminal rejects them as "multiple commands" and retrying the same call wastes turns. Write files with `printf`/`echo` appends, or `base64 -d`.
+- **Do not `invoke_skill` for axiom tooling** — no axiom skill is seeded in the sandbox skill registry (the many generic skills you may see are not this one). Axiom capabilities come from the MCP tools and the job brief.
