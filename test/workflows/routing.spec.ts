@@ -35,7 +35,13 @@ const cases: Array<[string, string]> = [
     ['install the chrome extension', 'handoff_to_extension'],
     ['I don\'t have the chrome extension yet', 'handoff_to_extension'],
     ['where can I find my saved axioms', 'handoff_to_extension'],
-    ['open in the extension', 'handoff_to_extension']
+    ['open in the extension', 'handoff_to_extension'],
+
+    // setup_desktop_mcp (last in the registry — these must survive every earlier matcher)
+    ['set up the desktop app', 'setup_desktop_mcp'],
+    ['install the axiom mcp server', 'setup_desktop_mcp'],
+    ['download the desktop app', 'setup_desktop_mcp'],
+    ['connect claude to axiom', 'setup_desktop_mcp']
 ]
 
 describe('routing precedence', () => {

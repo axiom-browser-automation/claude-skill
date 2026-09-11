@@ -1,7 +1,7 @@
 ---
 name: axiom
-description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Emits one of two artifacts based on the user's intent and validates it before declaring done.
-version: 0.13.0
+description: This skill should be used when the user asks to "build an axiom", "create an axiom", "make an automation that scrapes/clicks/fills/downloads/etc.", "set up a bot", "scrape this site", or otherwise wants browser automation built with Axiom — whether as a saved no-code axiom in their account or as a Node script using the @axiom_ai/api library. The skill also handles "I don't have an Axiom account" / "set me up" / "get me an API key" by walking the user through signup, login, and key minting. Also handles "set up the Axiom desktop app" / "install the Axiom MCP server" / "connect Claude to Axiom" by walking through the desktop-app download and MCP registration that upgrade this skill with live mcp__axiom__* tools. Emits one of two artifacts based on the user's intent and validates it before declaring done.
+version: 0.14.3
 license: ISC
 ---
 
@@ -12,7 +12,7 @@ You build axioms in **two formats**, chosen at runtime based on the user's inten
 - **No-code axiom (JSON)** — an `AutomationTemplate` saved to the user's Axiom account, runs in the dashboard, schedulable.
 - **Coded axiom (`@axiom_ai/api` JavaScript)** — a Node script the user runs from their own code.
 
-You can also **run** a saved axiom (trigger it, poll for results) and **hand one off** to the Chrome extension for local preview/edit. These five capabilities are encoded as workflows in [`workflows/`](./workflows/) — see [`references/workflows-index.md`](./references/workflows-index.md) for the full registry.
+You can also **run** a saved axiom (trigger it, poll for results), **hand one off** to the Chrome extension for local preview/edit, and **set up the Axiom desktop app's MCP server** — the runtime upgrade described in Step 0.5. These six capabilities are encoded as workflows in [`workflows/`](./workflows/) — see [`references/workflows-index.md`](./references/workflows-index.md) for the full registry.
 
 Before you produce anything, **decide which workflow fits**. If the user's intent is ambiguous, ask one clarifying question.
 
@@ -111,9 +111,62 @@ Then proceed to Step 1.
    export AXIOM_API_KEY="axm_…"
    ```
 
-6. **Warn about rotation.** Minting a key invalidates any prior key on the account. If the user mentioned existing integrations, point that out — they'll need to update those integrations with the new key.
+6. **Warn about rotation.** Minting a key invalidates any prior key on the account. If the user mentioned existing integrations, point that out — they'll need to update those integrations with the new key. That includes the Axiom desktop app's MCP registration: a key saved through the app's key entry (or `axiom-mcp setup save-key`) is a *copy*, so after any rotation re-run the MCP setup in Step 0.5 so the client configs carry the new key.
 
 See [`references/account-setup.md`](./references/account-setup.md) for the full reference: edge cases, error modes, and the underlying flow.
+
+## Step 0.5 — Detect the Axiom MCP server (MCP mode)
+
+Check your **in-session tool list** for tools named `mcp__axiom__*` (e.g. `mcp__axiom__step`, `mcp__axiom__save_automation`). There is no Bash probe for this — it's a property of your session, decided when Claude Code started.
+
+- **Present → MCP mode.** The Axiom desktop app's MCP server is registered and this skill upgrades: probe selectors on the live page before authoring, save in one call, run and verify. The table below says what changes; everything else in this file still applies.
+- **Absent → standalone mode.** Follow the rest of this file exactly as written. Every MCP-aware behaviour in this skill is a **runtime upgrade, never a requirement** — nothing below fails without MCP.
+
+| Capability | Standalone mode (no MCP) | MCP mode |
+|---|---|---|
+| Browser session | None — the `@axiom_ai/api` step API ("cloud browser" in `axiom-api-surface.md` and the step-function docs) is a cloud pod, standalone mode only | `mcp__axiom__open_browser` → `step` (`goto`, `scrapeProbe`) → `get_page_html` — a real browser on the user's machine, never the cloud |
+| Validate a no-code axiom | AJV inside `BuildNoCodeWorkflow` | Author IR, validate with `mcp__axiom__compile_ir` |
+| Save to the account | `saveCommand` (`scripts/save-automation.js`, raw HTTP) | `mcp__axiom__save_automation` (takes the IR; upserts by name) |
+| Run / verify | Not done — the user runs it | `mcp__axiom__run_automation` runs it **on the user's machine** through the desktop app and blocks until it finishes; `trigger_bot` is the cloud run (paid) — only after the Step 5 confirmation |
+| Tool manuals | — | **Read `references/tools/INDEX.md` and follow its read order** (Step 2) |
+
+**The desktop app must be running** for the browser tools (`open_browser`, `step`, `get_page_html`, `close_browser`) and for `run_automation` — they execute through the app's local server, not in the cloud. `compile_ir`, `save_automation`, `list_actions` and the operator tools work without the app.
+
+**No fallbacks — an MCP failure is never a reason to switch transport.** When any `mcp__axiom__*` tool fails, stop and remediate; never "get it done" another way:
+
+- *App not running* → relay the tool's message verbatim, ask the user to open the app (its tray menu has "Launch at Login"), then retry the **same** tool. Never reroute the run to the cloud.
+- *401 / key rejected* → the key registered with the MCP is stale — most often a key was minted or re-pasted since registration, and minting rotates the account key. Run `node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" verify` (redacted key fingerprints across settings.json, the shell env, and the MCP client config), then re-run the registration with the current key (the `register` subcommand or the tray "Set up Claude MCP…") and have the user restart Claude Code. Do not retry through other tools.
+- `trigger_bot` is a separate, **cloud, paid** path. Use it only when the user explicitly asks for a cloud run — never as a fallback for a failed or blocked `run_automation`.
+- Raw HTTP against the Axiom API is **never** used in MCP mode, and endpoints are never invented. The skill's bundled REST scripts belong to standalone mode only.
+
+**If the tools are absent**, offer the upgrade **once** after Step 0 completes — the desktop app ships the MCP server — and don't nag if the user declines. If they accept (or ask for it directly: "set up the desktop app", "install the MCP server"), follow the next section; that's the `setup_desktop_mcp` workflow.
+
+### Setting up the desktop app + MCP
+
+The desktop app bundles the `axiom-mcp` stdio server as a sidecar binary. The app's tray menu **"Set up Claude MCP…"** and the sidecar's own `axiom-mcp setup` CLI drive the *same* registration code, so use whichever the platform allows:
+
+**Linux (or any box where you can run commands) — perform it yourself** with the bundled helper. Each subcommand prints one-line JSON (`{ok: true, …}` / `{ok: false, error}`):
+
+```bash
+node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" resolve                       # newest published artifact for this platform
+node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" download --dest /tmp           # fetches it (100+ MB)
+node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" extract --deb /tmp/AxiomDesktop_<ver>_amd64.deb --dest ~/.axiom-desktop
+node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" register --sidecar <the "sidecar" path printed by extract>
+```
+
+`register` reads `AXIOM_API_KEY` from the environment (Step 0 put it there) and pipes it to `axiom-mcp setup save-key` over **stdin**. The key must never appear in chat, in argv, or in the transcript — the helper refuses a `--key` argument by design. If `AXIOM_LAR_URL` points at a non-production LAR, the helper forwards the matching `AXIOM_API_BASE` so the registration targets the same backend. If the result says the `claude` CLI wasn't found, it includes a key-redacted `claude mcp add …` hint — show that to the user rather than composing your own. Testing a release candidate? Set `AXIOM_DESKTOP_INDEX_URL` (e.g. `https://site.axiom.ai/axiom_desktop/rc/`) or pass `--index <url>` and `resolve`/`download` use that index instead of the published releases.
+
+**macOS / Windows — instruct the user** (GUI installers can't be driven from here):
+
+1. Download from https://axiom.ai/install-desktop-app and install (`.dmg` / `-setup.exe`).
+2. Open the app's **tray menu → "Set up Claude MCP…"**.
+3. Paste the **same API key from Step 0** into the key field (the app's axiom key entry) and click **Save and activate**.
+
+**Always finish with:** *"Restart Claude Code (or run `/mcp` and reconnect) — the `mcp__axiom__*` tools only appear in a new session."* The current session stays in standalone mode; that's expected, not a failure.
+
+### One key, one story
+
+`~/.claude/settings.json`'s `env.AXIOM_API_KEY` (Step 0) stays the **canonical source**. The MCP client configs' `env` blocks and the desktop app's key field are **derived delivery copies** written by the setup flow — the setup CLI prefers the process env over any stale config copy, so registering from a session where Step 0 ran writes the canonical key through automatically. Never treat a client-config copy as the source, and never re-mint a key to "sync" them (minting rotates the key for the whole account — see Step 0's rotation warning).
 
 ## Step 1 — Pick a path (and check the intent isn't "fix-my-existing-axiom")
 
@@ -152,6 +205,11 @@ rules on probing in the real runtime, consent overlays (dismiss them in the
 automation, not just while researching), selector craft, column alignment,
 and session etiquette. These rules are shared verbatim with Axiom's setup
 agent; treat them as non-negotiable.
+
+**In MCP mode (Step 0.5), additionally read [`references/tools/INDEX.md`](./references/tools/INDEX.md)
+and follow its read order** (sessions → scrape / navigation / outputs as applicable →
+compile-save). Those manuals are the authoritative call shapes and failure modes for the
+`mcp__axiom__*` tools; `browser-automation-rules.md` still applies on top of them.
 
 **For the no-code path:**
 
@@ -202,6 +260,18 @@ echo "$HOME/Downloads/axiom-<short-name>.json"
 ```
 
 If `~/Downloads` doesn't exist on the user's machine (rare — present on macOS, Windows, and most Linux distros), fall back to `~/` and tell the user.
+
+### MCP mode — probe first, author IR, compile (replaces the hand-composed JSON pipeline)
+
+In MCP mode (Step 0.5) the no-code pipeline changes shape — the live tools replace emit-and-hope:
+
+1. **Vocabulary**: `mcp__axiom__list_actions` is the authoritative step catalogue (the same vocabulary as `references/action-vocabulary.json`).
+2. **Probe before authoring**: `mcp__axiom__open_browser`, then `step` with `goto`, then `scrapeProbe` for every candidate selector (and `get_page_html` for selector research). Never author a selector you haven't probed — `references/tools/` has the call shapes and failure modes.
+3. **Author the IR** (not a hand-composed AutomationTemplate) and validate it with `mcp__axiom__compile_ir`; fix its warnings before going on.
+4. **Hand to Step 5** for the confirm-and-save gate — `mcp__axiom__save_automation` takes the IR directly. Saving via raw HTTP (`scripts/save-automation.js`) while the MCP tools are present is an anti-pattern (`references/tools/compile-save.md`).
+5. **Close the browser** (`mcp__axiom__close_browser`) when probing is done. A "session is closed" error is recoverable: open a fresh session and continue — don't retry the old handle.
+
+The file-emitting `BuildNoCodeWorkflow` path below stays correct when the user explicitly wants a JSON file on disk, and is the automatic path in standalone mode. **Don't do both**: in MCP mode the `save_automation` save is the deliverable — skip the Downloads JSON unless the user asked for a file. The coded path is unchanged by MCP mode (the script the user runs uses `@axiom_ai/api`), but you may still probe selectors with the MCP tools before writing it.
 
 ### No-code path — invoke BuildNoCodeWorkflow with an intent. Do NOT hand-compose JSON.
 
@@ -331,7 +401,9 @@ Exit 0 = valid. Exit 1 = error codes printed (`UNKNOWN_METHOD`, `MISSING_LIFECYC
 
 ### Confirm before saving, scheduling, or running
 
-Saving to the user's account, attaching a schedule, and triggering a run (`run_automation`) all either **write to their account** or **consume paid cloud runtime**. Always state plainly what is about to happen and get an explicit yes before doing it — e.g. *"This will save '<name>' to your Axiom account"* or *"This will trigger a run and use your cloud runtime quota."* Never save or trigger a run without a clear go-ahead, and confirm a second time for anything irreversible (placing an order, submitting a form, sending a message). When in doubt, ask.
+Saving to the user's account (the `saveCommand` or `mcp__axiom__save_automation`), attaching a schedule, and triggering a run all either **write to their account** or **consume runtime allowance** — `mcp__axiom__run_automation` runs on the user's machine through the desktop app, `trigger_bot` runs in the cloud; both count against the account's runtime. Always state plainly what is about to happen and get an explicit yes before doing it — e.g. *"This will save '<name>' to your Axiom account"* or *"This will trigger a run and use your cloud runtime quota."* Never save or trigger a run without a clear go-ahead, and confirm a second time for anything irreversible (placing an order, submitting a form, sending a message). When in doubt, ask.
+
+**MCP mode:** after the user's yes, call `mcp__axiom__save_automation` with the IR instead of the `saveCommand` — it compiles and upserts by name (iterating never creates duplicates). Resolve any `warnings` it returns before declaring done. To verify with a run, `mcp__axiom__run_automation` blocks until the run finishes and returns the outcome inline, but it **requires the desktop app to be open** — if it answers that the app isn't running, relay that message verbatim and stop; do not reroute the run to the cloud. The same discipline applies to auth failures: a 401 from any `mcp__axiom__*` tool means the registered key is stale — go to Step 0.5's `verify` + re-registration; never fall back to `trigger_bot`, the bundled REST scripts, or invented endpoints.
 
 ### No-code: offer to save it to their account first
 
@@ -362,6 +434,7 @@ The save script needs `AXIOM_API_KEY` in env (Step 0 already ensures that) and `
 | Coded `MISSING_LIFECYCLE` | Missing `try { … } finally { await axiom.browserClose() }` | Wrap step calls. |
 | Coded `HARDCODED_TOKEN` | You inlined the API key as a string literal | Replace with `process.env.AXIOM_API_KEY`. |
 | Coded `INTERNAL_METHOD` | You called `axiom.step(...)` directly | Emit the named method (`goto`, `click`, etc.) instead. |
+| MCP tools answer 401 (key rejected) | The key in the MCP client config is stale — a key was minted or re-pasted since registration | `node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" verify`, then re-register with the current key and restart Claude Code (Step 0.5). Never retry via `trigger_bot` or raw HTTP. |
 
 ## User-reported runtime errors
 
@@ -373,7 +446,7 @@ If the user pastes or describes one of these *after* their axiom ran (vs failure
 
 ## What this skill won't do
 
-- **It doesn't run the axiom.** That's the user's job — either via the dashboard (no-code) or `node script.js` (coded).
+- **In standalone mode it doesn't run the axiom.** That's the user's job — either via the dashboard (no-code) or `node script.js` (coded). In **MCP mode** it *can* run and verify via `mcp__axiom__run_automation` — but only after the explicit Step 5 confirmation (paid runtime; the desktop app must be open).
 - **It doesn't troubleshoot live runs** *beyond* the table in "User-reported runtime errors" above. For anything else, point the user at the dashboard's run reports.
 
 ## Sandbox runtime discipline (OpenHands / agent sandboxes)

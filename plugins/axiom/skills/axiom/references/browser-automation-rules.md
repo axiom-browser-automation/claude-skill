@@ -12,7 +12,8 @@ each consumer's own skill — not here.
 
 ## The runtime is the only truth
 
-- The automation runs inside Axiom's cloud browser. Static HTML fetched any
+- The automation runs inside Axiom's runtime browser — a cloud pod, or the
+  desktop app's local browser on the desktop host. Static HTML fetched any
   other way lies: content may be rendered by JavaScript, gated behind consent
   banners, or differ by viewport. Never trust a selector you have not seen
   match in an Axiom browser session.
@@ -75,6 +76,19 @@ overlay, not the page. Two obligations, always both:
 - Prefer the smallest selector that uniquely identifies the target.
 - Never bind to auto-generated or per-load-random ids/classes (long hex-ish
   tokens): they change on every visit and the automation breaks on replay.
+
+## Dedicated steps over hand-built click sequences
+What you did in the live session is not automatically what the automation
+should do. A sequence of clicks reproduces the state the page was in when
+you authored; a dedicated step reads the page at run time. Calendars are
+the clearest case: N clicks on the next arrow encode the month the widget
+happened to open on today and land on the wrong month any other day. Use
+`datePicker` / `WidgetDatePicker` (month-title selector, next/previous
+button selector, the month text exactly as the title shows it, the day) —
+it pages until the title matches. Likewise a dropdown is `selectList` /
+`WidgetDriverSelectList`, not an open-click plus an option-click. If the
+IR you are about to save has the same click step repeated, ask what state
+it is walking to and which step reaches that state directly.
 
 ## Multi-column extraction
 

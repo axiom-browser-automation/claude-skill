@@ -29,31 +29,33 @@ No CLI, no SDK installation, no MCP server to write yourself. The desktop app ha
 You need:
 
 - A **paid axiom.ai account**. API access is gated to paid plans. See the [pricing page](/pricing) for plans that include the API.
-- The **axiom.ai desktop app**, installed and running on the same machine as your LLM client. Download from the [desktop app page](/install-desktop-app).
+- The **axiom.ai desktop app**, installed on the same machine as your LLM client. Download from the [desktop app page](/install-desktop-app).
 - An **axiom.ai API key**, generated from the **Dashboard**. See [Authentication](/docs/developer-hub/api/authentication).
 
 ## Enable the MCP server
 ***
 
 1. Open the **axiom.ai desktop app**.
-2. Open the **Claude MCP server** panel from the desktop app's settings.
+2. Open the app's **tray menu** and choose **Set up Claude MCP…**.
 3. Toggle the server **on**.
-4. Paste your axiom.ai API key into the `API key` field. The key is stored locally on your machine; the desktop app never sends it anywhere else.
-5. Confirm the panel reads **Connected**. Claude (or another MCP client) can now reach the server.
+4. Paste your axiom.ai API key into the `API key` field and click **Save and activate**. The key is written into each MCP client's own config on your machine; the desktop app never sends it anywhere else.
+5. Confirm the status line reports your client as **registered**. Restart that client and Claude (or another MCP client) can reach the server.
 
-To rotate the key later, click **Remove and reset** and paste a new key. To turn the server off entirely, toggle it back off.
+To rotate the key later, reopen **Set up Claude MCP…**, paste the new key, and save again. To turn the server off entirely, toggle it back off.
+
+The panel drives the `axiom-mcp` CLI that ships inside the app, so the same setup is scriptable: `axiom-mcp setup status`, `setup enable`, `setup save-key` (key on stdin), `setup disable`.
 
 ## Use it from your LLM client
 ***
 
 The built-in server speaks standard MCP, so any MCP-aware client can talk to it. The most common clients today:
 
-- **Claude Desktop.** Anthropic's official desktop app for the Claude chat experience. Once the axiom.ai desktop app's MCP server is on, Claude Desktop discovers it as a tool source. See [Register with Claude](/docs/developer-hub/api/mcp/register-with-claude) for the connection details.
-- **Claude Code.** Anthropic's terminal-native coding agent. Run `claude` in a project and the agent picks up the MCP server automatically.
-- **Cursor.** Cursor's chat panel speaks MCP and treats the axiom.ai server like any other tool source.
-- **Any other MCP client.** The protocol is open, so Cline, Cowork, Continue, Zed's AI panel, and others all work the same way.
+- **Claude Desktop.** Anthropic's official desktop app for the Claude chat experience. The setup writes the server into Claude Desktop's config; restart Claude Desktop and it appears as a tool source. See [Register with Claude](/docs/developer-hub/api/mcp/register-with-claude) for what the config looks like.
+- **Claude Code.** Anthropic's terminal-native coding agent. The setup registers the server through `claude mcp add axiom -s user …`; restart Claude Code (or reconnect via `/mcp`) and the tools appear as `mcp__axiom__*`.
+- **Cursor.** The setup writes `~/.cursor/mcp.json`; restart Cursor and the axiom.ai server shows up in the chat panel like any other tool source.
+- **Any other MCP client.** The protocol is open, so Cline, Cowork, Continue, Zed's AI panel, and others all work with the same stdio command.
 
-You don't need to install anything client-side beyond the LLM client itself. Once both the axiom.ai desktop app and the LLM client are running, the LLM can see and call axiom.ai tools.
+You don't need to install anything client-side beyond the LLM client itself. The client launches the server on demand, so the LLM can see and call axiom.ai tools whenever the client is running.
 
 ## Example conversations
 ***
@@ -84,7 +86,7 @@ If you want to extend or customise the tool surface, see [Build your own (TypeSc
 ## Notes
 ***
 
-- The MCP server only runs while the axiom.ai desktop app is open. Quitting the app stops the server.
+- The MCP server is launched by your MCP client, but the browser tools (`open_browser`, `step`, `get_page_html`, `close_browser`) and `run_automation` execute through the desktop app's own local server — so the desktop app must be running for them (enable **Launch at Login** in its tray menu to keep it available). Authoring tools such as `compile_ir` and `save_automation`, and the trigger / status tools, work without the app.
 - Each API call from the LLM counts against the standard [rate limits](/docs/developer-hub/api/usage-and-limits/rate-limits) and [runtime allowance](/docs/developer-hub/api/usage-and-limits/remaining-runtime). LLMs that poll aggressively can trip rate limits; if you see `429` errors in the desktop app logs, tell the LLM to slow down.
-- The MCP server is local-only. It listens on a port on your machine and isn't reachable from the public internet.
-- API keys are stored in the desktop app's encrypted local config, not in plaintext on disk.
+- The MCP server is local-only. It talks to the client that spawned it over stdio — it doesn't listen on any network port and isn't reachable from the public internet.
+- Your API key lives in each MCP client's own config file (the `env` block of its `axiom` server entry). Those files are plain text — treat them as secrets and don't commit them.

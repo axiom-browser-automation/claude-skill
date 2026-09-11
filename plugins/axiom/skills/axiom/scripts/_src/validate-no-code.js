@@ -35,7 +35,9 @@ delete cleanSchema._sourceFile
 //
 //   1) `$defs.param.properties.type.enum` doesn't list every type the live
 //      widgets declare (e.g. `double_click`, `toggle` on WidgetDriverClick).
-//      Widen the enum with the union of every type seen in widgetActionList.
+//      Widen the enum with the union of every type seen in widgetActionList —
+//      including the EMPTY type, which display-only params really do declare
+//      (WidgetBotCreate's driverLaunchOptions, WidgetDriverBack's "Go back").
 //   2) `$defs.param.properties.help.items.type === "string"` rejects entries
 //      that are objects of the form {name, linkSrc, linkText} — which several
 //      widgets ship (e.g. WidgetDriverGoto's Store Cookie). Loosen to accept
@@ -46,7 +48,7 @@ function patchSchema(schema) {
         const typesFromVocab = new Set()
         for (const w of vocab.widgetActionList || []) {
             for (const p of w.params || []) {
-                if (p.type) typesFromVocab.add(p.type)
+                if (typeof p.type === 'string') typesFromVocab.add(p.type)
             }
         }
         if (schema.$defs && schema.$defs.param && schema.$defs.param.properties) {

@@ -1,6 +1,6 @@
 ---
 title: Save page HTML step
-description: Save snapshots of a page’s HTML to your Google Drive. Use to archive content or review page structure later.
+description: Save snapshots of a page’s HTML to a folder on your machine. Use to archive content or review page structure later.
 category: Files
 icon: WidgetDriverSaveHTML.svg
 ---

@@ -1,6 +1,120 @@
 # Changelog
 
-## 0.13.0 — troubleshooter knowledge import (phase 1) + AXIOM-6357 sandbox runtime discipline
+## 0.15.0 — sandbox runtime discipline (AXIOM-6357)
+
+Platform heartbeat probe (public GET /api/platform/heartbeat on Laravel,
+/api/v2/heartbeat on the pod) and two sandbox lessons from run triage: the
+terminal tool rejects heredocs; no axiom skill is seeded in the sandbox
+registry, so never invoke_skill for axiom tooling.
+
+## 0.14.3 — run_automation is a local run on the desktop host
+
+SKILL.md's MCP-mode table and the confirm-before-running gate now say where
+each run tool executes: `run_automation` on the user's machine through the
+desktop app, `trigger_bot` in the cloud; both count against the account's
+runtime allowance.
+
+## 0.14.2 — browser sessions are local on the desktop host
+
+The MCP browser tools open a real browser on the user's machine; only the
+`@axiom_ai/api` step API (standalone mode) opens a cloud pod. SKILL.md's
+MCP-mode table now says so, and browser-automation-rules.md describes the
+runtime browser host-neutrally (cloud pod, or the desktop app's local
+browser) instead of "cloud browser".
+
+## 0.14.1 — no-fallback rule + key verify (AXIOM-6277 tester feedback)
+
+Field testing caught Claude rerouting around MCP failures: a blocked
+run_automation sometimes became a trigger_bot cloud run (paid runtime without
+deliberate consent), and a 401 became a raw curl against an invented endpoint.
+Step 0.5 now carries an explicit no-fallback rule — app-not-running → reopen
+and retry the same tool; 401 → verify + re-register; trigger_bot only on an
+explicit cloud-run request; raw HTTP never in MCP mode — mirrored in Step 5
+and the failure-modes table. New `setup-desktop-mcp.js verify` compares key
+fingerprints (first 4 chars + length, never the key) across settings.json,
+the shell env, and the MCP client config: the split-key/rotation hazard the
+tester's 401s traced back to (a key minted or re-pasted after registration
+leaves the MCP holding a dead copy). MCP mode also no longer writes a
+Downloads JSON alongside save_automation unless the user asked for a file.
+
+## 0.14.0 — desktop-app MCP integration (AXIOM-6277)
+
+The skill now uses the desktop app's MCP server when it is there and keeps
+working exactly as before when it isn't. SKILL.md Step 0.5 detects the
+mcp__axiom__* tools in-session — "MCP mode": probe selectors live via
+open_browser / step / get_page_html before authoring, validate IR with
+compile_ir, save via save_automation, verify via run_automation, all behind
+the existing confirm-before-paid-actions gate; no tools means standalone
+mode, unchanged. On the desktop host the browser tools and run_automation
+execute through the app's own local server, so Step 0.5 teaches the
+app-must-be-running rule (relay the "isn't running" answer, never fall back
+to raw HTTP or a cloud run) — verified against the axiom_mcp main build the
+desktop app bundles. The orphaned references/tools/ manuals are finally wired
+into Step 2's read list (MCP mode). The standard registration flow gains
+the desktop-app leg: a sixth workflow `setup_desktop_mcp` plus
+scripts/setup-desktop-mcp.js (resolve the newest published artifact →
+download → extract the bundled axiom-mcp sidecar from the .deb → register
+via `axiom-mcp setup save-key`, the key read from AXIOM_API_KEY and sent
+over stdin, never argv; AXIOM_DESKTOP_INDEX_URL / --index point resolve and
+download at another artifact index, e.g. release candidates, and the
+"Axiom Desktop_<ver>" filename form is understood alongside the classic
+"AxiomDesktop_<ver>"). macOS / Windows get instructions for the app's tray
+"Set up Claude MCP…" key entry. One key story: settings.json stays
+canonical, MCP client configs are derived copies, and the rotation warning
+now covers them. Docs corrected: desktop-app-server.md (tray path, stdio
+not a port, plain-text client configs, restart semantics) and
+register-with-claude.md (built-in-server users don't need it). plugin.json
+version drift (stuck at 0.8.3) fixed. The desktop-app work itself makes no
+change to the fanned-out canon (references/tools/*,
+browser-automation-rules.md); the AXIOM-6315 corrections below do.
+
+Also in this release — AXIOM-6315, the widget-documentation audit. The canon
+vocabulary had drifted from the widget catalogue the MCP actually ships (its
+nested axiom_builder_ir): ten widgets were documented that compile_ir rejects
+as unknown (WidgetNavigate, WidgetChatGPT, WidgetCode, WidgetCurrentUrl,
+WidgetDriverPassword, WidgetExportCSV, WidgetRandomWait, WidgetInstructions,
+WidgetChatGPTGenerateText, WidgetDriverClipboardContents), five authorable
+ones were missing (WidgetDriverUnattendedLogin, WidgetGenerateAuthenticatorCode,
+WidgetDeleteFromGoogleDrive and the group pair), and the base list still
+carried the dead `waitForSelector` alias in place of `wait`. It is now
+generated — `npm run build:vocabulary`, with `:check` as the drift detector
+(tools/build-action-vocabulary.js) — from that checkout, carrying forward the
+fields this repo adds on top of the source (WidgetBotCreate's isLooping /
+afterLoopUpdate). The regeneration corrected WidgetBotCreate's
+driverLaunchOptions type, which exposed two follow-ons: the example
+loop-through-sheet.json declared the same wrong type, and validate-no-code's
+schema patch skipped empty param types as falsy, so a legitimately typeless
+display param failed validation.
+
+Step pages corrected against the runtime: mouse-click-and-drag documented the
+Gmail-search step's params instead of its own start/end coordinates;
+remove-results-that-contain-certain-words had its polarity inverted (it
+removes the rows that DO contain the words); join-different-data-sources
+repeated the Column text in place of the fuzziness description, and its
+Column section described the base data when the param selects the join
+data's column (blank means the first column, not any column);
+write-data-to-an-excel-sheet documented a Write method param that widget does
+not have; save-page-as-html claimed it saves to Google Drive when the folder
+is local; close-tab described switching rather than closing, and neither tab
+page explained that position 0 means the last (rightmost) tab.
+
+Also in this release — AXIOM-6315, agent-doc corrections. Agents were
+reproducing their live session as the automation: N clicks on a calendar's
+next arrow plus a day click, which encodes the month the widget opened on
+and lands wrong on any other day. browser-automation-rules gains a
+"Dedicated steps over hand-built click sequences" section
+(datePicker/WidgetDatePicker, selectList/WidgetDriverSelectList; a repeated
+click step is the signal). compile-save.md carries that rule in its
+widget-choice list, plus two more the same transcripts produced: context.url
+is the optional START PAGE for browser steps (an automation of AI, sheet or
+REST widgets has none, and a spreadsheet URL belongs in that widget's param),
+and run_automation name+ir IS save_automation plus a run — never follow it
+with a save of the same IR, which is how duplicates get made. navigation.md
+gains the datePicker call shape. Pairs with the axiom_mcp AXIOM-6315 changes.
+Because these ARE canon edits, consumers (the lar system-prompt embed and the
+sandbox copies) need a resync when this release is deployed.
+
+## 0.13.0 — troubleshooter knowledge import (phase 1)
 
 First distillation of the extension troubleshooter's knowledge into the
 canonical manuals (shared-knowledge-architecture-plan.md, phase 1):
@@ -12,12 +126,6 @@ sheet-write failures (visibility, write access, .xls format, no Google
 account, not a Sheets URL). Sources: the extension IR-planner rules and
 the prereq sheet-validation causes — both production-proven; the sheet
 causes verified live by the AXIOM-6354 test-write validation.
-
-Plus sandbox runtime discipline (AXIOM-6357): platform heartbeat probe
-(public GET /api/platform/heartbeat on Laravel, /api/v2/heartbeat on the
-pod) + two sandbox lessons from run triage: the terminal tool rejects
-heredocs; no axiom skill is seeded in the sandbox registry, so never
-invoke_skill for axiom tooling.
 
 ## 0.12.0 — AXIOM-6354 backend primitives
 
