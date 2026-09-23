@@ -7,7 +7,7 @@ THERE is the only truth.
 ## Call shapes
 MCP: `step` with `method` goto / click / enterText / getCurrentUrl and
 positional `params` (same signatures as the api methods below), plus
-`get_page_html` to read the resulting DOM. On AXIOM-6354 backends prefer
+`get_page_html` to read the resulting DOM. Where the backend ships them, prefer
 the REPORTING variants — `gotoV4600` / `clickV4600` / `enterTextV4600` —
 whose results say what happened (`{ok, matched, currentUrl, title}`), so
 you skip the read-back call after every action. Api fallback:

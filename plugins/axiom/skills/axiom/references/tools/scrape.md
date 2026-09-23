@@ -1,6 +1,6 @@
 # scrape() — probing and extracting page data
 
-## The research loop (backends with AXIOM-6354, incl. our dev slice)
+## The research loop (backends that ship `scrapeProbe`)
 1. `get_page_html` — read the current DOM, find candidate selectors.
 2. `step` method **`scrapeProbe`** (params: `[selectors, sample?]`) — the
    purpose-built probe: CURRENT page, no navigation, no sweep, zero matches

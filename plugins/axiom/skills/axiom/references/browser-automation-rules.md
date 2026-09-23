@@ -2,9 +2,8 @@
 
 Actor-independent rules for building Axiom browser automations. This is the
 single source of truth shared by the Claude builder skill and the OpenHands
-setup agent — lessons learned here apply to BOTH. If you change this file,
-sync the copy baked into the agent sandbox image
-(`axiom_infra_master/hetzner/dev/openhands/sandbox/`).
+setup agent — lessons learned here apply to BOTH. The copy baked into the
+agent sandbox image is regenerated from this file by the maintainers' sync step.
 
 Scope: how to research pages, choose selectors, and configure extractions.
 Actor policy (credentials, deliverable format, interaction protocol) lives in

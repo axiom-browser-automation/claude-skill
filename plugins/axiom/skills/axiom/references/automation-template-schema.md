@@ -79,6 +79,7 @@ The grammar the runtime accepts (`TokenCompiler` in the extension):
 ```
 [token-name]                whole dataset
 [token-name?rows&cols]      filtered — rows before the &, columns after
+[token-name?*&N]            every row, column N (0-based) — how one column is embedded in a literal param
 ```
 
 - **The name must be the producing step's actual token**, i.e. the vocabulary default

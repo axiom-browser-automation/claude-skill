@@ -98,8 +98,8 @@ describe('deriveApiBase()', () => {
     })
 
     test('a dev LAR → its /api base', () => {
-        expect(deriveApiBase({AXIOM_LAR_URL: 'https://lar-yaseer.axiom.ai'})).toBe('https://lar-yaseer.axiom.ai/api')
-        expect(deriveApiBase({AXIOM_LAR_URL: 'https://lar-dev.axiom.ai/'})).toBe('https://lar-dev.axiom.ai/api')
+        expect(deriveApiBase({AXIOM_LAR_URL: 'https://lar-staging.example.com'})).toBe('https://lar-staging.example.com/api')
+        expect(deriveApiBase({AXIOM_LAR_URL: 'https://lar-dev.example.com/'})).toBe('https://lar-dev.example.com/api')
     })
 })
 

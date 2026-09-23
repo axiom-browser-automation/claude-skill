@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.15.2 — the public mirror is in sync again
+
+The GitHub mirror had stopped at 0.8.4 and carried the `?*&` column-reference
+guide for literal params that the Bitbucket line never received; that history
+is merged and the guide is back in SKILL.md (with the form added to the token
+grammar in `automation-template-schema.md`). Internal material is off the
+public tree: the tester runbook lives with the maintainers' tooling, and the
+agent notes, the browser-automation rules, three tool manuals and a test no
+longer name internal repositories, tickets or developer hosts.
+
 ## 0.15.1 — desktop-app setup resolves from the release manifest
 
 `setup-desktop-mcp.js` read an Apache directory listing at `/axiom_desktop/` and
