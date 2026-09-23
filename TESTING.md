@@ -2,8 +2,8 @@
 
 Pre-release. The skill (v0.14.0) is on this repo's `AXIOM-6277` branch, and the desktop
 app with the built-in MCP server is a **release candidate** at
-<https://site.axiom.ai/axiom_desktop/rc/> (macOS Apple Silicon `.dmg`, Linux `.deb` /
-`.AppImage`; no Windows build yet). Five steps, then try things.
+<https://site.axiom.ai/axiom_desktop/rc/> (macOS Apple Silicon and Intel `.dmg`, Linux `.AppImage` (a `.deb` is staged
+too but the live folder promotes only the AppImage), Windows `-setup.exe`). Five steps, then try things.
 
 ## Before you start
 

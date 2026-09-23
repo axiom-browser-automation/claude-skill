@@ -1,68 +1,92 @@
 /**
- * setup-desktop-mcp.js — the pure parts (artifact resolution against the
- * published index, API-base derivation). The index fixture is a verbatim
- * copy of https://axiom.ai/axiom_desktop/ (2026-08-24); there is no
- * `latest` pointer upstream, so the semver pick IS the resolution logic.
+ * setup-desktop-mcp.js — the pure parts (installer resolution from the release
+ * manifest, API-base derivation, key verification). The fixtures are verbatim
+ * copies of https://axiom.ai/desktop_app/latest.json (the promoted release) and
+ * https://axiom.ai/axiom_desktop/rc/manifest.json (a staged release candidate)
+ * taken 2026-09-23; the manifest names one installer per platform, so there is
+ * no semver pick — the manifest IS the resolution.
  */
-
 import * as fs from 'fs'
 import * as path from 'path'
-
 import * as os from 'os'
-
 // @ts-expect-error — pure JS module
-import {parseIndex, resolveArtifact, deriveApiBase, indexUrlFrom, keyFingerprint, verifyKeys, DOWNLOAD_INDEX_URL} from '../../plugins/axiom/skills/axiom/scripts/setup-desktop-mcp.js'
+import {parseManifest, resolveArtifact, deriveApiBase, indexUrlFrom, keyFingerprint, verifyKeys, DOWNLOAD_INDEX_URL, MANIFEST_NAMES} from '../../plugins/axiom/skills/axiom/scripts/setup-desktop-mcp.js'
 
-const INDEX_HTML = fs.readFileSync(path.join(__dirname, 'fixtures', 'axiom-desktop-index.html'), 'utf8')
+const LATEST = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'desktop-latest.json'), 'utf8'))
+const RC = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'desktop-rc-manifest.json'), 'utf8'))
+const RC_INDEX = 'https://site.axiom.ai/axiom_desktop/rc/'
 
-describe('parseIndex()', () => {
-    test('lists every AxiomDesktop_* artifact once, ignoring sort links and parent dir', () => {
-        const files = parseIndex(INDEX_HTML)
-        expect(files).toContain('AxiomDesktop_5.2.0_amd64.deb')
-        expect(files).toContain('AxiomDesktop_5.2.0_aarch64.dmg')
-        expect(files).toContain('AxiomDesktop_5.2.0_x64-setup.exe')
-        expect(files.every((f: string) => f.startsWith('AxiomDesktop_'))).toBe(true)
-        expect(new Set(files).size).toBe(files.length)
+describe('parseManifest()', () => {
+    test('one entry per platform key, each with file, url and sha256', () => {
+        const entries = parseManifest(LATEST)
+        expect(entries.map((e: {key: string}) => e.key).sort()).toEqual(['darwin-arm64', 'darwin-x86_64', 'linux-x86_64', 'windows-x86_64'])
+        for (const e of entries) {
+            expect(e.file).toMatch(/^axiom-desktop-/)
+            expect(e.url).toBe(`https://axiom.ai/desktop_app/${e.file}`)
+            expect(e.sha256).toMatch(/^[0-9a-f]{64}$/)
+        }
+    })
+    test('a manifest without platforms is empty, never a throw', () => {
+        expect(parseManifest({})).toEqual([])
+        expect(parseManifest(null)).toEqual([])
+        expect(parseManifest({platforms: {bad: 'x'}})).toEqual([])
     })
 })
 
 describe('resolveArtifact()', () => {
-    test('linux/x64 → newest .deb, with a full URL', () => {
-        const r = resolveArtifact(INDEX_HTML, 'linux', 'x64')
+    test('linux/x64 → the AppImage (the live folder carries no .deb)', () => {
+        const r = resolveArtifact(LATEST, 'linux', 'x64')
         expect(r.ok).toBe(true)
-        expect(r.file).toBe('AxiomDesktop_5.2.0_amd64.deb')
+        expect(r.file).toBe('axiom-desktop-linux-5.2.0.AppImage')
+        expect(r.url).toBe(DOWNLOAD_INDEX_URL + 'axiom-desktop-linux-5.2.0.AppImage')
         expect(r.version).toBe('5.2.0')
-        expect(r.url).toBe(DOWNLOAD_INDEX_URL + 'AxiomDesktop_5.2.0_amd64.deb')
+        expect(r.sha256).toMatch(/^[0-9a-f]{64}$/)
+        expect(r.staging).toBe(false)
     })
-
-    test('darwin/arm64 → newest .dmg', () => {
-        const r = resolveArtifact(INDEX_HTML, 'darwin', 'arm64')
-        expect(r.ok).toBe(true)
-        expect(r.file).toBe('AxiomDesktop_5.2.0_aarch64.dmg')
+    test('both Mac builds and Windows resolve', () => {
+        expect(resolveArtifact(LATEST, 'darwin', 'arm64').file).toBe('axiom-desktop-mac-5.2.0.dmg')
+        expect(resolveArtifact(LATEST, 'darwin', 'x64').file).toBe('axiom-desktop-mac-intel-5.2.0.dmg')
+        expect(resolveArtifact(LATEST, 'win32', 'x64').file).toBe('axiom-desktop-win-5.2.0.exe')
     })
-
-    test('win32/x64 → newest -setup.exe', () => {
-        const r = resolveArtifact(INDEX_HTML, 'win32', 'x64')
-        expect(r.ok).toBe(true)
-        expect(r.file).toBe('AxiomDesktop_5.2.0_x64-setup.exe')
-    })
-
-    test('sorts by semver, not lexically', () => {
-        const html = '<a href="AxiomDesktop_0.9.0_amd64.deb">a</a><a href="AxiomDesktop_0.10.0_amd64.deb">b</a>'
-        expect(resolveArtifact(html, 'linux', 'x64').file).toBe('AxiomDesktop_0.10.0_amd64.deb')
-    })
-
     test('unpublished platform/arch → explicit error listing what exists', () => {
-        const r = resolveArtifact(INDEX_HTML, 'darwin', 'x64')
+        const r = resolveArtifact(LATEST, 'linux', 'arm64')
         expect(r.ok).toBe(false)
-        expect(r.error).toMatch(/darwin\/x64/)
-        expect(r.available).toContain('AxiomDesktop_5.2.0_aarch64.dmg')
+        expect(r.error).toMatch(/linux\/arm64/)
+        expect(r.available.join(' ')).toContain('linux-x86_64: axiom-desktop-linux-5.2.0.AppImage')
     })
-
-    test('empty index → error, never a guess', () => {
-        const r = resolveArtifact('<html></html>', 'linux', 'x64')
+    test('empty manifest → error, never a guess', () => {
+        const r = resolveArtifact({version: '9.9.9', platforms: {}}, 'linux', 'x64')
         expect(r.ok).toBe(false)
-        expect(r.error).toMatch(/no AxiomDesktop_\* artifacts/)
+        expect(r.error).toMatch(/no installers listed/)
+    })
+    test('a manifest entry without a url gets one built from the index', () => {
+        const r = resolveArtifact({version: '1.0.0', platforms: {'linux-x86_64': {file: 'Axiom Desktop_1.0.0_amd64.AppImage'}}}, 'linux', 'x64', RC_INDEX)
+        expect(r.url).toBe(RC_INDEX + 'Axiom%20Desktop_1.0.0_amd64.AppImage')
+        expect(r.sha256).toBeNull()
+    })
+})
+
+describe('release-candidate folder (https://site.axiom.ai/axiom_desktop/rc/manifest.json)', () => {
+    test('resolves the staged AppImage with its encoded URL and flags staging', () => {
+        const r = resolveArtifact(RC, 'linux', 'x64', RC_INDEX)
+        expect(r.ok).toBe(true)
+        expect(r.file).toBe('Axiom Desktop_5.2.0_amd64.AppImage')
+        expect(r.url).toBe('https://axiom.ai/axiom_desktop/rc/Axiom%20Desktop_5.2.0_amd64.AppImage')
+        expect(r.staging).toBe(true)
+        expect(r.index).toBe(RC_INDEX)
+    })
+    test('the staged .deb is listed but never the Linux pick', () => {
+        expect(parseManifest(RC).map((e: {key: string}) => e.key)).toContain('linux-deb')
+        expect(resolveArtifact(RC, 'linux', 'x64', RC_INDEX).file).toMatch(/\.AppImage$/)
+    })
+    test('manifest names: the live folder first, then a staging folder', () => {
+        expect(MANIFEST_NAMES).toEqual(['latest.json', 'manifest.json'])
+    })
+    test('indexUrlFrom(): --index wins, then AXIOM_DESKTOP_INDEX_URL, then the published folder; trailing slash normalised', () => {
+        expect(indexUrlFrom(null, {})).toBe(DOWNLOAD_INDEX_URL)
+        expect(DOWNLOAD_INDEX_URL).toBe('https://axiom.ai/desktop_app/')
+        expect(indexUrlFrom(null, {AXIOM_DESKTOP_INDEX_URL: 'https://site.axiom.ai/axiom_desktop/rc'})).toBe(RC_INDEX)
+        expect(indexUrlFrom('https://example.test/idx/', {AXIOM_DESKTOP_INDEX_URL: RC_INDEX})).toBe('https://example.test/idx/')
     })
 })
 
@@ -76,37 +100,6 @@ describe('deriveApiBase()', () => {
     test('a dev LAR → its /api base', () => {
         expect(deriveApiBase({AXIOM_LAR_URL: 'https://lar-yaseer.axiom.ai'})).toBe('https://lar-yaseer.axiom.ai/api')
         expect(deriveApiBase({AXIOM_LAR_URL: 'https://lar-dev.axiom.ai/'})).toBe('https://lar-dev.axiom.ai/api')
-    })
-})
-
-describe('release-candidate index (https://site.axiom.ai/axiom_desktop/rc/)', () => {
-    // Builds since the display-name change are "Axiom Desktop_<ver>_…" — URL-encoded in hrefs.
-    const RC_HTML = '<a href="Axiom%20Desktop_5.2.0_aarch64.dmg">a</a><a href="Axiom%20Desktop_5.2.0_amd64.AppImage">b</a><a href="Axiom%20Desktop_5.2.0_amd64.deb">c</a>'
-    const RC_INDEX = 'https://site.axiom.ai/axiom_desktop/rc/'
-
-    test('parses the URL-encoded "Axiom Desktop_" naming alongside the classic one', () => {
-        expect(parseIndex(RC_HTML)).toEqual(['Axiom%20Desktop_5.2.0_aarch64.dmg', 'Axiom%20Desktop_5.2.0_amd64.AppImage', 'Axiom%20Desktop_5.2.0_amd64.deb'])
-        expect(parseIndex('<a href="Axiom Desktop_5.3.0_amd64.deb">x</a><a href="AxiomDesktop_5.2.0_amd64.deb">y</a>')).toHaveLength(2)
-    })
-
-    test('resolves against the RC index and builds the encoded URL + decoded name', () => {
-        const r = resolveArtifact(RC_HTML, 'linux', 'x64', RC_INDEX)
-        expect(r.ok).toBe(true)
-        expect(r.url).toBe(RC_INDEX + 'Axiom%20Desktop_5.2.0_amd64.deb')
-        expect(r.name).toBe('Axiom Desktop_5.2.0_amd64.deb')
-        expect(r.version).toBe('5.2.0')
-        expect(r.index).toBe(RC_INDEX)
-        expect(resolveArtifact(RC_HTML, 'darwin', 'arm64', RC_INDEX).file).toBe('Axiom%20Desktop_5.2.0_aarch64.dmg')
-    })
-
-    test('no Windows build in the RC → explicit error, not a guess', () => {
-        expect(resolveArtifact(RC_HTML, 'win32', 'x64', RC_INDEX).ok).toBe(false)
-    })
-
-    test('indexUrlFrom(): --index wins, then AXIOM_DESKTOP_INDEX_URL, then the published index; trailing slash normalised', () => {
-        expect(indexUrlFrom(null, {})).toBe(DOWNLOAD_INDEX_URL)
-        expect(indexUrlFrom(null, {AXIOM_DESKTOP_INDEX_URL: 'https://site.axiom.ai/axiom_desktop/rc'})).toBe(RC_INDEX)
-        expect(indexUrlFrom('https://example.test/idx/', {AXIOM_DESKTOP_INDEX_URL: RC_INDEX})).toBe('https://example.test/idx/')
     })
 })
 

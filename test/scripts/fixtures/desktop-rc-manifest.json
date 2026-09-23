@@ -1,0 +1,32 @@
+{
+  "version": "5.2.0",
+  "package_version": "5.2.0",
+  "staging": true,
+  "platforms": {
+    "darwin-arm64": {
+      "file": "Axiom Desktop_5.2.0_aarch64.dmg",
+      "url": "https://axiom.ai/axiom_desktop/rc/Axiom%20Desktop_5.2.0_aarch64.dmg",
+      "sha256": "cb8f7820495602949f06f8d430de208b932c295eff1cbe2b3e80694c93efe359"
+    },
+    "darwin-x86_64": {
+      "file": "Axiom Desktop_5.2.0_x64.dmg",
+      "url": "https://axiom.ai/axiom_desktop/rc/Axiom%20Desktop_5.2.0_x64.dmg",
+      "sha256": "be667277fcbf46f96e8a27a9f5e44ea61ee63e5d0cd51f551ab016b48c20bab0"
+    },
+    "windows-x86_64": {
+      "file": "Axiom Desktop_5.2.0_x64-setup.exe",
+      "url": "https://axiom.ai/axiom_desktop/rc/Axiom%20Desktop_5.2.0_x64-setup.exe",
+      "sha256": "f9eb9ebf3060c0dd43f01a20add59e8c4e04b12309cc03b35f0163e751eace2d"
+    },
+    "linux-x86_64": {
+      "file": "Axiom Desktop_5.2.0_amd64.AppImage",
+      "url": "https://axiom.ai/axiom_desktop/rc/Axiom%20Desktop_5.2.0_amd64.AppImage",
+      "sha256": "679524aaf4cd69be1dbbe1cd0edb62a994ec0afce87fdca5546f84b1116861ae"
+    },
+    "linux-deb": {
+      "file": "Axiom Desktop_5.2.0_amd64.deb",
+      "url": "https://axiom.ai/axiom_desktop/rc/Axiom%20Desktop_5.2.0_amd64.deb",
+      "sha256": "cf6527ac5e6727cf18ee7239ce71fc8d461661f11633e13b03eada82976edb01"
+    }
+  }
+}

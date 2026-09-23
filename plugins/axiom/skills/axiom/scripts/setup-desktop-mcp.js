@@ -11,7 +11,7 @@
  *
  *   node setup-desktop-mcp.js resolve  [--platform linux|darwin|win32] [--arch x64|arm64] [--index <url>]
  *   node setup-desktop-mcp.js download [--url <artifact-url>] [--dest <dir>] [--index <url>]
- *   node setup-desktop-mcp.js extract  --deb <path> [--dest <dir>]        (Linux: dpkg-deb -x, no root)
+ *   node setup-desktop-mcp.js extract  --appimage <path> | --deb <path> [--dest <dir>]   (Linux, no root)
  *   node setup-desktop-mcp.js register --sidecar <path-to-axiom-mcp>
  *   node setup-desktop-mcp.js verify
  *
@@ -19,9 +19,14 @@
  * the process env, and the MCP client config (~/.claude.json) — the split-key /
  * rotation hazard behind "MCP tools answer 401". It never prints the key.
  *
- * The artifact index defaults to the published releases; `--index <url>` or the
- * AXIOM_DESKTOP_INDEX_URL env var points resolve/download at another one (e.g.
- * release candidates at https://site.axiom.ai/axiom_desktop/rc/).
+ * Resolution reads the release manifest the desktop release writes next to the
+ * installers: `latest.json` in the live download folder (https://axiom.ai/desktop_app/,
+ * the default), or `manifest.json` in a staging folder such as the release candidates
+ * at https://site.axiom.ai/axiom_desktop/rc/ (`--index <url>` / AXIOM_DESKTOP_INDEX_URL).
+ * The manifest names one installer per platform with its sha256; the live Linux
+ * installer is the AppImage (the .deb is built but not promoted to the live folder),
+ * so `extract` takes an AppImage — `--appimage-extract` needs no FUSE and no root —
+ * and still accepts a .deb from a staging folder.
  *
  * Every subcommand prints a single-line JSON result on stdout and exits 0
  * only on `{ok: true}` — the same contract as save-automation.js.
@@ -38,37 +43,21 @@ const os = require('os')
 const path = require('path')
 const {spawn, spawnSync} = require('child_process')
 
-const DOWNLOAD_INDEX_URL = 'https://axiom.ai/axiom_desktop/'
+const DOWNLOAD_INDEX_URL = 'https://axiom.ai/desktop_app/'
 const DEFAULT_LAR_URL = 'https://lar.axiom.ai'
 
-// Published names are `AxiomDesktop_<ver>_<suffix>`; builds since the display-name
-// change are `Axiom Desktop_<ver>_<suffix>` (URL-encoded `Axiom%20Desktop_…` in hrefs).
-const ARTIFACT_NAME = String.raw`(?:Axiom%20Desktop|Axiom Desktop|AxiomDesktop)_(\d+)\.(\d+)\.(\d+)_`
+/** Manifest file names, tried in order: the live folder writes latest.json, a staging folder manifest.json. */
+const MANIFEST_NAMES = ['latest.json', 'manifest.json']
 
 /**
- * Artifact suffix per platform/arch — only what Jenkins actually publishes to
- * the index today (Linux x86_64, macOS Apple Silicon, Windows x64; see
- * test/scripts/fixtures/axiom-desktop-index.html). Unknown combinations get
- * an explicit error listing what exists rather than a guess.
+ * Manifest platform key per Node platform/arch — the keys the desktop release
+ * writes (ci/jenkins-release-rc.sh in axiom_desktop). Unknown combinations get an
+ * explicit error listing what the manifest offers rather than a guess.
  */
-const ARTIFACTS = {
-    linux:  {x64: '_amd64.deb'},
-    darwin: {arm64: '_aarch64.dmg'},
-    win32:  {x64: '_x64-setup.exe'}
-}
-
-/** Distinct artifact hrefs (as linked, i.e. still URL-encoded) from the Apache-style index page. */
-function parseIndex(html) {
-    const files = new Set()
-    const re = new RegExp(`href="(${ARTIFACT_NAME}[^"/]+)"`, 'g')
-    let m
-    while ((m = re.exec(html)) !== null) files.add(m[1])
-    return [...files]
-}
-
-function parseVersion(file) {
-    const m = new RegExp(`^${ARTIFACT_NAME}`).exec(file)
-    return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null
+const PLATFORM_KEYS = {
+    linux:  {x64: 'linux-x86_64'},
+    darwin: {arm64: 'darwin-arm64', x64: 'darwin-x86_64'},
+    win32:  {x64: 'windows-x86_64'}
 }
 
 /** Resolve the index to use: --index flag, then AXIOM_DESKTOP_INDEX_URL, then the published releases. */
@@ -82,20 +71,38 @@ function compareSemver(a, b) {
     return 0
 }
 
+/** The manifest's entries as {key, file, url, sha256}; a manifest without `platforms` is empty. */
+function parseManifest(manifest) {
+    const platforms = manifest && typeof manifest === 'object' && manifest.platforms && typeof manifest.platforms === 'object' ? manifest.platforms : {}
+    return Object.entries(platforms)
+        .filter(([, v]) => v && typeof v === 'object' && typeof v.file === 'string')
+        .map(([key, v]) => ({key, file: v.file, url: v.url, sha256: v.sha256}))
+}
+
 /**
- * Pick the newest published artifact for a platform. Pure — takes the index
- * HTML so it can be tested offline against a fixture.
+ * Pick the installer for a platform from a release manifest. Pure — takes the
+ * parsed manifest so it can be tested offline against the fixtures.
  */
-function resolveArtifact(html, platform = process.platform, arch = process.arch, indexUrl = DOWNLOAD_INDEX_URL) {
-    const files = parseIndex(html)
-    if (files.length === 0) return {ok: false, error: `no AxiomDesktop_* artifacts found at ${indexUrl}`}
-    const suffix = ARTIFACTS[platform] && ARTIFACTS[platform][arch]
-    if (!suffix) return {ok: false, error: `no published desktop-app build for ${platform}/${arch}`, available: files}
-    const candidates = files.filter(f => f.endsWith(suffix) && parseVersion(f))
-    if (candidates.length === 0) return {ok: false, error: `no ${suffix} artifact in the index`, available: files}
-    candidates.sort((a, b) => compareSemver(parseVersion(a), parseVersion(b)))
-    const file = candidates[candidates.length - 1]
-    return {ok: true, file, name: decodeURIComponent(file), version: parseVersion(file).join('.'), url: indexUrl + file, platform, arch, index: indexUrl}
+function resolveArtifact(manifest, platform = process.platform, arch = process.arch, indexUrl = DOWNLOAD_INDEX_URL) {
+    const entries = parseManifest(manifest)
+    if (entries.length === 0) return {ok: false, error: `no installers listed in the release manifest at ${indexUrl}`}
+    const key = PLATFORM_KEYS[platform] && PLATFORM_KEYS[platform][arch]
+    const available = entries.map(e => `${e.key}: ${e.file}`)
+    if (!key) return {ok: false, error: `no published desktop-app build for ${platform}/${arch}`, available}
+    const hit = entries.find(e => e.key === key)
+    if (!hit) return {ok: false, error: `the manifest at ${indexUrl} has no ${key} installer`, available}
+    const url = hit.url || indexUrl + encodeURIComponent(hit.file)
+    return {
+        ok: true,
+        file: hit.file,
+        version: typeof manifest.version === 'string' ? manifest.version : null,
+        url,
+        sha256: hit.sha256 || null,
+        staging: manifest.staging === true,
+        platform,
+        arch,
+        index: indexUrl
+    }
 }
 
 /** AXIOM_API_BASE the sidecar should be registered with, or null when prod (the binary's baked default). */
@@ -105,13 +112,26 @@ function deriveApiBase(env = process.env) {
     return `${lar}/api`
 }
 
-async function fetchIndex(indexUrl = DOWNLOAD_INDEX_URL, fetchImpl = fetch) {
-    const res = await fetchImpl(indexUrl, {headers: {Accept: 'text/html'}})
-    if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${indexUrl}`)
-    return res.text()
+/** The release manifest under an index URL: latest.json (live folder), else manifest.json (staging). */
+async function fetchManifest(indexUrl = DOWNLOAD_INDEX_URL, fetchImpl = fetch) {
+    const tried = []
+    for (const name of MANIFEST_NAMES) {
+        const url = indexUrl + name
+        const res = await fetchImpl(url, {headers: {Accept: 'application/json'}})
+        if (res.ok) return res.json()
+        tried.push(`${name} → HTTP ${res.status}`)
+    }
+    throw new Error(`no release manifest at ${indexUrl} (${tried.join(', ')})`)
 }
 
-async function download(url, destDir, fetchImpl = fetch) {
+function sha256Of(file) {
+    const {createHash} = require('crypto')
+    const h = createHash('sha256')
+    h.update(fs.readFileSync(file))
+    return h.digest('hex')
+}
+
+async function download(url, destDir, fetchImpl = fetch, expectedSha256 = null) {
     const {pipeline} = require('stream/promises')
     const {Readable} = require('stream')
     const res = await fetchImpl(url)
@@ -120,7 +140,13 @@ async function download(url, destDir, fetchImpl = fetch) {
     // Local name: decoded, with spaces dashed so the path is shell-friendly.
     const dest = path.resolve(destDir, decodeURIComponent(path.basename(new URL(url).pathname)).replace(/\s+/g, '-'))
     await pipeline(Readable.fromWeb(res.body), fs.createWriteStream(dest))
-    return {dest, bytes: fs.statSync(dest).size}
+    const result = {dest, bytes: fs.statSync(dest).size}
+    if (expectedSha256) {
+        const actual = sha256Of(dest)
+        if (actual !== expectedSha256) throw new Error(`checksum mismatch for ${dest}: manifest says ${expectedSha256}, got ${actual}`)
+        result.sha256 = actual
+    }
+    return result
 }
 
 function findSidecar(root) {
@@ -142,6 +168,39 @@ function findSidecar(root) {
     return null
 }
 
+function extractedSidecar(source, destDir) {
+    const sidecar = findSidecar(destDir)
+    if (!sidecar) {
+        return {ok: false, error: `extracted ${source} but it bundles no axiom-mcp sidecar — this desktop-app build predates the built-in MCP server; a newer release from https://axiom.ai/install-desktop-app is needed`}
+    }
+    try {
+        fs.chmodSync(sidecar, 0o755)
+    } catch (_) {
+        // best effort — the extractors normally preserve the mode
+    }
+    return {ok: true, sidecar, dest: destDir}
+}
+
+/** Unpack an AppImage with its own `--appimage-extract` (no FUSE, no root); the tree lands in <dest>/squashfs-root. */
+function extractAppImage(appImagePath, destDir) {
+    if (process.platform !== 'linux') {
+        return {ok: false, error: `extract is Linux-only; on ${process.platform} install the app and use its tray "Set up Claude MCP…"`}
+    }
+    if (!fs.existsSync(appImagePath)) return {ok: false, error: `no such file: ${appImagePath}`}
+    fs.mkdirSync(destDir, {recursive: true})
+    const file = path.resolve(appImagePath)
+    try {
+        fs.chmodSync(file, 0o755)
+    } catch (_) {
+        // reported by the spawn below if it matters
+    }
+    const r = spawnSync(file, ['--appimage-extract'], {cwd: destDir, encoding: 'utf8', env: {...process.env, APPIMAGE_EXTRACT_AND_RUN: '1'}})
+    if (r.error) return {ok: false, error: `couldn't run ${file} --appimage-extract: ${r.error.message} (a noexec mount? copy the AppImage somewhere executable)`}
+    if (r.status !== 0) return {ok: false, error: `--appimage-extract failed (exit ${r.status}): ${(r.stderr || r.stdout || '').trim().slice(-400)}`}
+    return extractedSidecar(appImagePath, destDir)
+}
+
+/** Unpack a .deb (staging folders still ship one) with dpkg-deb -x, no root. */
 function extractDeb(debPath, destDir) {
     if (process.platform !== 'linux') {
         return {ok: false, error: `extract is Linux-only (dpkg-deb); on ${process.platform} install the app and use its tray "Set up Claude MCP…"`}
@@ -151,16 +210,14 @@ function extractDeb(debPath, destDir) {
     const r = spawnSync('dpkg-deb', ['-x', debPath, destDir], {encoding: 'utf8'})
     if (r.error) return {ok: false, error: `dpkg-deb not runnable: ${r.error.message}`}
     if (r.status !== 0) return {ok: false, error: `dpkg-deb failed (exit ${r.status}): ${(r.stderr || '').trim()}`}
-    const sidecar = findSidecar(destDir)
-    if (!sidecar) {
-        return {ok: false, error: `extracted ${debPath} but it bundles no axiom-mcp sidecar — this desktop-app build predates the built-in MCP server; a newer release from https://axiom.ai/install-desktop-app is needed`}
-    }
-    try {
-        fs.chmodSync(sidecar, 0o755)
-    } catch (_) {
-        // best effort — dpkg-deb normally preserves the mode
-    }
-    return {ok: true, sidecar, dest: destDir}
+    return extractedSidecar(debPath, destDir)
+}
+
+/** Pick the extractor by file name: .AppImage or .deb. */
+function extractBundle(bundlePath, destDir) {
+    if (/\.appimage$/i.test(bundlePath)) return extractAppImage(bundlePath, destDir)
+    if (/\.deb$/i.test(bundlePath)) return extractDeb(bundlePath, destDir)
+    return {ok: false, error: `don't know how to extract ${bundlePath} — expected an .AppImage (the published Linux installer) or a .deb`}
 }
 
 /**
@@ -253,7 +310,7 @@ function verifyKeys({home = os.homedir(), env = process.env} = {}) {
     return result
 }
 
-module.exports = {parseIndex, compareSemver, resolveArtifact, deriveApiBase, indexUrlFrom, fetchIndex, download, extractDeb, findSidecar, register, keyFingerprint, verifyKeys, DOWNLOAD_INDEX_URL, ARTIFACTS}
+module.exports = {parseManifest, compareSemver, resolveArtifact, deriveApiBase, indexUrlFrom, fetchManifest, download, extractBundle, extractAppImage, extractDeb, findSidecar, register, keyFingerprint, verifyKeys, DOWNLOAD_INDEX_URL, MANIFEST_NAMES, PLATFORM_KEYS}
 
 // ---- CLI ----
 function flag(args, name) {
@@ -279,32 +336,34 @@ async function main(argv) {
     switch (cmd) {
         case 'resolve': {
             const index = indexUrlFrom(flag(argv, 'index'))
-            const r = resolveArtifact(await fetchIndex(index), flag(argv, 'platform') || process.platform, flag(argv, 'arch') || process.arch, index)
+            const r = resolveArtifact(await fetchManifest(index), flag(argv, 'platform') || process.platform, flag(argv, 'arch') || process.arch, index)
             emit(r)
             return r.ok ? 0 : 1
         }
         case 'download': {
             let url = flag(argv, 'url')
+            let sha256 = null
             if (!url) {
                 const index = indexUrlFrom(flag(argv, 'index'))
-                const r = resolveArtifact(await fetchIndex(index), process.platform, process.arch, index)
+                const r = resolveArtifact(await fetchManifest(index), process.platform, process.arch, index)
                 if (!r.ok) {
                     emit(r)
                     return 1
                 }
                 url = r.url
+                sha256 = r.sha256
             }
-            const d = await download(url, flag(argv, 'dest') || process.cwd())
+            const d = await download(url, flag(argv, 'dest') || process.cwd(), fetch, sha256)
             emit({ok: true, url, ...d})
             return 0
         }
         case 'extract': {
-            const deb = flag(argv, 'deb')
-            if (!deb) {
-                emit({ok: false, error: '--deb <path> is required'})
+            const bundle = flag(argv, 'appimage') || flag(argv, 'deb')
+            if (!bundle) {
+                emit({ok: false, error: '--appimage <path> (or --deb <path>) is required'})
                 return 2
             }
-            const r = extractDeb(deb, flag(argv, 'dest') || path.join(os.homedir(), '.axiom-desktop'))
+            const r = extractBundle(bundle, flag(argv, 'dest') || path.join(os.homedir(), '.axiom-desktop'))
             emit(r)
             return r.ok ? 0 : 1
         }
@@ -336,19 +395,19 @@ function usage() {
 Usage:
   node setup-desktop-mcp.js resolve  [--platform linux|darwin|win32] [--arch x64|arm64] [--index <url>]
   node setup-desktop-mcp.js download [--url <artifact-url>] [--dest <dir>] [--index <url>]
-  node setup-desktop-mcp.js extract  --deb <path> [--dest <dir>]
+  node setup-desktop-mcp.js extract  --appimage <path> | --deb <path> [--dest <dir>]
   AXIOM_API_KEY=... node setup-desktop-mcp.js register --sidecar <path-to-axiom-mcp>
   node setup-desktop-mcp.js verify
 
 Output (stdout, single-line JSON; exit code 0 only on ok), e.g.
-  {"ok": true, "file": "AxiomDesktop_5.2.0_amd64.deb", "url": "https://axiom.ai/axiom_desktop/AxiomDesktop_5.2.0_amd64.deb"}
+  {"ok": true, "file": "axiom-desktop-linux-5.2.0.AppImage", "url": "https://axiom.ai/desktop_app/axiom-desktop-linux-5.2.0.AppImage", "sha256": "…"}
   {"ok": false, "error": "AXIOM_API_KEY is not set in the environment — …"}
 
 Env:
   AXIOM_API_KEY             the user's API key; sent to the sidecar over stdin (never argv). Required by register.
   AXIOM_LAR_URL             base URL; a non-default value is forwarded to the registration as AXIOM_API_BASE.
-  AXIOM_DESKTOP_INDEX_URL   artifact index for resolve/download (default https://axiom.ai/axiom_desktop/;
-                            release candidates: https://site.axiom.ai/axiom_desktop/rc/). --index wins.
+  AXIOM_DESKTOP_INDEX_URL   folder whose release manifest resolve/download read: latest.json, else manifest.json
+                            (default https://axiom.ai/desktop_app/; release candidates: https://site.axiom.ai/axiom_desktop/rc/). --index wins.
 `)
 }
 

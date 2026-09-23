@@ -148,13 +148,13 @@ The desktop app bundles the `axiom-mcp` stdio server as a sidecar binary. The ap
 **Linux (or any box where you can run commands) — perform it yourself** with the bundled helper. Each subcommand prints one-line JSON (`{ok: true, …}` / `{ok: false, error}`):
 
 ```bash
-node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" resolve                       # newest published artifact for this platform
-node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" download --dest /tmp           # fetches it (100+ MB)
-node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" extract --deb /tmp/AxiomDesktop_<ver>_amd64.deb --dest ~/.axiom-desktop
+node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" resolve                       # this platform's installer from the release manifest
+node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" download --dest /tmp           # fetches it (100+ MB) and checks its sha256
+node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" extract --appimage /tmp/axiom-desktop-linux-<ver>.AppImage --dest ~/.axiom-desktop
 node "<SKILL_BASE_DIR>/scripts/setup-desktop-mcp.js" register --sidecar <the "sidecar" path printed by extract>
 ```
 
-`register` reads `AXIOM_API_KEY` from the environment (Step 0 put it there) and pipes it to `axiom-mcp setup save-key` over **stdin**. The key must never appear in chat, in argv, or in the transcript — the helper refuses a `--key` argument by design. If `AXIOM_LAR_URL` points at a non-production LAR, the helper forwards the matching `AXIOM_API_BASE` so the registration targets the same backend. If the result says the `claude` CLI wasn't found, it includes a key-redacted `claude mcp add …` hint — show that to the user rather than composing your own. Testing a release candidate? Set `AXIOM_DESKTOP_INDEX_URL` (e.g. `https://site.axiom.ai/axiom_desktop/rc/`) or pass `--index <url>` and `resolve`/`download` use that index instead of the published releases.
+`register` reads `AXIOM_API_KEY` from the environment (Step 0 put it there) and pipes it to `axiom-mcp setup save-key` over **stdin**. The key must never appear in chat, in argv, or in the transcript — the helper refuses a `--key` argument by design. If `AXIOM_LAR_URL` points at a non-production LAR, the helper forwards the matching `AXIOM_API_BASE` so the registration targets the same backend. If the result says the `claude` CLI wasn't found, it includes a key-redacted `claude mcp add …` hint — show that to the user rather than composing your own. The published Linux installer is the AppImage; `extract` unpacks it with its own `--appimage-extract` (no FUSE, no root) and also accepts a `.deb` (`--deb`) from a staging folder. Testing a release candidate? Set `AXIOM_DESKTOP_INDEX_URL` (e.g. `https://site.axiom.ai/axiom_desktop/rc/`) or pass `--index <url>` and `resolve`/`download` read that folder's `manifest.json` instead of the published `latest.json`.
 
 **macOS / Windows — instruct the user** (GUI installers can't be driven from here):
 

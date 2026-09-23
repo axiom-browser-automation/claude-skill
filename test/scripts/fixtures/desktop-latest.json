@@ -1,0 +1,27 @@
+{
+  "version": "5.2.0",
+  "package_version": "5.2.0",
+  "staging": false,
+  "platforms": {
+    "darwin-arm64": {
+      "file": "axiom-desktop-mac-5.2.0.dmg",
+      "url": "https://axiom.ai/desktop_app/axiom-desktop-mac-5.2.0.dmg",
+      "sha256": "cb8f7820495602949f06f8d430de208b932c295eff1cbe2b3e80694c93efe359"
+    },
+    "darwin-x86_64": {
+      "file": "axiom-desktop-mac-intel-5.2.0.dmg",
+      "url": "https://axiom.ai/desktop_app/axiom-desktop-mac-intel-5.2.0.dmg",
+      "sha256": "be667277fcbf46f96e8a27a9f5e44ea61ee63e5d0cd51f551ab016b48c20bab0"
+    },
+    "windows-x86_64": {
+      "file": "axiom-desktop-win-5.2.0.exe",
+      "url": "https://axiom.ai/desktop_app/axiom-desktop-win-5.2.0.exe",
+      "sha256": "f9eb9ebf3060c0dd43f01a20add59e8c4e04b12309cc03b35f0163e751eace2d"
+    },
+    "linux-x86_64": {
+      "file": "axiom-desktop-linux-5.2.0.AppImage",
+      "url": "https://axiom.ai/desktop_app/axiom-desktop-linux-5.2.0.AppImage",
+      "sha256": "679524aaf4cd69be1dbbe1cd0edb62a994ec0afce87fdca5546f84b1116861ae"
+    }
+  }
+}

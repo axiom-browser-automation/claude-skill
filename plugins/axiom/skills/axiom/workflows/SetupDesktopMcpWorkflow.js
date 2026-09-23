@@ -15,7 +15,7 @@
  * takes the API key in its own key field).
  */
 
-const DOWNLOAD_INDEX_URL = 'https://axiom.ai/axiom_desktop/'
+const DOWNLOAD_INDEX_URL = 'https://axiom.ai/desktop_app/'
 const INSTALL_PAGE_URL = 'https://axiom.ai/install-desktop-app'
 
 // Both halves must be present: a setup-ish verb AND the desktop app / MCP as
@@ -52,8 +52,8 @@ class SetupDesktopMcpWorkflow {
                     }
                 },
                 nextSteps: [
-                    `Download the desktop app from ${INSTALL_PAGE_URL} (artifact index: ${DOWNLOAD_INDEX_URL})`,
-                    'Install it — on Linux the skill can instead extract the bundled axiom-mcp sidecar straight from the .deb',
+                    `Download the desktop app from ${INSTALL_PAGE_URL} (installers and their release manifest: ${DOWNLOAD_INDEX_URL})`,
+                    'Install it — on Linux the skill can instead extract the bundled axiom-mcp sidecar straight from the AppImage',
                     'Register the MCP server: Linux → node scripts/setup-desktop-mcp.js register --sidecar <path> (the key is read from AXIOM_API_KEY and sent over stdin, never argv); macOS / Windows → tray menu → "Set up Claude MCP…", paste the API key',
                     'Restart Claude Code (or reconnect via /mcp) — the mcp__axiom__* tools only appear in a new session'
                 ]

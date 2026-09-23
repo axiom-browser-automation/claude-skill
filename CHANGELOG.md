@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.15.1 — desktop-app setup resolves from the release manifest
+
+`setup-desktop-mcp.js` read an Apache directory listing at `/axiom_desktop/` and
+expected `AxiomDesktop_<ver>_amd64.deb`; the desktop release publishes to
+`/desktop_app/` under `axiom-desktop-<os>-<ver>.*` names with a `latest.json`
+manifest, and promotes only the AppImage for Linux, so `resolve` found nothing.
+`resolve`/`download` now read `latest.json` (or a staging folder's
+`manifest.json`), `download` checks the manifest's sha256, and `extract` unpacks
+the AppImage with `--appimage-extract` (a staged `.deb` still works via `--deb`).
+
 ## 0.15.0 — sandbox runtime discipline (AXIOM-6357)
 
 Platform heartbeat probe (public GET /api/platform/heartbeat on Laravel,
