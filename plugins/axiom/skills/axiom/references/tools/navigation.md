@@ -13,7 +13,7 @@ whose results say what happened (`{ok, matched, currentUrl, title}`), so
 you skip the read-back call after every action. Api fallback:
 ```js
 await axiom.goto('https://example.com')          // navigate current session
-await axiom.click('#accept-cookies', 'left')     // dismiss overlays, click
+await axiom.click('#accept-cookies', 'left', true) // dismiss overlays — optional: absent on many runs
 await axiom.scrapeMetadata(['title', 'url'])     // cheap "where am I" check
 await axiom.datePicker('.cal .title', '.cal .next', 'December, 2026', '5')
 // calendars: pages until the title matches — never a run of arrow clicks,
@@ -29,7 +29,10 @@ frame; just let scrape navigate).
   always both: (1) dismiss it in your session before trusting probes;
   (2) add a click step that dismisses it INSIDE the automation, before any
   extract — every fresh run starts with a clean profile and hits the wall
-  again. An automation without that step scrapes the wall.
+  again. An automation without that step scrapes the wall. (3) Make that
+  click OPTIONAL (`"Optional click": true` on the no-code step, the third
+  argument of `click()` in code): the banner is absent on many runs, and a
+  required click on a missing element fails the run.
 - Static fetches lie: content may be JS-rendered, geo/viewport-dependent,
   or gated. Never validate a selector with curl/wget/requests/fetch — only
   in the Axiom browser session.

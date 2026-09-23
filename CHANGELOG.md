@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.15.3 — a consent-banner click is optional
+
+Generated automations dismissed cookie banners with a required click, which fails the
+run whenever the banner is absent (stored consent, geography, A/B variants). The
+consent-overlay rule now has a third obligation — `"Optional click": true` on the
+no-code step, the third argument of `click()` in code — the build example shows it,
+and `validate-no-code` rejects a consent-looking click without it (`optional_click`).
+
 ## 0.15.2 — the public mirror is in sync again
 
 The GitHub mirror had stopped at 0.8.4 and carried the `?*&` column-reference

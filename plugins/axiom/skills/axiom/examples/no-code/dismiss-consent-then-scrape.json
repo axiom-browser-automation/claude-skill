@@ -1,0 +1,251 @@
+{
+  "id": 0,
+  "openWidgetIndex": -1,
+  "name": "Dismiss a consent banner, then scrape",
+  "templateId": 0,
+  "triggers": [],
+  "share_status": false,
+  "share_link": "",
+  "stored_cookies": [],
+  "data": {
+    "allowConcurrencyDesktop": true,
+    "builderTemplateId": 0,
+    "context": [
+      {
+        "context": "url",
+        "url": "https://www.example.com"
+      }
+    ],
+    "disallowConcurrencyCloud": false,
+    "form": [
+      {
+        "description": "Instruct the bot to go to a new page.",
+        "hasErrors": false,
+        "index": 0,
+        "machine_name": "WidgetDriverGoto",
+        "metadata": "",
+        "method": {
+          "driver": "driver.gotoV4070"
+        },
+        "modes": [
+          "driver"
+        ],
+        "name": "Go to page",
+        "original_name": "Go to page",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": "",
+            "description": [
+              "Enter a URL to go to. You can also plugin data from other steps to provide a URL. Enter (skip) to skip this step."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Enter URL",
+            "type": "current_url",
+            "value": "https://www.example.com"
+          },
+          {
+            "collapsible": 0,
+            "configurable": false,
+            "default_value": false,
+            "description": [
+              "Cookie detected, store if running in the cloud and you wish to run your automation using the scheduler or the API."
+            ],
+            "help": [
+              {
+                "name": "Learn ",
+                "linkSrc": "https://axiom.ai/docs/tutorials/settings/run-options/store-cookies",
+                "linkText": "more"
+              }
+            ],
+            "image": "",
+            "name": "Store Cookie",
+            "type": "store_cookie",
+            "value": false
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "Check the box to stop Axiom retrieving session data from this URL's localstorage. This will prevent an extra page refresh but can prevent your session from loading fully."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Do not share localstorage",
+            "type": "special_character",
+            "value": false
+          },
+          {
+            "collapsible": 1,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "Check the box to open the URL in a new browser tab, the automation will automatically switch to running in the new tab."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Open in new tab",
+            "type": "special_character",
+            "value": false
+          }
+        ],
+        "stepNumber": "1",
+        "token": ""
+      },
+      {
+        "description": "Instruct the bot to click on a button, link, or any other clickable thing.",
+        "hasErrors": false,
+        "index": 1,
+        "machine_name": "WidgetDriverClick",
+        "metadata": "",
+        "method": {
+          "driver": "driver.clickV4090"
+        },
+        "modes": [
+          "driver"
+        ],
+        "name": "Accept cookies (optional)",
+        "original_name": "Click element",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": "",
+            "description": [
+              "Select an element. Use dedicated download steps for downloading files."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Select",
+            "type": "selector_single",
+            "value": "#onetrust-accept-btn-handler"
+          },
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "If checked & the selected element is not present on the page the automation will continue without an error."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Optional click",
+            "type": "optional",
+            "value": true
+          },
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "If checked a double click on the selected element will be performed. This setting will be ignored if performing a right click."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Double click",
+            "type": "double_click",
+            "value": false
+          },
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": false,
+            "description": [
+              "Toggle off to perform a left click; toggle on to perform a right click."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Left click | Right click",
+            "type": "toggle",
+            "value": false
+          }
+        ],
+        "stepNumber": "2",
+        "token": ""
+      },
+      {
+        "description": "Scrape metadata from a page",
+        "hasErrors": false,
+        "index": 2,
+        "machine_name": "WidgetDriverScrapeMetadata",
+        "metadata": "",
+        "method": {
+          "driver": "driver.scrapeMetadata"
+        },
+        "modes": [
+          "driver"
+        ],
+        "name": "Scrape metadata",
+        "original_name": "Scrape metadata",
+        "params": [
+          {
+            "collapsible": 0,
+            "configurable": true,
+            "default_value": [
+              {
+                "name": "Title",
+                "value": "title",
+                "description": "<title> tag",
+                "category": "General Metadata",
+                "id": "general_metadata_title"
+              },
+              {
+                "name": "Description",
+                "value": "meta[name='description']",
+                "description": "<meta name=\"description\" content=\"...\">",
+                "category": "General Metadata",
+                "id": "general_metadata_description"
+              }
+            ],
+            "description": [
+              "Select the metadata to scrape from the page."
+            ],
+            "help": [],
+            "image": "",
+            "name": "Metadata",
+            "type": "select_metadata",
+            "value": [
+              {
+                "name": "Title",
+                "value": "title",
+                "description": "<title> tag",
+                "category": "General Metadata",
+                "id": "general_metadata_title"
+              },
+              {
+                "name": "Description",
+                "value": "meta[name='description']",
+                "description": "<meta name=\"description\" content=\"...\">",
+                "category": "General Metadata",
+                "id": "general_metadata_description"
+              }
+            ]
+          }
+        ],
+        "stepNumber": "3",
+        "token": "metadata"
+      }
+    ],
+    "headless": false,
+    "incognitoMode": false,
+    "injector": {
+      "injector": "dom",
+      "magic_btn_status": true,
+      "selector": ""
+    },
+    "mode": "browser",
+    "storeCookies": false,
+    "templateId": 0,
+    "templateItem": {
+      "name": "Dismiss a consent banner, then scrape",
+      "description": "Opens a consent-walled page, dismisses the banner with an OPTIONAL click (the banner is absent on many runs), then scrapes the article title."
+    },
+    "templateMode": false,
+    "templateStarted": false,
+    "tokens": null,
+    "viewport": null
+  }
+}

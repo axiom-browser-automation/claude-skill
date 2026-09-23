@@ -79,6 +79,8 @@ function loadWidgetMap() {
 // Step-level fields every importable step needs. Anything missing here makes
 // the extension's widget resolver render the step as `undefined`.
 const REQUIRED_STEP_FIELDS = ['machine_name', 'name', 'original_name', 'stepNumber', 'params']
+// Words that mark a click step as a cookie/consent-banner dismissal (step name or selector).
+const CONSENT_CLICK = /cookie|consent|gdpr|accept[ -]?all|agree|privacy|onetrust|didomi|cmp|sp_message|qc-cmp|truste|cookiebot/i
 
 /**
  * Structural check that runs after AJV passes. Catches the failure modes
@@ -234,6 +236,27 @@ function structuralCheck(candidate) {
                     keyword: 'param_type',
                     message: `${step.machine_name} param "${want.name}": expected type "${want.type}", got "${got.type}". Use the widget's declared type, not a guess.`,
                     params: {expected: want.type, actual: got.type}
+                })
+            }
+        }
+
+        // (5) A consent/cookie-banner click must be optional. The banner is not
+        // on every run (stored consent, geography, an A/B variant, a page that
+        // remembers the dismissal), and a required click on a missing element
+        // fails the run before any extract step. Recognised by the step's name
+        // or its selector; the "Optional click" param is the extension's own
+        // switch for this.
+        if (step.machine_name === 'WidgetDriverClick') {
+            const select = stepParams.find(p => p && p.name === 'Select')
+            const optional = stepParams.find(p => p && p.name === 'Optional click')
+            const selectorText = typeof (select && select.value) === 'string' ? select.value : JSON.stringify((select && select.value) || '')
+            const looksLikeConsent = CONSENT_CLICK.test(`${step.name || ''} ${selectorText}`)
+            if (looksLikeConsent && optional && optional.value !== true && optional.value !== 'true') {
+                errors.push({
+                    path: `${stepPath}/params/${stepParams.indexOf(optional)}/value`,
+                    keyword: 'optional_click',
+                    message: `${step.machine_name} "${step.name}" dismisses a cookie/consent banner but its "Optional click" is not true — the banner is absent on many runs (stored consent, geography, A/B variants) and a required click on a missing element fails the run before any extract. Set values["Optional click"] = true.`,
+                    params: {step: step.name, selector: selectorText, expected: true, actual: optional.value}
                 })
             }
         }

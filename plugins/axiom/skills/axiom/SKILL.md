@@ -288,11 +288,17 @@ The workflow is the single entry point for the no-code path. It takes a high-lev
      "contextUrl": "https://www.bbc.co.uk",
      "steps": [
        {"machineName": "WidgetDriverGoto", "values": {"Enter URL": "https://www.bbc.co.uk"}},
+       {"machineName": "WidgetDriverClick", "name": "Accept cookies", "values": {"Select": "#bbccookies-continue-button", "Optional click": true}},
        {"machineName": "WidgetDriverEnterText", "values": {"Select text field": "input[type='search']", "Text": "harry kane"}},
        {"machineName": "WidgetDriverClick", "values": {"Select": "button[type='submit']"}}
      ]
    }
    ```
+
+   A click that dismisses a cookie/consent banner always carries `"Optional click": true` — the
+   banner is absent on many runs and a required click on a missing element fails the run before any
+   extract (`references/browser-automation-rules.md`, consent overlays; the validator rejects a
+   consent click without it).
 
 2. **Invoke the workflow** with the intent + the user's chosen output path:
 

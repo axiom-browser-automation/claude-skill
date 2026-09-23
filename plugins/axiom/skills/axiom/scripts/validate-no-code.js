@@ -6588,6 +6588,7 @@ function loadWidgetMap() {
   return _vocabCache;
 }
 var REQUIRED_STEP_FIELDS = ["machine_name", "name", "original_name", "stepNumber", "params"];
+var CONSENT_CLICK = /cookie|consent|gdpr|accept[ -]?all|agree|privacy|onetrust|didomi|cmp|sp_message|qc-cmp|truste|cookiebot/i;
 function structuralCheck(candidate) {
   const errors = [];
   const form = candidate && candidate.data && candidate.data.form;
@@ -6710,6 +6711,20 @@ function structuralCheck(candidate) {
           keyword: "param_type",
           message: `${step.machine_name} param "${want.name}": expected type "${want.type}", got "${got.type}". Use the widget's declared type, not a guess.`,
           params: { expected: want.type, actual: got.type }
+        });
+      }
+    }
+    if (step.machine_name === "WidgetDriverClick") {
+      const select = stepParams.find((p) => p && p.name === "Select");
+      const optional = stepParams.find((p) => p && p.name === "Optional click");
+      const selectorText = typeof (select && select.value) === "string" ? select.value : JSON.stringify(select && select.value || "");
+      const looksLikeConsent = CONSENT_CLICK.test(`${step.name || ""} ${selectorText}`);
+      if (looksLikeConsent && optional && optional.value !== true && optional.value !== "true") {
+        errors.push({
+          path: `${stepPath}/params/${stepParams.indexOf(optional)}/value`,
+          keyword: "optional_click",
+          message: `${step.machine_name} "${step.name}" dismisses a cookie/consent banner but its "Optional click" is not true \u2014 the banner is absent on many runs (stored consent, geography, A/B variants) and a required click on a missing element fails the run before any extract. Set values["Optional click"] = true.`,
+          params: { step: step.name, selector: selectorText, expected: true, actual: optional.value }
         });
       }
     }

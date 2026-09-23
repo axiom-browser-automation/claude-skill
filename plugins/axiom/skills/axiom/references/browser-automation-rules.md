@@ -48,13 +48,19 @@ each consumer's own skill — not here.
 
 Most news and EU sites open under a consent wall. If probes return consent
 text ("We use cookies", "Accept", "Let me choose"), you are looking at the
-overlay, not the page. Two obligations, always both:
+overlay, not the page. Three obligations, always all three:
 
 1. Dismiss it in your research session first — only trust probes taken after.
 2. Dismiss it in THE AUTOMATION: every fresh run starts with a clean profile
    and hits the wall again, so the automation needs a click step that
    dismisses the overlay BEFORE any extract step. An automation without one
    scrapes the wall.
+3. Make that click OPTIONAL. The banner is absent on many runs — stored
+   consent, another country, an A/B variant, a page that remembers the
+   dismissal — and a required click on a missing element fails the run
+   before any extract. No-code: the Click step's `"Optional click": true`
+   (the no-code validator rejects a consent click without it). Coded / MCP:
+   `click(selector, 'left', true)` — the third argument.
 
 ## Sessions are scarce and watched
 
